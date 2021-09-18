@@ -8,6 +8,9 @@ This project was generated using [Nx](https://nx.dev).
 
 🔎 **Smart, Extensible Build Framework**
 
+## Useful
+* `nx g @nrwl/workspace:library --skipBabelrc --testEnvironment=node` Create usual ts non-buildable lib 
+
 ## Adding capabilities to your workspace
 
 Nx supports many plugins which add capabilities for developing different types of applications and different tools.
