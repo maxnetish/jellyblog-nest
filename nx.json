@@ -28,6 +28,9 @@
     ]
   },
   "projects": {
+    "auth-back": {
+      "tags": []
+    },
     "auth-model": {
       "tags": []
     },
@@ -43,9 +46,6 @@
     "frontend/admin-e2e": {
       "tags": [],
       "implicitDependencies": ["frontend-admin"]
-    },
-    "models": {
-      "tags": []
     }
   }
 }

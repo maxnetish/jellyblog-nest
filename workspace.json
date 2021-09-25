@@ -1,6 +1,28 @@
 {
   "version": 2,
   "projects": {
+    "auth-back": {
+      "root": "libs/auth/back",
+      "sourceRoot": "libs/auth/back/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/auth/back/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/auth/back"],
+          "options": {
+            "jestConfig": "libs/auth/back/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "auth-model": {
       "root": "libs/auth/model",
       "sourceRoot": "libs/auth/model/src",
@@ -212,28 +234,6 @@
           "outputs": ["{options.outputFile}"],
           "options": {
             "lintFilePatterns": ["apps/frontend/admin-e2e/**/*.{js,ts}"]
-          }
-        }
-      }
-    },
-    "models": {
-      "root": "libs/models",
-      "sourceRoot": "libs/models/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/models/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/models"],
-          "options": {
-            "jestConfig": "libs/models/jest.config.js",
-            "passWithNoTests": true
           }
         }
       }

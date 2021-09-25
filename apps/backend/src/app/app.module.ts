@@ -1,18 +1,19 @@
 import { Module } from '@nestjs/common';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { baseEntitySchema, userSchema } from '@jellyblog-nest/entities';
+import { AuthBackModule } from '@jellyblog-nest/auth/back';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { allEntities } from '@jellyblog-nest/entities';
 
 @Module({
   imports: [
-    MikroOrmModule.forRoot({
-      entities: [baseEntitySchema, userSchema],
-      dbName: 'jellyblog.sqlite',
+    TypeOrmModule.forRoot({
       type: 'sqlite',
+      database: './jellyblog.sqlite',
+      synchronize: true,
       autoLoadEntities: true,
     }),
+    AuthBackModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,11 @@
-import { baseEntitySchema } from './base-entity';
-import { userSchema } from './user';
+import { BaseEntity } from './base.entity';
+import { User } from './user.entity';
+
+export const allEntities = [
+  User,
+];
 
 export {
-  baseEntitySchema,
-  userSchema,
+  BaseEntity,
+  User,
 };
