@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto, CredentialsDto, UserInfoDto } from '@jellyblog-nest/auth/model';
+import { ChangePasswordDto, CreateUserDto, CredentialsDto, UserInfoDto, UserRole } from '@jellyblog-nest/auth/model';
 import crypto from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@jellyblog-nest/entities';
@@ -10,6 +10,9 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {
+    this.seedDefaultAdminIfNoOne().then(null, () => {
+      throw new Error('Cannot seed default admin user.');
+    });
   }
 
   private hashAlgorythm = 'sha256';
@@ -33,7 +36,10 @@ export class AuthService {
   }
 
   async findByUsername(username: string) {
-    const found = await this.userRepository.findOne(
+    if (!username) {
+      throw new HttpException('username cannot be empty', HttpStatus.BAD_REQUEST);
+    }
+    return await this.userRepository.findOne(
       { username },
       {
         select: [
@@ -45,15 +51,21 @@ export class AuthService {
         ],
       },
     );
-    return found;
   }
 
   async findAndVerify(credentialsDto: CredentialsDto) {
-    const found = await this.userRepository.findOne({ username: credentialsDto.username });
+    const { username, password } = credentialsDto;
+    if (!username) {
+      throw new HttpException('username cannot be empty', HttpStatus.BAD_REQUEST);
+    }
+    if (!password) {
+      throw new HttpException('password cannot be empty', HttpStatus.BAD_REQUEST);
+    }
+    const found = await this.userRepository.findOne({ username });
     if (!found) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
-    const credentialsPasswordHash = AuthService.textToHash(credentialsDto.password, found.hashAlgo);
+    const credentialsPasswordHash = AuthService.textToHash(password, found.hashAlgo);
     if (credentialsPasswordHash !== found.secret) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
@@ -64,6 +76,43 @@ export class AuthService {
       role: found.role,
       username: found.username,
     } as UserInfoDto;
+  }
+
+  async changePassword(changePasswordDto: ChangePasswordDto) {
+    const { newPassword, ...creds } = changePasswordDto;
+    if (!newPassword) {
+      throw new HttpException('new passowrd cannot be empty', HttpStatus.BAD_REQUEST);
+    }
+    const existingUser = await this.findAndVerify(creds);
+    const secret = AuthService.textToHash(newPassword, this.hashAlgorythm);
+    const result = await this.userRepository.update(
+      existingUser.uuid,
+      { secret },
+    );
+    if (!result.affected) {
+      throw new HttpException('Update password fails.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return true;
+  }
+
+  private async seedDefaultAdminIfNoOne() {
+    const foundAnyAdminUser = await this.userRepository.findOne({
+      role: UserRole.ADMIN,
+    });
+    if (foundAnyAdminUser) {
+      console.log('We have admin');
+      return true;
+    }
+    const secret = AuthService.textToHash('jelly', this.hashAlgorythm);
+    const creatingUser = this.userRepository.create({
+      username: 'admin',
+      role: UserRole.ADMIN,
+      hashAlgo: 'sha256',
+      secret,
+    });
+    await this.userRepository.save(creatingUser);
+    console.log(`There are no admin yet, so create new one: "${creatingUser.username}"`);
+    return true;
   }
 
   private static textToHash(inp: string, algo: string): string {

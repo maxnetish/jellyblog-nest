@@ -1,5 +1,5 @@
-import { UserRole } from '@jellyblog-nest/auth/model';
-import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { UserRole } from './user-role';
+import { IsEnum, IsIn, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -7,7 +7,7 @@ export class CreateUserDto {
   @MaxLength(128)
   username: string;
 
-  // @IsEnum(UserRole)
+  @IsEnum(UserRole)
   role: UserRole;
 
   @IsNotEmpty()
