@@ -1,9 +1,15 @@
-import { UserRole } from '@jellyblog-nest/auth/model';
+import { UserRole } from './user-role';
+import { ApiProperty } from '@nestjs/swagger';
 
-export interface UserInfoDto{
+export class UserInfoDto {
+  @ApiProperty()
   uuid: string;
-  createdAt: Date | string | number;
-  updatedAt: Date | string | number;
+
+  @ApiProperty()
   username: string;
+
+  @ApiProperty({
+    enum: UserRole,
+  })
   role: UserRole;
 }

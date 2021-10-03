@@ -30,12 +30,10 @@ export class AuthService {
       username: createdUser.username,
       role: createdUser.role,
       uuid: createdUser.uuid,
-      createdAt: createdUser.createdAt,
-      updatedAt: createdUser.updatedAt,
     };
   }
 
-  async findByUsername(username: string) {
+  async findByUsername(username: string): Promise<UserInfoDto> {
     if (!username) {
       throw new HttpException('username cannot be empty', HttpStatus.BAD_REQUEST);
     }
@@ -53,7 +51,7 @@ export class AuthService {
     );
   }
 
-  async findAndVerify(credentialsDto: CredentialsDto) {
+  async findAndVerify(credentialsDto: CredentialsDto): Promise<UserInfoDto | null> {
     const { username, password } = credentialsDto;
     if (!username) {
       throw new HttpException('username cannot be empty', HttpStatus.BAD_REQUEST);
@@ -63,19 +61,17 @@ export class AuthService {
     }
     const found = await this.userRepository.findOne({ username });
     if (!found) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      return null;
     }
     const credentialsPasswordHash = AuthService.textToHash(password, found.hashAlgo);
     if (credentialsPasswordHash !== found.secret) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      return null;
     }
     return {
       uuid: found.uuid,
-      createdAt: found.createdAt,
-      updatedAt: found.updatedAt,
       role: found.role,
       username: found.username,
-    } as UserInfoDto;
+    };
   }
 
   async changePassword(changePasswordDto: ChangePasswordDto) {
@@ -93,6 +89,20 @@ export class AuthService {
       throw new HttpException('Update password fails.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return true;
+  }
+
+  async findById(uuid: string): Promise<UserInfoDto> {
+    if (!uuid) {
+      throw new Error('uuid cannot be empty');
+    }
+    const found = await this.userRepository.findOne(uuid, {
+      select: ['uuid', 'username', 'role'],
+    });
+    return {
+      username: found.username,
+      role: found.role,
+      uuid: found.uuid,
+    };
   }
 
   private async seedDefaultAdminIfNoOne() {

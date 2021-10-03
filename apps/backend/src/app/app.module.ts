@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthBackModule } from '@jellyblog-nest/auth/back';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { allEntities } from '@jellyblog-nest/entities';
+import { Session } from '@jellyblog-nest/entities';
 
 @Module({
   imports: [
@@ -12,6 +12,7 @@ import { allEntities } from '@jellyblog-nest/entities';
       database: './jellyblog.sqlite',
       synchronize: true,
       autoLoadEntities: true,
+      entities: [Session],
     }),
     AuthBackModule,
   ],

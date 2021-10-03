@@ -1,7 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, CredentialsDto } from '@jellyblog-nest/auth/model';
+import { CreateUserDto, CredentialsDto, UserInfoDto } from '@jellyblog-nest/auth/model';
+import { LoginGuard } from './login.guard';
+import { Request } from 'express';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthenticatedGuard } from './authenticated.guard';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -9,13 +14,36 @@ export class AuthController {
   ) {
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Post('create')
   async createUser(@Body() createUserDto: CreateUserDto) {
     return await this.authService.createUser(createUserDto);
   }
 
+  @UseGuards(LoginGuard)
   @Post('login')
-  async login(@Body() credentials: CredentialsDto) {
-    return await this.authService.findAndVerify(credentials);
+  @ApiBody({
+    type: CredentialsDto,
+    required: true,
+  })
+  @ApiResponse({
+    type: UserInfoDto,
+  })
+  login(@Req() req: Request): UserInfoDto {
+    return req.user as UserInfoDto;
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Post('logout')
+  logout(@Req() req: Request) {
+    req.logout();
+  }
+
+  @ApiResponse({
+    type: UserInfoDto,
+  })
+  @Get('user')
+  getCurrentUser(@Req() req: Request): UserInfoDto {
+    return req.user as UserInfoDto;
   }
 }
