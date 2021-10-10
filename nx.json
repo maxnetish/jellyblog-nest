@@ -31,6 +31,9 @@
     "auth-back": {
       "tags": []
     },
+    "auth-front": {
+      "tags": []
+    },
     "auth-model": {
       "tags": []
     },
@@ -46,6 +49,18 @@
     "frontend/admin-e2e": {
       "tags": [],
       "implicitDependencies": ["frontend-admin"]
+    },
+    "shell-admin": {
+      "tags": []
+    },
+    "users-front": {
+      "tags": []
+    },
+    "utils-common": {
+      "tags": []
+    },
+    "utils-front": {
+      "tags": []
     }
   }
 }

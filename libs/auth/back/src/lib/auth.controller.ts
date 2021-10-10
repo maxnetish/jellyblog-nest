@@ -43,7 +43,10 @@ export class AuthController {
     type: UserInfoDto,
   })
   @Get('user')
-  getCurrentUser(@Req() req: Request): UserInfoDto {
-    return req.user as UserInfoDto;
+  getCurrentUser(@Req() req: Request): UserInfoDto | null {
+    if(req.isAuthenticated()) {
+      return req.user as UserInfoDto;
+    }
+    return null;
   }
 }

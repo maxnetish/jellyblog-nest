@@ -23,6 +23,31 @@
         }
       }
     },
+    "auth-front": {
+      "projectType": "library",
+      "root": "libs/auth/front",
+      "sourceRoot": "libs/auth/front/src",
+      "prefix": "app-auth",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/auth/front"],
+          "options": {
+            "jestConfig": "libs/auth/front/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/auth/front/src/**/*.ts",
+              "libs/auth/front/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
     "auth-model": {
       "root": "libs/auth/model",
       "sourceRoot": "libs/auth/model/src",
@@ -122,7 +147,7 @@
       "projectType": "application",
       "root": "apps/frontend/admin",
       "sourceRoot": "apps/frontend/admin/src",
-      "prefix": "jellyblog-nest",
+      "prefix": "admin-app",
       "targets": {
         "build": {
           "executor": "@angular-devkit/build-angular:browser",
@@ -172,7 +197,7 @@
               "namedChunks": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "executor": "@angular-devkit/build-angular:dev-server",
@@ -234,6 +259,103 @@
           "outputs": ["{options.outputFile}"],
           "options": {
             "lintFilePatterns": ["apps/frontend/admin-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "shell-admin": {
+      "projectType": "library",
+      "root": "libs/shell-admin",
+      "sourceRoot": "libs/shell-admin/src",
+      "prefix": "adm",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shell-admin"],
+          "options": {
+            "jestConfig": "libs/shell-admin/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shell-admin/src/**/*.ts",
+              "libs/shell-admin/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "users-front": {
+      "projectType": "library",
+      "root": "libs/users/front",
+      "sourceRoot": "libs/users/front/src",
+      "prefix": "app-users",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/users/front"],
+          "options": {
+            "jestConfig": "libs/users/front/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/users/front/src/**/*.ts",
+              "libs/users/front/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "utils-common": {
+      "root": "libs/utils/common",
+      "sourceRoot": "libs/utils/common/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/utils/common/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/utils/common"],
+          "options": {
+            "jestConfig": "libs/utils/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "utils-front": {
+      "projectType": "library",
+      "root": "libs/utils/front",
+      "sourceRoot": "libs/utils/front/src",
+      "prefix": "app-utils",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/utils/front"],
+          "options": {
+            "jestConfig": "libs/utils/front/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/utils/front/src/**/*.ts",
+              "libs/utils/front/src/**/*.html"
+            ]
           }
         }
       }
