@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, CanLoad, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { ActivatedRouteSnapshot, CanActivate } from '@angular/router';
+import { map } from 'rxjs';
 import { AuthFacade } from '@jellyblog-nest/auth/front';
+import { UserRole } from '@jellyblog-nest/utils/common';
 
 @Injectable({
   providedIn: 'root',
@@ -9,12 +10,20 @@ import { AuthFacade } from '@jellyblog-nest/auth/front';
 export class AuthGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot,
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-
-    return this.authFacade.user$.pipe(
-      map(user => !!user),
-    );
+  ) {
+    let requiredRoles = route.data?.role as (UserRole | UserRole[]);
+    if (requiredRoles && !Array.isArray(requiredRoles)) {
+      requiredRoles = [requiredRoles];
+    }
+    if (requiredRoles && requiredRoles.length) {
+      return this.authFacade.user$.pipe(
+        map(user => {
+          return !!(
+            user && requiredRoles.includes(user.role)
+          );
+        }));
+    }
+    return true;
   }
 
   constructor(

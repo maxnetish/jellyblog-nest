@@ -1,6 +1,6 @@
-import { UserRole } from './user-role';
 import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserRole } from '@jellyblog-nest/utils/common';
 
 export class CreateUserDto {
   @ApiProperty({

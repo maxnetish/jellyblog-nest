@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutComponent } from './layout/layout.component';
-import { NoPreloading, Route, RouterModule } from '@angular/router';
+import { NoPreloading, RouterModule } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { AppRoute } from '@jellyblog-nest/utils/front';
+import { UserRole } from '@jellyblog-nest/utils/common';
 
-const routes: Route[] = [
+const routes: AppRoute[] = [
   {
     path: '',
     redirectTo: 'users',
@@ -22,8 +24,11 @@ const routes: Route[] = [
         console.error(e);
         return null;
       }
-    }
-  }
+    },
+    data: {
+      role: UserRole.ADMIN,
+    },
+  },
 ];
 
 @NgModule({
