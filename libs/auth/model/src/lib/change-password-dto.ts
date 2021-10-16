@@ -5,5 +5,5 @@ export class ChangePasswordDto extends CredentialsDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(128)
-  newPassword: string;
+  newPassword = '';
 }

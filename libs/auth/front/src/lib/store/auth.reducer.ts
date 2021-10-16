@@ -52,11 +52,10 @@ const authReducer = createReducer(
       return {
         ...state,
         userLoadingStatus: LoadingStatus.FAILED,
-        userLoadError: err,
+        userLoadError: err.message || err.statusText || err.status || err.name,
       };
     },
   ),
-
 );
 
 export function reducer(state: State | undefined, action: Action) {

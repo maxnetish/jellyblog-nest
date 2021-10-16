@@ -9,7 +9,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(128)
-  username: string;
+  username = '';
 
   @ApiProperty({
     required: true,
@@ -17,7 +17,7 @@ export class CreateUserDto {
     example: UserRole.READER,
   })
   @IsEnum(UserRole)
-  role: UserRole;
+  role = UserRole.READER;
 
   @ApiProperty({
     example: 'top secret',
@@ -26,5 +26,5 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(128)
-  password: string;
+  password = '';
 }

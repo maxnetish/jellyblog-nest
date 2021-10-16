@@ -3,13 +3,13 @@ import { UserRole } from '@jellyblog-nest/utils/common';
 
 export class UserInfoDto {
   @ApiProperty()
-  uuid: string;
+  uuid = '';
 
   @ApiProperty()
-  username: string;
+  username = '';
 
   @ApiProperty({
     enum: UserRole,
   })
-  role: UserRole;
+  role = UserRole.READER;
 }

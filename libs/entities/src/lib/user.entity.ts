@@ -1,6 +1,6 @@
-import { UserRole } from '@jellyblog-nest/auth/model';
 import { BaseEntity } from './base.entity';
 import { Column, Entity, Index } from 'typeorm';
+import { UserRole } from '@jellyblog-nest/utils/common';
 
 @Entity()
 export class User extends BaseEntity {
@@ -14,6 +14,6 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar' })
   role: UserRole = UserRole.READER;
 
-  @Column()
-  hashAlgo: string = 'sha256';
+  @Column({ type: 'varchar' })
+  hashAlgo = 'sha256';
 }

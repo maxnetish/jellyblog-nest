@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ChangePasswordDto, CreateUserDto, CredentialsDto, UserInfoDto, UserRole } from '@jellyblog-nest/auth/model';
+import { ChangePasswordDto, CreateUserDto, CredentialsDto, UserInfoDto } from '@jellyblog-nest/auth/model';
 import crypto from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@jellyblog-nest/entities';
 import { Repository } from 'typeorm';
+import { UserRole } from '@jellyblog-nest/utils/common';
 
 @Injectable()
 export class AuthService {

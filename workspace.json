@@ -201,6 +201,11 @@
         },
         "serve": {
           "executor": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "frontend-admin:build",
+            "proxyConfig": "apps/frontend/admin/proxy.conf.json",
+            "port": 4200
+          },
           "configurations": {
             "production": {
               "browserTarget": "frontend-admin:build:production"

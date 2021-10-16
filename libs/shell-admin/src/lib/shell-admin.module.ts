@@ -6,6 +6,12 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { AppRoute } from '@jellyblog-nest/utils/front';
 import { UserRole } from '@jellyblog-nest/utils/common';
+import { InsufficientRightsComponent } from './insufficient-rights/insufficient-rights.component';
+import { AuthFrontModule, AuthGuardNg } from '@jellyblog-nest/auth/front';
+import { HttpClientModule } from '@angular/common/http';
+import { GlobalToastComponent } from './global-toast/global-toast.component';
+import * as GlobalToastReducer from './global-toast/store/global-toast.reducer';
+import {GlobalToastEffects} from './global-toast/store/global-toast.effects';
 
 const routes: AppRoute[] = [
   {
@@ -17,7 +23,6 @@ const routes: AppRoute[] = [
     path: 'users',
     loadChildren: async () => {
       try {
-        console.log('import async')
         const m = await import('@jellyblog-nest/users/front');
         return m.UsersFrontModule;
       } catch (e) {
@@ -25,9 +30,14 @@ const routes: AppRoute[] = [
         return null;
       }
     },
+    canActivate: [AuthGuardNg],
     data: {
       role: UserRole.ADMIN,
     },
+  },
+  {
+    path: 'insufficient-rights',
+    component: InsufficientRightsComponent,
   },
 ];
 
@@ -42,7 +52,9 @@ const routes: AppRoute[] = [
       // scrollOffset:
       relativeLinkResolution: 'legacy',
     }),
-    StoreModule.forRoot({}, {
+    StoreModule.forRoot({
+      [GlobalToastReducer.globalToastFeatureKey]: GlobalToastReducer.reducer,
+    }, {
       runtimeChecks: {
         strictActionImmutability: true,
         strictStateImmutability: true,
@@ -51,17 +63,24 @@ const routes: AppRoute[] = [
         strictActionWithinNgZone: true,
       },
     }),
-    EffectsModule.forRoot(),
+    EffectsModule.forRoot([
+      GlobalToastEffects,
+    ]),
+    HttpClientModule,
+    AuthFrontModule,
   ],
   declarations: [
-    LayoutComponent
+    LayoutComponent,
+    InsufficientRightsComponent,
+    GlobalToastComponent,
   ],
   exports: [
-    LayoutComponent
+    LayoutComponent,
   ],
 })
-export class ShellAdminModule {}
+export class ShellAdminModule {
+}
 
 export {
   LayoutComponent,
-}
+};

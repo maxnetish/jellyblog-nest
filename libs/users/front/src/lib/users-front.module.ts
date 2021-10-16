@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserListComponent } from './list/list.component';
 import { Route, RouterModule } from '@angular/router';
+import { AppRoute } from '@jellyblog-nest/utils/front';
 
-const routes: Route[] = [
+const routes: AppRoute[] = [
   {
     path: '',
     redirectTo: 'reg',

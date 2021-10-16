@@ -9,7 +9,7 @@ export class CredentialsDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(128)
-  username: string;
+  username = '';
 
   @ApiProperty({
     example: 'secret',
@@ -18,5 +18,5 @@ export class CredentialsDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(128)
-  password: string;
+  password = '';
 }

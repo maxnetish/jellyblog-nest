@@ -1,33 +1,45 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, UrlCreationOptions } from '@angular/router';
 import { map } from 'rxjs';
-import { AuthFacade } from '@jellyblog-nest/auth/front';
+import { AuthFacade } from './store/auth.facade';
 import { UserRole } from '@jellyblog-nest/utils/common';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuardNg implements CanActivate {
   canActivate(
-    route: ActivatedRouteSnapshot,
+    route: ActivatedRouteSnapshot
   ) {
     let requiredRoles = route.data?.role as (UserRole | UserRole[]);
+    const redirectCommandsIfNoRole = route.data?.redirectCommandsIfNoRole as string[]
+      || ['/insufficient-rights'];
+    const redirectOptionsIfNoRole = route.data?.redirectOptionsIfNoRole as UrlCreationOptions
+      || undefined;
     if (requiredRoles && !Array.isArray(requiredRoles)) {
       requiredRoles = [requiredRoles];
     }
     if (requiredRoles && requiredRoles.length) {
-      return this.authFacade.user$.pipe(
-        map(user => {
+      return this.authFacade.userRole$.pipe(
+        map(userRole => {
           return !!(
-            user && requiredRoles.includes(user.role)
+            userRole && requiredRoles.includes(userRole)
           );
-        }));
+        }),
+        map((permission) => {
+          if(permission) {
+            return true;
+          }
+          return this.router.createUrlTree(redirectCommandsIfNoRole, redirectOptionsIfNoRole);
+        }),
+      );
     }
     return true;
   }
 
   constructor(
     private readonly authFacade: AuthFacade,
+    private readonly router: Router,
   ) {
   }
 }
