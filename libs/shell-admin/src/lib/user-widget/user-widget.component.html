@@ -1,0 +1,28 @@
+<button
+  *ngIf="(loggedIn$ | async) === false"
+  type="button"
+  class="btn btn-primary"
+  (click)="handleLoginClick()"
+>
+  Залогиниться
+</button>
+<div
+  *ngIf="loggedIn$ | async"
+  ngbDropdown
+  class="d-inline-block"
+  display="dynamic"
+  placement="bottom-right"
+>
+  <button
+    class="btn btn-outline-primary"
+    id="userMenu"
+    ngbDropdownToggle
+  >
+    {{username$ | async}}
+  </button>
+  <div ngbDropdownMenu aria-labelledby="userMenu">
+    <button ngbDropdownItem (click)="handleLogoutClick()">
+      Разлогиниться
+    </button>
+  </div>
+</div>

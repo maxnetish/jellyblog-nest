@@ -3,19 +3,24 @@ import { ActivatedRouteSnapshot, CanActivate, Router, UrlCreationOptions } from 
 import { map } from 'rxjs';
 import { AuthFacade } from './store/auth.facade';
 import { UserRole } from '@jellyblog-nest/utils/common';
+import { Location } from '@angular/common';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuardNg implements CanActivate {
   canActivate(
-    route: ActivatedRouteSnapshot
+    route: ActivatedRouteSnapshot,
   ) {
     let requiredRoles = route.data?.role as (UserRole | UserRole[]);
     const redirectCommandsIfNoRole = route.data?.redirectCommandsIfNoRole as string[]
       || ['/insufficient-rights'];
     const redirectOptionsIfNoRole = route.data?.redirectOptionsIfNoRole as UrlCreationOptions
-      || undefined;
+      || {
+        queryParams: {
+          afterLogin: this.location.path(true),
+        },
+      };
     if (requiredRoles && !Array.isArray(requiredRoles)) {
       requiredRoles = [requiredRoles];
     }
@@ -27,7 +32,7 @@ export class AuthGuardNg implements CanActivate {
           );
         }),
         map((permission) => {
-          if(permission) {
+          if (permission) {
             return true;
           }
           return this.router.createUrlTree(redirectCommandsIfNoRole, redirectOptionsIfNoRole);
@@ -40,6 +45,7 @@ export class AuthGuardNg implements CanActivate {
   constructor(
     private readonly authFacade: AuthFacade,
     private readonly router: Router,
+    private readonly location: Location,
   ) {
   }
 }

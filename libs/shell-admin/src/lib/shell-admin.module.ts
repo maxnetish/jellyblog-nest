@@ -11,7 +11,8 @@ import { AuthFrontModule, AuthGuardNg } from '@jellyblog-nest/auth/front';
 import { HttpClientModule } from '@angular/common/http';
 import { GlobalToastComponent } from './global-toast/global-toast.component';
 import * as GlobalToastReducer from './global-toast/store/global-toast.reducer';
-import {GlobalToastEffects} from './global-toast/store/global-toast.effects';
+import { NgbDropdownModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
+import { UserWidgetComponent } from './user-widget/user-widget.component';
 
 const routes: AppRoute[] = [
   {
@@ -63,16 +64,17 @@ const routes: AppRoute[] = [
         strictActionWithinNgZone: true,
       },
     }),
-    EffectsModule.forRoot([
-      GlobalToastEffects,
-    ]),
+    EffectsModule.forRoot([]),
     HttpClientModule,
     AuthFrontModule,
+    NgbToastModule,
+    NgbDropdownModule,
   ],
   declarations: [
     LayoutComponent,
     InsufficientRightsComponent,
     GlobalToastComponent,
+    UserWidgetComponent,
   ],
   exports: [
     LayoutComponent,

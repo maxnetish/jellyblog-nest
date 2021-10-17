@@ -1,2 +1,17 @@
-<p>layout works!</p>
-<router-outlet></router-outlet>
+<div class="container">
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <span class="navbar-brand">Jellyblog admin</span>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['users']">
+          Пользователи
+        </a>
+      </li>
+    </ul>
+    <adm-user-widget></adm-user-widget>
+  </nav>
+
+  <router-outlet></router-outlet>
+</div>
+<adm-global-toast></adm-global-toast>

@@ -1,8 +1,9 @@
 import { createAction, props } from '@ngrx/store';
 
-export const loadGlobalToasts = createAction(
-  '[GlobalToast] Load GlobalToasts'
-);
+export const removeToast = createAction(
+  '[GlobalToast] Remove GlobalToast',
+  props<{id: string}>(),
+)
 
 
 

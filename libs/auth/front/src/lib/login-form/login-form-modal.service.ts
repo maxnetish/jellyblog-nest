@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginFormComponent } from './login-form.component';
+import { UserInfoDto } from '@jellyblog-nest/auth/model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,6 @@ export class LoginFormModalService {
         size: 'sm',
       },
     );
-    return modalRef.result;
+    return modalRef.result as Promise<UserInfoDto>;
   }
 }

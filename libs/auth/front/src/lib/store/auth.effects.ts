@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { createEffect, Actions, ofType } from '@ngrx/effects';
-import { fetch } from '@nrwl/angular';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 
 import * as AuthActions from './auth.actions';
-import { GlobalActions } from '@jellyblog-nest/utils/front';
+import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { catchError, map, switchMap } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { Store } from '@ngrx/store';
@@ -22,6 +21,12 @@ export class AuthEffects {
         }),
         catchError((err, caught) => {
           this.store.dispatch(AuthActions.failUserInfo({ err }));
+          this.store.dispatch(
+            GlobalActions.addGlobalToast({
+              text: err.message,
+              severity: GlobalToastSeverity.ERROR,
+            }),
+          );
           return caught;
         }),
       );

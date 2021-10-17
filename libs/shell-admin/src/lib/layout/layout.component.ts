@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { GlobalActions } from '@jellyblog-nest/utils/front';
+import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 
 @Component({
   selector: 'adm-layout',
