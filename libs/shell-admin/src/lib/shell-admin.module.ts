@@ -13,6 +13,7 @@ import { GlobalToastComponent } from './global-toast/global-toast.component';
 import * as GlobalToastReducer from './global-toast/store/global-toast.reducer';
 import { NgbDropdownModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserWidgetComponent } from './user-widget/user-widget.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: AppRoute[] = [
   {
@@ -34,11 +35,21 @@ const routes: AppRoute[] = [
     canActivate: [AuthGuardNg],
     data: {
       role: UserRole.ADMIN,
+      redirectOptionsIfNoRole: {
+        queryParams: {
+          afterLogin: '/users',
+        },
+        queryParamsHandling: 'merge',
+      },
     },
   },
   {
     path: 'insufficient-rights',
     component: InsufficientRightsComponent,
+  },
+  {
+    path: '**',
+    component: NotFoundComponent,
   },
 ];
 
@@ -75,6 +86,7 @@ const routes: AppRoute[] = [
     InsufficientRightsComponent,
     GlobalToastComponent,
     UserWidgetComponent,
+    NotFoundComponent,
   ],
   exports: [
     LayoutComponent,

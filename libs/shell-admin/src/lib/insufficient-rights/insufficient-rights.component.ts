@@ -28,7 +28,7 @@ export class InsufficientRightsComponent implements OnInit, OnDestroy {
     ).subscribe(() => {
       if (this.route.snapshot.queryParamMap.has('afterLogin')) {
         this.router.navigate([this.route.snapshot.queryParamMap.get('afterLogin')]);
-      }``
+      }
     });
   }
 
