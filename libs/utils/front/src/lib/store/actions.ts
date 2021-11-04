@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { GlobalToastSeverity } from '@jellyblog-nest/utils/front';
+import { GlobalToastSeverity } from '../global-toast-severity';
 
 export const loadApp = createAction(
   '[Global action] load app',

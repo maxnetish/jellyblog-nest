@@ -31,8 +31,12 @@ export class UserWidgetComponent {
     );
   }
 
-  handleLoginClick() {
-    this.loginFormModal.show();
+  async handleLoginClick() {
+    try {
+      await this.loginFormModal.show();
+    } catch (err) {
+      console.warn(err);
+    }
   }
 
   handleLogoutClick() {

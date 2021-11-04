@@ -19,6 +19,7 @@ export class LoginFormModalService {
       {
         backdrop: false,
         size: 'sm',
+        modalDialogClass: 'shadow'
       },
     );
     return modalRef.result as Promise<UserInfoDto>;
