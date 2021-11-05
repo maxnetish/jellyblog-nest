@@ -8,7 +8,7 @@ import { AuthenticatedGuard } from './authenticated.guard';
 import { SortOrder, UserRole } from '@jellyblog-nest/utils/common';
 import { plainToClass } from 'class-transformer';
 import { ToArrayPipe } from '@jellyblog-nest/utils/back';
-import { Page } from '../../../../utils/common/src/lib/utils-common';
+import { Page } from '@jellyblog-nest/utils/common';
 
 @ApiTags('Auth')
 @Controller('auth')
