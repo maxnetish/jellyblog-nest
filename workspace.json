@@ -318,6 +318,28 @@
         }
       }
     },
+    "utils-back": {
+      "root": "libs/utils/back",
+      "sourceRoot": "libs/utils/back/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/utils/back/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/utils/back"],
+          "options": {
+            "jestConfig": "libs/utils/back/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "utils-common": {
       "root": "libs/utils/common",
       "sourceRoot": "libs/utils/common/src",

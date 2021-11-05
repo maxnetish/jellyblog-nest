@@ -43,9 +43,9 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   // Working good when transform request from json, but
   // for query params we should apply transformation BEFORE ValidationPipe
-  // app.useGlobalPipes(new ValidationPipe({
-  //   transform: true,
-  // }));
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+  }));
 
   const port = process.env.PORT || 3333;
 

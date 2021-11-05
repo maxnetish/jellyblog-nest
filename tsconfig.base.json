@@ -22,6 +22,7 @@
       "@jellyblog-nest/entities": ["libs/entities/src/index.ts"],
       "@jellyblog-nest/shell-admin": ["libs/shell-admin/src/index.ts"],
       "@jellyblog-nest/users/front": ["libs/users/front/src/index.ts"],
+      "@jellyblog-nest/utils/back": ["libs/utils/back/src/index.ts"],
       "@jellyblog-nest/utils/common": ["libs/utils/common/src/index.ts"],
       "@jellyblog-nest/utils/front": ["libs/utils/front/src/index.ts"]
     }

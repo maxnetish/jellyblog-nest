@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  ParseIntPipe,
-  Post,
-  Query,
-  Req,
-  UseGuards,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Get, ParseIntPipe, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, CredentialsDto, FindUserRequest, UserInfoDto } from '@jellyblog-nest/auth/model';
 import { LoginGuard } from './login.guard';
@@ -17,7 +6,9 @@ import { Request } from 'express';
 import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedGuard } from './authenticated.guard';
 import { SortOrder, UserRole } from '@jellyblog-nest/utils/common';
-import { FindUserRequestPipe } from './find-user-request.pipe';
+import { plainToClass } from 'class-transformer';
+import { ToArrayPipe } from '@jellyblog-nest/utils/back';
+import { Page } from '../../../../utils/common/src/lib/utils-common';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -70,8 +61,10 @@ export class AuthController {
   @ApiQuery({
     name: 'role',
     enum: UserRole,
+    enumName: 'UserRole',
     isArray: true,
     required: false,
+    example: [UserRole.ADMIN],
   })
   @ApiQuery({
     name: 'page',
@@ -96,14 +89,25 @@ export class AuthController {
     },
   })
   @ApiResponse({
-    type: UserInfoDto,
-    isArray: true,
+    type: Page,
+    isArray: false,
   })
   @UseGuards(AuthenticatedGuard)
   @Get('users')
   findUsers(
-    @Query(FindUserRequestPipe, new ValidationPipe({ transform: true })) findUserRequest: FindUserRequest,
+    @Query('name') name = '',
+    @Query('role', ToArrayPipe) role: UserRole[] = [],
+    @Query('page', ParseIntPipe) page = 1,
+    @Query('size', ParseIntPipe) size = 10,
+    @Query('order') order?: Partial<Record<keyof UserInfoDto, SortOrder>>,
   ) {
+    const findUserRequest = plainToClass(FindUserRequest, {
+      name,
+      role,
+      page,
+      size,
+      order,
+    }, { excludeExtraneousValues: false });
     return this.authService.find(findUserRequest);
   }
 }

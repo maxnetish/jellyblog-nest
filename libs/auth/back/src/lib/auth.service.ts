@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@jellyblog-nest/entities';
 import { FindConditions, In, Like, Repository } from 'typeorm';
-import { UserRole } from '@jellyblog-nest/utils/common';
+import { Page, UserRole } from '@jellyblog-nest/utils/common';
 import { FindUserRequest } from '../../../model/src/lib/find-user-request';
 
 @Injectable()
@@ -107,31 +107,44 @@ export class AuthService {
     };
   }
 
-  async find(findUserRequest: FindUserRequest): Promise<UserInfoDto[]> {
+  async find(findUserRequest: FindUserRequest): Promise<Page<UserInfoDto>> {
+    const { page, size, order, role, name } = findUserRequest;
     const where: FindConditions<User> = {};
 
-    if(findUserRequest.role && findUserRequest.role.length) {
-      where.role = In(findUserRequest.role);
+    if (role && role.length) {
+      where.role = In(role);
     }
-    if(findUserRequest.name) {
-      where.username = Like(`%${findUserRequest.name}%`);
+    if (name) {
+      where.username = Like(`%${name}%`);
     }
 
-    return this.userRepository.find({
-      select: ['uuid', 'role', 'username'],
-      where,
-      skip: (findUserRequest.page - 1) * findUserRequest.size,
-      take: findUserRequest.size,
-      order: findUserRequest.order,
-    }).then((foundUsers) => {
-      return foundUsers.map((user) => {
-        return {
-          uuid: user.uuid,
-          role: user.role,
-          username: user.username,
-        };
-      });
-    });
+    const [list, total] = await Promise.all([
+      this.userRepository.find({
+        select: ['uuid', 'role', 'username'],
+        where,
+        skip: (page - 1) * size,
+        take: size,
+        order,
+      }).then((foundUsers) => {
+        return foundUsers.map((user) => {
+          return {
+            uuid: user.uuid,
+            role: user.role,
+            username: user.username,
+          };
+        });
+      }),
+      this.userRepository.count({
+        where,
+      }),
+    ]);
+
+    return {
+      list,
+      total,
+      page,
+      size,
+    };
   }
 
   private async seedDefaultAdminIfNoOne() {
