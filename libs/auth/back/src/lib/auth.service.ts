@@ -3,8 +3,9 @@ import { ChangePasswordDto, CreateUserDto, CredentialsDto, UserInfoDto } from '@
 import crypto from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@jellyblog-nest/entities';
-import { Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { UserRole } from '@jellyblog-nest/utils/common';
+import { FindUserRequest } from '../../../model/src/lib/find-user-request';
 
 @Injectable()
 export class AuthService {
@@ -106,6 +107,27 @@ export class AuthService {
     };
   }
 
+  async find(findUserRequest: FindUserRequest): Promise<UserInfoDto[]> {
+    return this.userRepository.find({
+      select: ['uuid', 'role', 'username'],
+      where: {
+        role: In(findUserRequest.role),
+        username: Like(`%${findUserRequest.name}%`),
+      },
+      skip: (findUserRequest.page - 1) * findUserRequest.size,
+      take: findUserRequest.size,
+      order: findUserRequest.order,
+    }).then((foundUsers) => {
+      return foundUsers.map((user) => {
+        return {
+          uuid: user.uuid,
+          role: user.role,
+          username: user.username,
+        };
+      });
+    });
+  }
+
   private async seedDefaultAdminIfNoOne() {
     const foundAnyAdminUser = await this.userRepository.findOne({
       role: UserRole.ADMIN,
@@ -131,4 +153,5 @@ export class AuthService {
     hash.update(inp);
     return hash.digest('hex').toUpperCase();
   };
+
 }
