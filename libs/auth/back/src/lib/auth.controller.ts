@@ -1,11 +1,23 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  ParseIntPipe,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, CredentialsDto, UserInfoDto } from '@jellyblog-nest/auth/model';
+import { CreateUserDto, CredentialsDto, FindUserRequest, UserInfoDto } from '@jellyblog-nest/auth/model';
 import { LoginGuard } from './login.guard';
 import { Request } from 'express';
 import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedGuard } from './authenticated.guard';
-import { FindUserRequest } from '@jellyblog-nest/auth/model';
+import { SortOrder, UserRole } from '@jellyblog-nest/utils/common';
+import { FindUserRequestPipe } from './find-user-request.pipe';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -45,17 +57,43 @@ export class AuthController {
   })
   @Get('user')
   getCurrentUser(@Req() req: Request): UserInfoDto | null {
-    if(req.isAuthenticated()) {
+    if (req.isAuthenticated()) {
       return req.user as UserInfoDto;
     }
     return null;
   }
 
   @ApiQuery({
-    type: FindUserRequest,
-    allowEmptyValue: true,
+    name: 'name',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'role',
+    enum: UserRole,
+    isArray: true,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    required: false,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'size',
+    type: Number,
+    required: false,
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'order',
+    required: false,
     style: 'deepObject',
     explode: true,
+    type: 'object',
+    example: {
+      username: SortOrder.ASC,
+    },
   })
   @ApiResponse({
     type: UserInfoDto,
@@ -64,8 +102,8 @@ export class AuthController {
   @UseGuards(AuthenticatedGuard)
   @Get('users')
   findUsers(
-    @Query() findUsersRequest: FindUserRequest,
-    ) {
-    return this.authService.find(findUsersRequest);
+    @Query(FindUserRequestPipe, new ValidationPipe({ transform: true })) findUserRequest: FindUserRequest,
+  ) {
+    return this.authService.find(findUserRequest);
   }
 }

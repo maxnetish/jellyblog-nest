@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsOptional, Min } from 'class-validator';
 import { Sortable } from './sortable';
 
-export class Pageable{
+export class Pageable<TFields> extends Sortable<TFields> {
   @ApiProperty({
     example: 1,
     required: false,

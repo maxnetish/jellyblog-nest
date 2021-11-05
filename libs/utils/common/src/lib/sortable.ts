@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
+import { SortOrder } from './sort-order';
 
-export class Sortable {
+export class Sortable<TFields> {
   @ApiProperty({
     required: false,
   })
   @IsOptional()
-  order!: {
-    [key in string]: 'ASC' | 'DESC';
-  };
+  order?: Partial<Record<keyof TFields, SortOrder>>
 }

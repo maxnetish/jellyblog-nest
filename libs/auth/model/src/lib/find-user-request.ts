@@ -2,8 +2,9 @@ import { UserRole } from '@jellyblog-nest/utils/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Pageable } from '@jellyblog-nest/utils/common';
+import { UserInfoDto } from '@jellyblog-nest/auth/model';
 
-export class FindUserRequest extends Pageable{
+export class FindUserRequest extends Pageable<Omit<UserInfoDto, 'uuid'>> {
   @ApiProperty({
     example: 'adm',
     required: false,
@@ -20,16 +21,6 @@ export class FindUserRequest extends Pageable{
     isArray: true,
     example: UserRole.READER,
   })
-  @IsEnum(UserRole, {each: true})
-  @IsOptional()
-  role: UserRole[] = [];
-
-  // FIXME Use Sortable instead
-  @ApiProperty({
-    required: false,
-  })
-  @IsOptional()
-  order!: {
-    [key in string]: 'ASC' | 'DESC';
-  };
+  @IsEnum(UserRole, { each: true })
+  role?: UserRole[] = [];
 }

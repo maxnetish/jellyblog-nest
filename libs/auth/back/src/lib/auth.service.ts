@@ -3,7 +3,7 @@ import { ChangePasswordDto, CreateUserDto, CredentialsDto, UserInfoDto } from '@
 import crypto from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@jellyblog-nest/entities';
-import { In, Like, Repository } from 'typeorm';
+import { FindConditions, In, Like, Repository } from 'typeorm';
 import { UserRole } from '@jellyblog-nest/utils/common';
 import { FindUserRequest } from '../../../model/src/lib/find-user-request';
 
@@ -108,12 +108,18 @@ export class AuthService {
   }
 
   async find(findUserRequest: FindUserRequest): Promise<UserInfoDto[]> {
+    const where: FindConditions<User> = {};
+
+    if(findUserRequest.role && findUserRequest.role.length) {
+      where.role = In(findUserRequest.role);
+    }
+    if(findUserRequest.name) {
+      where.username = Like(`%${findUserRequest.name}%`);
+    }
+
     return this.userRepository.find({
       select: ['uuid', 'role', 'username'],
-      where: {
-        role: In(findUserRequest.role),
-        username: Like(`%${findUserRequest.name}%`),
-      },
+      where,
       skip: (findUserRequest.page - 1) * findUserRequest.size,
       take: findUserRequest.size,
       order: findUserRequest.order,
