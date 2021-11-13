@@ -1,9 +1,8 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
-import { never } from 'rxjs';
 
 @Injectable()
-export class ToArrayPipe implements PipeTransform {
-  transform(value: never | never[]) {
+export class ToArrayPipe<T> implements PipeTransform<T | T[], T[]> {
+  transform(value: T | T[]) {
     if (!value) {
       return [];
     }
