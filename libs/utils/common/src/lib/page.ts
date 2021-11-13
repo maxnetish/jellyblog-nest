@@ -4,5 +4,5 @@ export class Page<T> {
   total = 0;
   page = 1;
   size = 10;
-  
+
 }
