@@ -3,6 +3,7 @@ import { UserInfoDto } from './user-info-dto';
 import { CredentialsDto } from './credentials-dto';
 import { ChangePasswordDto } from './change-password-dto';
 import { FindUserRequest } from './find-user-request';
+import { UpdateUserDto } from './update-user-dto';
 
 export {
   CreateUserDto,
@@ -10,4 +11,5 @@ export {
   CredentialsDto,
   ChangePasswordDto,
   FindUserRequest,
+  UpdateUserDto
 };

@@ -1,16 +1,22 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ChangePasswordDto, CreateUserDto, CredentialsDto, UserInfoDto } from '@jellyblog-nest/auth/model';
+import {
+  ChangePasswordDto,
+  CreateUserDto,
+  CredentialsDto,
+  FindUserRequest,
+  UpdateUserDto,
+  UserInfoDto
+} from '@jellyblog-nest/auth/model';
 import crypto from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@jellyblog-nest/entities';
 import { FindConditions, In, Like, Repository } from 'typeorm';
-import { Page, UserRole } from '@jellyblog-nest/utils/common';
-import { FindUserRequest } from '../../../model/src/lib/find-user-request';
+import { BaseEntityId, Page, UserRole } from '@jellyblog-nest/utils/common';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {
     this.seedDefaultAdminIfNoOne().then(null, () => {
       throw new Error('Cannot seed default admin user.');
@@ -25,13 +31,13 @@ export class AuthService {
       username: createUserDto.username,
       role: createUserDto.role,
       hashAlgo: this.hashAlgorythm,
-      secret,
+      secret
     });
     const createdUser = await this.userRepository.save(creatingUser);
     return {
       username: createdUser.username,
       role: createdUser.role,
-      uuid: createdUser.uuid,
+      uuid: createdUser.uuid
     };
   }
 
@@ -47,9 +53,9 @@ export class AuthService {
           'role',
           'uuid',
           'createdAt',
-          'updatedAt',
-        ],
-      },
+          'updatedAt'
+        ]
+      }
     );
   }
 
@@ -72,7 +78,7 @@ export class AuthService {
     return {
       uuid: found.uuid,
       role: found.role,
-      username: found.username,
+      username: found.username
     };
   }
 
@@ -85,7 +91,7 @@ export class AuthService {
     const secret = AuthService.textToHash(newPassword, this.hashAlgorythm);
     const result = await this.userRepository.update(
       existingUser.uuid,
-      { secret },
+      { secret }
     );
     if (!result.affected) {
       throw new HttpException('Update password fails.', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -97,14 +103,49 @@ export class AuthService {
     if (!uuid) {
       throw new Error('uuid cannot be empty');
     }
-    const found = await this.userRepository.findOne(uuid, {
-      select: ['uuid', 'username', 'role'],
+    const found = await this.userRepository.findOneOrFail(uuid, {
+      select: ['uuid', 'username', 'role']
     });
     return {
       username: found.username,
       role: found.role,
-      uuid: found.uuid,
+      uuid: found.uuid
     };
+  }
+
+  async update(updateUserDto: UpdateUserDto) {
+    const [updatedUser, adminsCount] = await Promise.all([
+      this.findById(updateUserDto.uuid),
+      this.countOfAdmins()
+    ]);
+
+    if (updatedUser.role === UserRole.ADMIN && updateUserDto.role !== UserRole.ADMIN && adminsCount < 2) {
+      // check that admin is not last admin
+      throw new HttpException('Cannot remove last admin', HttpStatus.BAD_REQUEST);
+    }
+
+    const result = await this.userRepository.update(
+      updateUserDto.uuid,
+      {
+        role: updateUserDto.role,
+      },
+    );
+
+    return !!result;
+  }
+
+  async remove(removeRequest: BaseEntityId) {
+    const [removedUser, adminsCount] = await Promise.all([
+      this.findById(removeRequest.uuid),
+      this.countOfAdmins()
+    ]);
+    if(removedUser.role===UserRole.ADMIN && adminsCount < 2) {
+      // we wan't remove last admin
+      throw new HttpException('Cannot remove last admin', HttpStatus.BAD_REQUEST);
+    }
+
+    const result = await this.userRepository.delete(removeRequest.uuid);
+    return !!result;
   }
 
   async find(findUserRequest: FindUserRequest): Promise<Page<UserInfoDto>> {
@@ -124,33 +165,37 @@ export class AuthService {
         where,
         skip: (page - 1) * size,
         take: size,
-        order,
+        order
       }).then((foundUsers) => {
         return foundUsers.map((user) => {
           return {
             uuid: user.uuid,
             role: user.role,
-            username: user.username,
+            username: user.username
           };
         });
       }),
       this.userRepository.count({
-        where,
-      }),
+        where
+      })
     ]);
 
     return {
       list,
       total,
       page,
-      size,
+      size
     };
   }
 
-  private async seedDefaultAdminIfNoOne() {
-    const foundAnyAdminUser = await this.userRepository.findOne({
-      role: UserRole.ADMIN,
+  private async countOfAdmins() {
+    return this.userRepository.count({
+      role: UserRole.ADMIN
     });
+  }
+
+  private async seedDefaultAdminIfNoOne() {
+    const foundAnyAdminUser = (await this.countOfAdmins()) > 0;
     if (foundAnyAdminUser) {
       console.log('We have admin');
       return true;
@@ -160,7 +205,7 @@ export class AuthService {
       username: 'admin',
       role: UserRole.ADMIN,
       hashAlgo: 'sha256',
-      secret,
+      secret
     });
     await this.userRepository.save(creatingUser);
     console.log(`There are no admin yet, so create new one: "${creatingUser.username}"`);
