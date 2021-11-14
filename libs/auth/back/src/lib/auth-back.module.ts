@@ -8,6 +8,7 @@ import { LocalStrategy } from './passport-local-strategy';
 import { LocalSerializer } from './passport-local-serializer';
 import { LoginGuard } from './login.guard';
 import { AuthenticatedGuard } from './authenticated.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -22,7 +23,12 @@ import { AuthenticatedGuard } from './authenticated.guard';
     LocalStrategy,
     LocalSerializer,
     LoginGuard,
-    AuthenticatedGuard,
+    {
+      // Factually we provide global guard here,
+      // see https://docs.nestjs.com/guard
+      provide: APP_GUARD,
+      useClass: AuthenticatedGuard,
+    },
   ],
   exports: [
     TypeOrmModule,
@@ -32,4 +38,4 @@ import { AuthenticatedGuard } from './authenticated.guard';
 export class AuthBackModule {
 }
 
-export { AuthService, LocalStrategy, LoginGuard, AuthenticatedGuard };
+export { AuthService, LocalStrategy, LoginGuard };

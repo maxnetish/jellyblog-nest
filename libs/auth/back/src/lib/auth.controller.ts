@@ -4,11 +4,10 @@ import { CreateUserDto, CredentialsDto, FindUserRequest, UpdateUserDto, UserInfo
 import { LoginGuard } from './login.guard';
 import { Request } from 'express';
 import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthenticatedGuard } from './authenticated.guard';
-import { BaseEntityId, SortOrder, UserRole } from '@jellyblog-nest/utils/common';
+import { BaseEntityId, Page, SortOrder, UserRole } from '@jellyblog-nest/utils/common';
 import { plainToClass } from 'class-transformer';
 import { ToArrayPipe } from '@jellyblog-nest/utils/back';
-import { Page } from '@jellyblog-nest/utils/common';
+import { RequireRole } from './require-role.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -18,7 +17,6 @@ export class AuthController {
   ) {
   }
 
-  @UseGuards(AuthenticatedGuard)
   @Post('create')
   async createUser(@Body() createUserDto: CreateUserDto) {
     return await this.authService.createUser(createUserDto);
@@ -37,12 +35,12 @@ export class AuthController {
     return req.user as UserInfoDto;
   }
 
-  @UseGuards(AuthenticatedGuard)
   @Post('logout')
   logout(@Req() req: Request) {
     req.logout();
   }
 
+  @RequireRole()
   @ApiResponse({
     type: UserInfoDto
   })
@@ -54,6 +52,7 @@ export class AuthController {
     return null;
   }
 
+  @RequireRole(UserRole.ADMIN)
   @ApiBody({
     type: UpdateUserDto,
     required: true
@@ -62,12 +61,12 @@ export class AuthController {
     type: Boolean,
     status: 200
   })
-  @UseGuards(AuthenticatedGuard)
   @Put('user')
   updateUser(@Body() updateUserDto: UpdateUserDto) {
     return this.authService.update(updateUserDto);
   }
 
+  @RequireRole(UserRole.ADMIN)
   @ApiBody({
     type: BaseEntityId,
     required: true
@@ -76,12 +75,12 @@ export class AuthController {
     type: Boolean,
     status: 200
   })
-  @UseGuards(AuthenticatedGuard)
   @Delete('user')
   removeUser(@Body() removeRequest: BaseEntityId) {
     return this.authService.remove(removeRequest);
   }
 
+  @RequireRole()
   @ApiQuery({
     name: 'name',
     required: false
@@ -120,7 +119,6 @@ export class AuthController {
     type: Page,
     isArray: false
   })
-  @UseGuards(AuthenticatedGuard)
   @Get('users')
   findUsers(
     @Query('name') name = '',

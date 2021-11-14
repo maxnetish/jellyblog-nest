@@ -1,7 +1,8 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
 import { AppService } from './app.service';
-import { AuthenticatedGuard, LoginGuard } from '@jellyblog-nest/auth/back';
+import { RequireRole } from '../../../../libs/auth/back/src/lib/require-role.decorator';
+import { UserRole } from '@jellyblog-nest/utils/common';
 
 @Controller()
 export class AppController {
@@ -13,8 +14,8 @@ export class AppController {
     return this.appService.getData();
   }
 
+  @RequireRole(UserRole.ADMIN)
   @Get('example-auth-request')
-  @UseGuards(AuthenticatedGuard)
   getPrivate() {
     return 'bar';
   }
