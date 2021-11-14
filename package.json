@@ -22,7 +22,7 @@
     "@angular/language-service": "^12.2.0",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
-    "@ngrx/schematics": "~12.4.0",
+    "@ngrx/schematics": "^12.5.1",
     "@ngrx/store-devtools": "~12.4.0",
     "@nrwl/angular": "^12.9.0",
     "@nrwl/cli": "12.9.0",
