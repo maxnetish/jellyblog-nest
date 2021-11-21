@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CredentialsDto, UserInfoDto } from '@jellyblog-nest/auth/model';
+import { CredentialsDto, FindUserRequest, UserInfoDto } from '@jellyblog-nest/auth/model';
+import { Page } from '@jellyblog-nest/utils/common';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +43,17 @@ export class AuthService {
       {
         observe: 'body',
         responseType: 'json',
+      },
+    );
+  }
+
+  findUsers(findUserRequest: FindUserRequest) {
+    return this.httpClient.get<Page<UserInfoDto>>(
+      `${this.apiPath}/users`,
+      {
+        observe: 'body',
+        responseType: 'json',
+        params: findUserRequest.toHttpParams(),
       },
     );
   }
