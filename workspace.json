@@ -164,7 +164,10 @@
               "apps/frontend/admin/src/assets"
             ],
             "styles": ["apps/frontend/admin/src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "validator"
+            ]
           },
           "configurations": {
             "production": {
