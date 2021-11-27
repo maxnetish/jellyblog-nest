@@ -1,10 +1,12 @@
-import { UserRole } from '@jellyblog-nest/utils/common';
+import { SortOrder, UserRole } from '@jellyblog-nest/utils/common';
 import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Pageable } from '@jellyblog-nest/utils/common';
 import { UserInfoDto } from './user-info-dto';
 import { HttpParams } from '@angular/common/http';
 
-export class FindUserRequest extends Pageable<Omit<UserInfoDto, 'uuid'>> {
+type UserInfoDtoWithoutUuid = Omit<UserInfoDto, 'uuid'>;
+
+export class FindUserRequest extends Pageable<UserInfoDtoWithoutUuid> {
   @IsString()
   @MaxLength(128)
   @IsOptional()
@@ -13,14 +15,14 @@ export class FindUserRequest extends Pageable<Omit<UserInfoDto, 'uuid'>> {
   @IsEnum(UserRole, { each: true })
   role?: UserRole[] = [];
 
-  constructor(opts: Partial<FindUserRequest> = {}) {
+  constructor({ name, role, order, size, page }: Partial<FindUserRequest> = {}) {
     super();
 
-    Object.keys(opts).forEach((key) => {
-      if(opts[key]) {
-        this[key] = opts[key];
-      }
-    });
+    this.name = name || this.name;
+    this.role = role || this.role;
+    this.order = order || this.order;
+    this.size = size || this.size;
+    this.page = page || this.page;
   }
 
   toHttpParams() {
@@ -28,9 +30,16 @@ export class FindUserRequest extends Pageable<Omit<UserInfoDto, 'uuid'>> {
       .append('page', this.page)
       .append('size', this.size);
 
-    Object.keys(this.order).forEach((key) => {
-      result = result.append(`order[${key}]`, this.order[key]);
-    });
+    if (this.order) {
+      Object.entries(this.order).forEach(([key, order]) => {
+        result = result.append(`order[${key}]`, order);
+      });
+    }
+    // Object.keys(this.order).forEach((key: keyof UserInfoDtoWithoutUuid) => {
+    //   result = this.order[key]
+    //     ? result.append(`order[${key}]`, this.order[key])
+    //     : result;
+    // });
 
     if (this.role && this.role.length) {
       result = result.appendAll({ role: this.role });
