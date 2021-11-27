@@ -74,6 +74,7 @@
     "@nestjs/swagger": "^4.8.2",
     "@nestjs/typeorm": "^8.0.2",
     "@ng-bootstrap/ng-bootstrap": "^10.0.0",
+    "@ng-select/ng-select": "^8.1.1",
     "@ngrx/component-store": "~12.4.0",
     "@ngrx/effects": "^12.4.0",
     "@ngrx/entity": "~12.4.0",

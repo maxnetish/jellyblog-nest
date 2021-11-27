@@ -20,7 +20,7 @@ export class UsersListEffects {
         UsersListActions.changePageSize,
         UsersListActions.changeSortField,
         UsersListActions.commitSearchCriteria,
-        UsersListActions.gotToPage,
+        UsersListActions.goToPage,
       ),
       withLatestFrom(
         this.store.select(fromUserSelectors.getSearchCriteria),

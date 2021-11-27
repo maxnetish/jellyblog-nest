@@ -1,0 +1,39 @@
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <div class="card-body">
+    <div class="form-group">
+      <label for="vjfvnfvd">Имя нового пользователя</label>
+      <input
+        type="text"
+        formControlName="username"
+        id="vjfvnfvd"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label>Его роль</label>
+      <ng-select
+        formControlName="role"
+        [items]="availableRoles"
+        bindLabel="code"
+        bindValue="code"
+        [clearable]="false"
+      ></ng-select>
+    </div>
+    <div class="form-group">
+      <label for="vefgegevvewgtb">И его пароль</label>
+      <input
+        type="text"
+        formControlName="password"
+        id="vefgegevvewgtb"
+        class="form-control"
+        autocomplete="new-password"
+      />
+    </div>
+    <div class="buttons d-flex justify-content-center">
+      <div class="btn-group" role="group">
+        <button (click)="cancelClick()" type="button" class="btn btn-secondary">Отмена</button>
+        <button type="submit" class="btn btn-primary">OK</button>
+      </div>
+    </div>
+  </div>
+</form>

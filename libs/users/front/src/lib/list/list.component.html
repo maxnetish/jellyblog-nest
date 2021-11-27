@@ -1,1 +1,24 @@
-<p>list works!</p>
+<h1>Пользователи</h1>
+
+<div class="btn-group" role="group" aria-label="Actions">
+  <button type="button" class="btn btn-primary" (click)="handleAddUserButtonClick()">Добавить</button>
+  <button type="button" class="btn btn-secondary">Right</button>
+</div>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>id</th>
+    <th>Имя</th>
+    <th>Роль</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let user of users$ | async; trackBy: trackUsers">
+    <td>{{user.uuid}}</td>
+    <td>{{user.username}}</td>
+    <td>{{user.role}}</td>
+  </tr>
+  </tbody>
+</table>
+

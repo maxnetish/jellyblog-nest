@@ -81,7 +81,7 @@ const usersListReducer = createReducer(
   ),
 
   on(
-    UsersListActions.gotToPage,
+    UsersListActions.goToPage,
     (state, { page }) => {
       return {
         ...state,

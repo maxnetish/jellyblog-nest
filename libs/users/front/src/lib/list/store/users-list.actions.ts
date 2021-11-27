@@ -10,7 +10,7 @@ export const commitSearchCriteria = createAction(
   props<{ searchCriteria: ListModel.SearchFormModel }>(),
 );
 
-export const gotToPage = createAction(
+export const goToPage = createAction(
   '[UsersList] fetch page',
   props<{ page: number }>(),
 );
