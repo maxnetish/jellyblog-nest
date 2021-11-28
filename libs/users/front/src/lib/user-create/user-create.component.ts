@@ -4,6 +4,10 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { UserRole } from '@jellyblog-nest/utils/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '@jellyblog-nest/auth/front';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
+import { CreateUserDto } from '@jellyblog-nest/auth/model';
 
 interface CreateUserFormModel {
   username: string;
@@ -15,13 +19,13 @@ interface CreateUserFormModel {
   selector: 'app-users-user-edit',
   templateUrl: './user-create.component.html',
   styleUrls: ['./user-create.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated
+  encapsulation: ViewEncapsulation.Emulated,
 })
 export class UserCreateComponent implements OnInit {
 
   form: IFormGroup<CreateUserFormModel>;
   formBuilder: IFormBuilder;
-  availableRoles: {code: UserRole }[] = [
+  availableRoles: { code: UserRole }[] = [
     {
       code: UserRole.ADMIN,
     },
@@ -29,17 +33,52 @@ export class UserCreateComponent implements OnInit {
       code: UserRole.READER,
     },
   ];
+  loading$ = new BehaviorSubject(false);
+
+  private async createUser() {
+    if (!this.form.valid) {
+      console.log('Form invalid: ', this.form);
+      this.form.markAllAsTouched();
+      return false;
+    }
+    const { value } = this.form;
+    if (!value) {
+      return false;
+    }
+    this.loading$.next(true);
+    try {
+      await firstValueFrom(this.authService.createUser({
+        username: value.username,
+        password: value.password,
+        role: value.role,
+      }));
+      this.modal.close(true);
+      return true;
+    } catch (err) {
+      this.store.dispatch(GlobalActions.addGlobalToast({
+        severity: GlobalToastSeverity.ERROR,
+        text: err.message,
+      }));
+      this.loading$.next(false);
+      return false;
+    }
+  }
 
   constructor(
     private readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
+    private store: Store,
     fb: FormBuilder,
   ) {
     this.formBuilder = fb;
     this.form = this.formBuilder.group<CreateUserFormModel>({
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      role: [UserRole.READER, Validators.required],
-      username: ['', [Validators.required]],
+      password: [''],
+      role: [UserRole.READER],
+      username: [''],
+    }, {
+      validators: [
+        AppValidators.classValidatorToSyncValidator(CreateUserDto),
+      ],
     });
   }
 
@@ -47,7 +86,7 @@ export class UserCreateComponent implements OnInit {
   }
 
   submitForm() {
-    
+    this.createUser();
   }
 
   cancelClick() {

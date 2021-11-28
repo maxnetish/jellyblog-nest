@@ -1,0 +1,14 @@
+:host {
+  display: none;
+
+  &.ng-touched {
+    display: block;
+  }
+}
+
+.validation-message {
+  font-size: small;
+  color: var(--danger);
+  line-height: 1;
+  margin-top: 0.25em;
+}

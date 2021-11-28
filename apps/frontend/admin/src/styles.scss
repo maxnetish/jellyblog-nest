@@ -4,7 +4,7 @@
 
 .form-control {
 
-  &.ng-invalid {
+  &.ng-invalid.ng-touched {
     border-color: var(--danger);
 
     &:focus {

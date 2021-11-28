@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserListComponent } from './list/list.component';
 import { RouterModule } from '@angular/router';
-import { AppRoute } from '@jellyblog-nest/utils/front';
+import { AppRoute, UtilsFrontModule } from '@jellyblog-nest/utils/front';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import * as fromUsersList from './list/store/users-list.reducer';
@@ -35,6 +35,7 @@ const routes: AppRoute[] = [
     EffectsModule.forFeature([UsersListEffects]),
     ReactiveFormsModule,
     NgSelectModule,
+    UtilsFrontModule,
   ],
   declarations: [UserListComponent, UserCreateComponent],
   providers: [

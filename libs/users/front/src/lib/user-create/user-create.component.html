@@ -8,6 +8,7 @@
         id="vjfvnfvd"
         class="form-control"
       />
+      <app-utils-validation-message formControlName="username"></app-utils-validation-message>
     </div>
     <div class="form-group">
       <label>Его роль</label>
@@ -18,6 +19,7 @@
         bindValue="code"
         [clearable]="false"
       ></ng-select>
+      <app-utils-validation-message formControlName="role"></app-utils-validation-message>
     </div>
     <div class="form-group">
       <label for="vefgegevvewgtb">И его пароль</label>
@@ -28,11 +30,12 @@
         class="form-control"
         autocomplete="new-password"
       />
+      <app-utils-validation-message formControlName="password"></app-utils-validation-message>
     </div>
     <div class="buttons d-flex justify-content-center">
       <div class="btn-group" role="group">
         <button (click)="cancelClick()" type="button" class="btn btn-secondary">Отмена</button>
-        <button type="submit" class="btn btn-primary">OK</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading$ | async">OK</button>
       </div>
     </div>
   </div>
