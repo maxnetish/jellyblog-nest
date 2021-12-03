@@ -1,16 +1,36 @@
 <h1>Пользователи</h1>
 
-<div class="btn-group" role="group" aria-label="Actions">
-  <button type="button" class="btn btn-primary" (click)="handleAddUserButtonClick()">Добавить</button>
-  <button type="button" class="btn btn-secondary">Right</button>
-</div>
+<section class="mt-2 mb-2 actions-row">
+  <div>
+    <div class="btn-group" role="group" aria-label="Actions">
+      <button type="button" class="btn btn-primary" (click)="handleAddUserButtonClick()">Добавить</button>
+      <button type="button" class="btn btn-secondary">Right</button>
+    </div>
+  </div>
+  <div>
+    <ngb-pagination
+      [collectionSize]="(total$ | async)!"
+      [page]="(page$ | async)!"
+      [pageSize]="(pageSize$ | async)!"
+      [maxSize]="5"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      (pageChange)="handlePageChange($event)"
+    ></ngb-pagination>
+  </div>
+</section>
 
 <table class="table table-striped">
+  <colgroup>
+    <col style="width:40%">
+    <col style="width:30%">
+    <col style="width:30%">
+  </colgroup>
   <thead>
   <tr>
-    <th>id</th>
-    <th>Имя</th>
-    <th>Роль</th>
+    <th scope="col">id</th>
+    <th scope="col">Имя</th>
+    <th scope="col">Роль</th>
   </tr>
   </thead>
   <tbody>

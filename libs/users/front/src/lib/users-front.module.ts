@@ -11,6 +11,7 @@ import { UserCreateComponent } from './user-create/user-create.component';
 import { UserCreateModalService } from './user-create/user-create.modal.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 const routes: AppRoute[] = [
   {
@@ -36,6 +37,7 @@ const routes: AppRoute[] = [
     ReactiveFormsModule,
     NgSelectModule,
     UtilsFrontModule,
+    NgbPaginationModule,
   ],
   declarations: [UserListComponent, UserCreateComponent],
   providers: [

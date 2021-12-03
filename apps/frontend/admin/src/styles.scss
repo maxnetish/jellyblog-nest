@@ -2,6 +2,11 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
+// bootstrap overrides
+ul.pagination {
+  margin-bottom: 0;
+}
+
 .form-control {
 
   &.ng-invalid.ng-touched {

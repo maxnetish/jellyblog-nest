@@ -41,3 +41,7 @@ export const getSortOrder = createSelector(
   state => state.sortOrder,
 );
 
+export const getTotal = createSelector(
+  getUsersListState,
+  state => state.total,
+);

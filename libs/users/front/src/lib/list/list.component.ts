@@ -16,6 +16,9 @@ import { ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 export class UserListComponent implements OnInit {
 
   users$: Observable<UserInfoDto[]>;
+  total$: Observable<number>;
+  page$: Observable<number>;
+  pageSize$: Observable<number>;
 
   trackUsers(_: unknown, item: UserInfoDto) {
     return item.uuid;
@@ -43,6 +46,9 @@ export class UserListComponent implements OnInit {
         return this.store.select(ListStoreSelectors.getUsersList);
       }),
     );
+    this.total$ = this.store.select(ListStoreSelectors.getTotal);
+    this.page$ = this.store.select(ListStoreSelectors.getPage);
+    this.pageSize$ = this.store.select(ListStoreSelectors.getPageSize);
   }
 
   ngOnInit(): void {
@@ -51,5 +57,9 @@ export class UserListComponent implements OnInit {
 
   handleAddUserButtonClick() {
     this.addUser();
+  }
+
+  handlePageChange(newPage: number) {
+    this.store.dispatch(ListStoreActions.goToPage({ page: newPage }));
   }
 }
