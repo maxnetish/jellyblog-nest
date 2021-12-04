@@ -38,3 +38,7 @@ export const failUsersPage = createAction(
   '[UsersList] fail users page',
   props<{ error: any }>(),
 );
+
+export const createUser = createAction(
+  '[UsersList] create user',
+);

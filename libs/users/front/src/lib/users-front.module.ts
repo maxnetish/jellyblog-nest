@@ -11,7 +11,16 @@ import { UserCreateComponent } from './user-create/user-create.component';
 import { UserCreateModalService } from './user-create/user-create.modal.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgIconsModule } from '@ng-icons/core';
+import {
+  HeroUserRemove,
+  HeroUser,
+  HeroUserGroup,
+  HeroDotsVerticalSolid,
+  HeroMenu,
+  HeroLockClosed,
+} from '@ng-icons/heroicons';
 
 const routes: AppRoute[] = [
   {
@@ -38,6 +47,8 @@ const routes: AppRoute[] = [
     NgSelectModule,
     UtilsFrontModule,
     NgbPaginationModule,
+    NgbDropdownModule,
+    NgIconsModule.withIcons({ HeroUserRemove, HeroUser, HeroUserGroup, HeroDotsVerticalSolid, HeroMenu, HeroLockClosed }),
   ],
   declarations: [UserListComponent, UserCreateComponent],
   providers: [
@@ -45,4 +56,5 @@ const routes: AppRoute[] = [
   ],
   exports: [],
 })
-export class UsersFrontModule {}
+export class UsersFrontModule {
+}

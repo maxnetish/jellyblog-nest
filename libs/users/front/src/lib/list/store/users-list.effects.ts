@@ -5,9 +5,10 @@ import * as UsersListActions from './users-list.actions';
 import * as fromUserSelectors from './users-list.selectors';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { FindUserRequest } from '@jellyblog-nest/auth/model';
-import { catchError, map, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, EMPTY, map, switchMap, withLatestFrom } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
+import { UserCreateModalService } from '../../user-create/user-create.modal.service';
 
 @Injectable()
 export class UsersListEffects {
@@ -56,10 +57,33 @@ export class UsersListEffects {
     ),
   );
 
+  createUser$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UsersListActions.createUser),
+      switchMap(() => {
+        return this.userCreateModalService.show();
+      }),
+      map((success) => {
+        if (success) {
+          return UsersListActions.init();
+        }
+        return GlobalActions.noop();
+      }),
+      catchError((error, caught) => {
+        this.store.dispatch(GlobalActions.addGlobalToast({
+          severity: GlobalToastSeverity.ERROR,
+          text: error.message || 'Fail',
+        }));
+        return caught;
+      }),
+    );
+  });
+
   constructor(
     private readonly actions$: Actions,
     private readonly authService: AuthService,
     private readonly store: Store,
+    private readonly userCreateModalService: UserCreateModalService,
   ) {
   }
 }

@@ -7,6 +7,18 @@ ul.pagination {
   margin-bottom: 0;
 }
 
+.dropdown-toggle::after {
+  content: none;
+}
+
+////
+
+// ng icon overrides
+button > ng-icon {
+  position: relative;
+  top: -2px;
+}
+
 .form-control {
 
   &.ng-invalid.ng-touched {

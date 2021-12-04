@@ -4,8 +4,6 @@ import * as ListStoreActions from './store/users-list.actions';
 import * as ListStoreSelectors from './store/users-list.selectors';
 import { Observable, of, switchMap, take, tap } from 'rxjs';
 import { UserInfoDto } from '@jellyblog-nest/auth/model';
-import { UserCreateModalService } from '../user-create/user-create.modal.service';
-import { ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-users-list',
@@ -24,18 +22,12 @@ export class UserListComponent implements OnInit {
     return item.uuid;
   }
 
-  private async addUser() {
-    try {
-      await this.userCreateModalService.show();
-      this.store.dispatch(ListStoreActions.init());
-    } catch (e) {
-      console.log('error: ', e);
-    }
+  private addUser() {
+    this.store.dispatch(ListStoreActions.createUser());
   }
 
   constructor(
     private readonly store: Store,
-    private readonly userCreateModalService: UserCreateModalService,
   ) {
     this.users$ = of(null).pipe(
       take(1),
@@ -61,5 +53,17 @@ export class UserListComponent implements OnInit {
 
   handlePageChange(newPage: number) {
     this.store.dispatch(ListStoreActions.goToPage({ page: newPage }));
+  }
+
+  handleChangeRoleClick(user: UserInfoDto) {
+
+  }
+
+  handleRemoveClick(user: UserInfoDto) {
+
+  }
+
+  handleSetPasswordClick(user: UserInfoDto) {
+
   }
 }

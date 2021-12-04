@@ -37,7 +37,6 @@ export class UserCreateComponent implements OnInit {
 
   private async createUser() {
     if (!this.form.valid) {
-      console.log('Form invalid: ', this.form);
       this.form.markAllAsTouched();
       return false;
     }
@@ -52,7 +51,6 @@ export class UserCreateComponent implements OnInit {
         password: value.password,
         role: value.role,
       }));
-      this.modal.close(true);
       return true;
     } catch (err) {
       this.store.dispatch(GlobalActions.addGlobalToast({
@@ -85,8 +83,11 @@ export class UserCreateComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  submitForm() {
-    this.createUser();
+  async submitForm() {
+    const success = await this.createUser();
+    if (success) {
+      this.modal.close(success);
+    }
   }
 
   cancelClick() {

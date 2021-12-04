@@ -35,7 +35,41 @@
   </thead>
   <tbody>
   <tr *ngFor="let user of users$ | async; trackBy: trackUsers">
-    <td>{{user.uuid}}</td>
+    <td>
+      <div class="d-flex align-items-baseline">
+        <div ngbDropdown>
+          <button
+            class="btn btn-link align-baseline mr-2"
+            ngbDropdownToggle
+          >
+            <ng-icon name="hero-menu"></ng-icon>
+          </button>
+          <div ngbDropdownMenu>
+            <button
+              ngbDropdownItem
+              type="button"
+              (click)="handleChangeRoleClick(user)"
+            >
+              <ng-icon name="hero-user-group"></ng-icon>
+              Роль
+            </button>
+            <button
+              ngbDropdownItem
+              type="button"
+              (click)="handleSetPasswordClick(user)"
+            >
+              <ng-icon name="hero-lock-closed"></ng-icon>
+              Установить пароль
+            </button>
+            <button ngbDropdownItem type="button" class="text-danger" (click)="handleRemoveClick(user)">
+              <ng-icon name="hero-user-remove"></ng-icon>
+              Удалить
+            </button>
+          </div>
+        </div>
+        <span>{{user.uuid}}</span>
+      </div>
+    </td>
     <td>{{user.username}}</td>
     <td>{{user.role}}</td>
   </tr>
