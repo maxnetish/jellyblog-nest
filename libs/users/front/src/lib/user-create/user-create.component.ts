@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { FormBuilder } from '@angular/forms';
 import { UserRole } from '@jellyblog-nest/utils/common';
@@ -20,6 +20,7 @@ interface CreateUserFormModel {
   templateUrl: './user-create.component.html',
   styleUrls: ['./user-create.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserCreateComponent implements OnInit {
 
@@ -63,7 +64,7 @@ export class UserCreateComponent implements OnInit {
   }
 
   constructor(
-    private readonly modal: NgbActiveModal,
+    readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private store: Store,
     fb: FormBuilder,

@@ -20,6 +20,7 @@ import {
   HeroDotsVerticalSolid,
   HeroMenu,
   HeroLockClosed,
+  HeroX,
 } from '@ng-icons/heroicons';
 import { UserUpdateComponent } from './user-update/user-update.component';
 import { UserUpdateModalService } from './user-update/user-update.modal.service';
@@ -50,7 +51,15 @@ const routes: AppRoute[] = [
     UtilsFrontModule,
     NgbPaginationModule,
     NgbDropdownModule,
-    NgIconsModule.withIcons({ HeroUserRemove, HeroUser, HeroUserGroup, HeroDotsVerticalSolid, HeroMenu, HeroLockClosed }),
+    NgIconsModule.withIcons({
+      HeroUserRemove,
+      HeroUser,
+      HeroUserGroup,
+      HeroDotsVerticalSolid,
+      HeroMenu,
+      HeroLockClosed,
+      HeroX,
+    }),
   ],
   declarations: [UserListComponent, UserCreateComponent, UserUpdateComponent],
   providers: [

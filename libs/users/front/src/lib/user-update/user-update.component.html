@@ -1,14 +1,14 @@
 <form [formGroup]="form" (ngSubmit)="submitForm()">
-  <div class="card-header">
-    <h3>Изменить роль</h3>
-  </div>
-  <div class="card-body">
+  <app-utils-modal-content
+    [activeModal]="modal"
+    modalTitle="Изменить роль"
+  >
     <div class="form-group">
-      <label>Имя пользоватлея</label>
+      <label class="text-secondary">Имя пользоватлея</label>
       <div class="form-control-plaintext">{{userName$ | async}}</div>
     </div>
     <div class="form-group">
-      <label>Его новая роль</label>
+      <label class="text-secondary">Его новая роль</label>
       <ng-select
         formControlName="role"
         [items]="availableRoles"
@@ -18,12 +18,12 @@
       ></ng-select>
       <app-utils-validation-message formControlName="role"></app-utils-validation-message>
     </div>
-    <div class="buttons d-flex justify-content-center">
+    <ng-container modalFooter>
       <div class="btn-group" role="group">
         <button (click)="cancelClick()" type="button" class="btn btn-secondary">Отмена</button>
         <button type="submit" class="btn btn-primary" [disabled]="loading$ | async">OK</button>
       </div>
-    </div>
-  </div>
+    </ng-container>
+  </app-utils-modal-content>
 </form>
 

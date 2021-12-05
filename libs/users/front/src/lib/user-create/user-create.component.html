@@ -1,7 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="submitForm()">
-  <div class="card-body">
+  <app-utils-modal-content [activeModal]="modal" modalTitle="Создать пользователя">
     <div class="form-group">
-      <label for="vjfvnfvd">Имя нового пользователя</label>
+      <label class="text-secondary" for="vjfvnfvd">Имя нового пользователя</label>
       <input
         type="text"
         formControlName="username"
@@ -11,7 +11,7 @@
       <app-utils-validation-message formControlName="username"></app-utils-validation-message>
     </div>
     <div class="form-group">
-      <label>Его роль</label>
+      <label class="text-secondary">Его роль</label>
       <ng-select
         formControlName="role"
         [items]="availableRoles"
@@ -22,7 +22,7 @@
       <app-utils-validation-message formControlName="role"></app-utils-validation-message>
     </div>
     <div class="form-group">
-      <label for="vefgegevvewgtb">И его пароль</label>
+      <label class="text-secondary" for="vefgegevvewgtb">И его пароль</label>
       <input
         type="text"
         formControlName="password"
@@ -32,11 +32,11 @@
       />
       <app-utils-validation-message formControlName="password"></app-utils-validation-message>
     </div>
-    <div class="buttons d-flex justify-content-center">
+    <ng-container modalFooter>
       <div class="btn-group" role="group">
         <button (click)="cancelClick()" type="button" class="btn btn-secondary">Отмена</button>
         <button type="submit" class="btn btn-primary" [disabled]="loading$ | async">OK</button>
       </div>
-    </div>
-  </div>
+    </ng-container>
+  </app-utils-modal-content>
 </form>

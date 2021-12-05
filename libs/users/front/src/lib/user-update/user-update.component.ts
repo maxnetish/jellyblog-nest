@@ -48,7 +48,7 @@ export class UserUpdateComponent implements OnDestroy {
   }
 
   constructor(
-    private readonly modal: NgbActiveModal,
+    readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private readonly store: Store,
     fb: FormBuilder,
