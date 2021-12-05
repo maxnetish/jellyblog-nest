@@ -42,3 +42,8 @@ export const failUsersPage = createAction(
 export const createUser = createAction(
   '[UsersList] create user',
 );
+
+export const updateUser = createAction(
+  '[UsersList] update user',
+  props<{user: UserInfoDto}>(),
+);

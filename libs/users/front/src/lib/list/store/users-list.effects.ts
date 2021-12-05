@@ -9,6 +9,7 @@ import { catchError, EMPTY, map, switchMap, withLatestFrom } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { UserCreateModalService } from '../../user-create/user-create.modal.service';
+import { UserUpdateModalService } from '../../user-update/user-update.modal.service';
 
 @Injectable()
 export class UsersListEffects {
@@ -79,11 +80,34 @@ export class UsersListEffects {
     );
   });
 
+  updateUser$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UsersListActions.updateUser),
+      switchMap((action) => {
+        return this.userUpdateModalService.show(action.user);
+      }),
+      map((success) => {
+        if (success) {
+          return UsersListActions.init();
+        }
+        return GlobalActions.noop();
+      }),
+      catchError((error, caught) => {
+        this.store.dispatch(GlobalActions.addGlobalToast({
+          severity: GlobalToastSeverity.ERROR,
+          text: error.message || 'Fail',
+        }));
+        return caught;
+      }),
+    )
+  })
+
   constructor(
     private readonly actions$: Actions,
     private readonly authService: AuthService,
     private readonly store: Store,
     private readonly userCreateModalService: UserCreateModalService,
+    private readonly userUpdateModalService: UserUpdateModalService,
   ) {
   }
 }

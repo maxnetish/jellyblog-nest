@@ -22,10 +22,6 @@ export class UserListComponent implements OnInit {
     return item.uuid;
   }
 
-  private addUser() {
-    this.store.dispatch(ListStoreActions.createUser());
-  }
-
   constructor(
     private readonly store: Store,
   ) {
@@ -48,7 +44,7 @@ export class UserListComponent implements OnInit {
   }
 
   handleAddUserButtonClick() {
-    this.addUser();
+    this.store.dispatch(ListStoreActions.createUser());
   }
 
   handlePageChange(newPage: number) {
@@ -56,7 +52,7 @@ export class UserListComponent implements OnInit {
   }
 
   handleChangeRoleClick(user: UserInfoDto) {
-
+    this.store.dispatch(ListStoreActions.updateUser({ user }));
   }
 
   handleRemoveClick(user: UserInfoDto) {

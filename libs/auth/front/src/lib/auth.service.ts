@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CreateUserDto, CredentialsDto, FindUserRequest, UserInfoDto } from '@jellyblog-nest/auth/model';
+import { CreateUserDto, CredentialsDto, FindUserRequest, UpdateUserDto, UserInfoDto } from '@jellyblog-nest/auth/model';
 import { Page } from '@jellyblog-nest/utils/common';
 
 @Injectable({
@@ -62,6 +62,17 @@ export class AuthService {
     return this.httpClient.post<UserInfoDto>(
       `${this.apiPath}/create`,
       createUserDto,
+      {
+        observe: 'body',
+        responseType: 'json',
+      },
+    );
+  }
+
+  updateUser(updateUserDto: UpdateUserDto) {
+    return this.httpClient.put<boolean>(
+      `${this.apiPath}/user`,
+      updateUserDto,
       {
         observe: 'body',
         responseType: 'json',

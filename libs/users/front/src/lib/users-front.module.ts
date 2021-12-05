@@ -21,6 +21,8 @@ import {
   HeroMenu,
   HeroLockClosed,
 } from '@ng-icons/heroicons';
+import { UserUpdateComponent } from './user-update/user-update.component';
+import { UserUpdateModalService } from './user-update/user-update.modal.service';
 
 const routes: AppRoute[] = [
   {
@@ -50,9 +52,10 @@ const routes: AppRoute[] = [
     NgbDropdownModule,
     NgIconsModule.withIcons({ HeroUserRemove, HeroUser, HeroUserGroup, HeroDotsVerticalSolid, HeroMenu, HeroLockClosed }),
   ],
-  declarations: [UserListComponent, UserCreateComponent],
+  declarations: [UserListComponent, UserCreateComponent, UserUpdateComponent],
   providers: [
     UserCreateModalService,
+    UserUpdateModalService,
   ],
   exports: [],
 })
