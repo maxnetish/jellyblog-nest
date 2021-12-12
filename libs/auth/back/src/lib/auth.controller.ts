@@ -1,6 +1,13 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, CredentialsDto, FindUserRequest, UpdateUserDto, UserInfoDto } from '@jellyblog-nest/auth/model';
+import {
+  CreateUserDto,
+  CredentialsDto,
+  FindUserRequest,
+  SetPasswordDto,
+  UpdateUserDto,
+  UserInfoDto,
+} from '@jellyblog-nest/auth/model';
 import { LoginGuard } from './login.guard';
 import { Request } from 'express';
 import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -13,7 +20,7 @@ import { RequireRole } from './require-role.decorator';
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
   ) {
   }
 
@@ -26,10 +33,10 @@ export class AuthController {
   @Post('login')
   @ApiBody({
     type: CredentialsDto,
-    required: true
+    required: true,
   })
   @ApiResponse({
-    type: UserInfoDto
+    type: UserInfoDto,
   })
   login(@Req() req: Request): UserInfoDto {
     return req.user as UserInfoDto;
@@ -42,7 +49,7 @@ export class AuthController {
 
   @RequireRole()
   @ApiResponse({
-    type: UserInfoDto
+    type: UserInfoDto,
   })
   @Get('user')
   getCurrentUser(@Req() req: Request): UserInfoDto | null {
@@ -55,25 +62,42 @@ export class AuthController {
   @RequireRole(UserRole.ADMIN)
   @ApiBody({
     type: UpdateUserDto,
-    required: true
+    required: true,
   })
   @ApiResponse({
     type: Boolean,
-    status: 200
+    status: 200,
   })
   @Put('user')
   updateUser(@Body() updateUserDto: UpdateUserDto) {
     return this.authService.update(updateUserDto);
   }
 
+  /**
+   * Set new password of any user (for admin)
+   */
   @RequireRole(UserRole.ADMIN)
   @ApiBody({
-    type: BaseEntityId,
-    required: true
+    type: SetPasswordDto,
+    required: true,
   })
   @ApiResponse({
     type: Boolean,
-    status: 200
+    status: 200,
+  })
+  @Put('user/resetpassword')
+  resetPassword(@Body() setPasswordDto: SetPasswordDto) {
+    return this.authService.setPassword(setPasswordDto);
+  }
+
+  @RequireRole(UserRole.ADMIN)
+  @ApiBody({
+    type: BaseEntityId,
+    required: true,
+  })
+  @ApiResponse({
+    type: Boolean,
+    status: 200,
   })
   @Delete('user')
   removeUser(@Body() removeRequest: BaseEntityId) {
@@ -83,7 +107,7 @@ export class AuthController {
   @RequireRole()
   @ApiQuery({
     name: 'name',
-    required: false
+    required: false,
   })
   @ApiQuery({
     name: 'role',
@@ -91,19 +115,19 @@ export class AuthController {
     enumName: 'UserRole',
     isArray: true,
     required: false,
-    example: [UserRole.ADMIN]
+    example: [UserRole.ADMIN],
   })
   @ApiQuery({
     name: 'page',
     type: Number,
     required: false,
-    example: 1
+    example: 1,
   })
   @ApiQuery({
     name: 'size',
     type: Number,
     required: false,
-    example: 10
+    example: 10,
   })
   @ApiQuery({
     name: 'order',
@@ -112,12 +136,12 @@ export class AuthController {
     explode: true,
     type: 'object',
     example: {
-      username: SortOrder.ASC
-    }
+      username: SortOrder.ASC,
+    },
   })
   @ApiResponse({
     type: Page,
-    isArray: false
+    isArray: false,
   })
   @Get('users')
   findUsers(
@@ -125,15 +149,15 @@ export class AuthController {
     @Query('role', ToArrayPipe) role: UserRole[] = [],
     @Query('page', ParseIntPipe) page = 1,
     @Query('size', ParseIntPipe) size = 10,
-    @Query('order') order?: Partial<Record<keyof UserInfoDto, SortOrder>>
+    @Query('order') order?: Partial<Record<keyof UserInfoDto, SortOrder>>,
   ) {
     const findUserRequest = plainToClass(FindUserRequest, {
       name,
       role,
       page,
       size,
-      order
-    }, { excludeExtraneousValues: false });
+      order,
+    }, {excludeExtraneousValues: false});
     return this.authService.find(findUserRequest);
   }
 }

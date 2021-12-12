@@ -5,18 +5,19 @@ import {
   CredentialsDto,
   FindUserRequest,
   UpdateUserDto,
-  UserInfoDto
+  UserInfoDto,
 } from '@jellyblog-nest/auth/model';
 import crypto from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@jellyblog-nest/entities';
 import { FindConditions, In, Like, Repository } from 'typeorm';
 import { BaseEntityId, Page, UserRole } from '@jellyblog-nest/utils/common';
+import { SetPasswordDto } from '@jellyblog-nest/auth/model';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {
     this.seedDefaultAdminIfNoOne().then(null, () => {
       throw new Error('Cannot seed default admin user.');
@@ -31,13 +32,13 @@ export class AuthService {
       username: createUserDto.username,
       role: createUserDto.role,
       hashAlgo: this.hashAlgorythm,
-      secret
+      secret,
     });
     const createdUser = await this.userRepository.save(creatingUser);
     return {
       username: createdUser.username,
       role: createdUser.role,
-      uuid: createdUser.uuid
+      uuid: createdUser.uuid,
     };
   }
 
@@ -46,28 +47,28 @@ export class AuthService {
       throw new HttpException('username cannot be empty', HttpStatus.BAD_REQUEST);
     }
     return await this.userRepository.findOne(
-      { username },
+      {username},
       {
         select: [
           'username',
           'role',
           'uuid',
           'createdAt',
-          'updatedAt'
-        ]
-      }
+          'updatedAt',
+        ],
+      },
     );
   }
 
   async findAndVerify(credentialsDto: CredentialsDto): Promise<UserInfoDto | null> {
-    const { username, password } = credentialsDto;
+    const {username, password} = credentialsDto;
     if (!username) {
       throw new HttpException('username cannot be empty', HttpStatus.BAD_REQUEST);
     }
     if (!password) {
       throw new HttpException('password cannot be empty', HttpStatus.BAD_REQUEST);
     }
-    const found = await this.userRepository.findOne({ username });
+    const found = await this.userRepository.findOne({username});
     if (!found) {
       return null;
     }
@@ -78,12 +79,15 @@ export class AuthService {
     return {
       uuid: found.uuid,
       role: found.role,
-      username: found.username
+      username: found.username,
     };
   }
 
+  /**
+   * Change passwword for user
+   */
   async changePassword(changePasswordDto: ChangePasswordDto) {
-    const { newPassword, ...creds } = changePasswordDto;
+    const {newPassword, ...creds} = changePasswordDto;
     if (!newPassword) {
       throw new HttpException('new passowrd cannot be empty', HttpStatus.BAD_REQUEST);
     }
@@ -91,10 +95,32 @@ export class AuthService {
     const secret = AuthService.textToHash(newPassword, this.hashAlgorythm);
     const result = await this.userRepository.update(
       existingUser.uuid,
-      { secret }
+      {secret},
     );
     if (!result.affected) {
       throw new HttpException('Update password fails.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return true;
+  }
+
+  /**
+   * Set password of any user (method intended to admin only)
+   */
+  async setPassword(setPasswordDto: SetPasswordDto) {
+    const {newPassword, userId} = setPasswordDto;
+    if (!newPassword) {
+      throw new HttpException('new passowrd cannot be empty', HttpStatus.BAD_REQUEST);
+    }
+    if (!userId) {
+      throw new HttpException('user id cannot be empty', HttpStatus.BAD_REQUEST);
+    }
+    const secret = AuthService.textToHash(newPassword, this.hashAlgorythm);
+    const result = await this.userRepository.update(
+      setPasswordDto.userId,
+      {secret},
+    );
+    if (!result.affected) {
+      throw new HttpException('Set password fails.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return true;
   }
@@ -104,19 +130,19 @@ export class AuthService {
       throw new Error('uuid cannot be empty');
     }
     const found = await this.userRepository.findOneOrFail(uuid, {
-      select: ['uuid', 'username', 'role']
+      select: ['uuid', 'username', 'role'],
     });
     return {
       username: found.username,
       role: found.role,
-      uuid: found.uuid
+      uuid: found.uuid,
     };
   }
 
   async update(updateUserDto: UpdateUserDto) {
     const [updatedUser, adminsCount] = await Promise.all([
       this.findById(updateUserDto.uuid),
-      this.countOfAdmins()
+      this.countOfAdmins(),
     ]);
 
     if (updatedUser.role === UserRole.ADMIN && updateUserDto.role !== UserRole.ADMIN && adminsCount < 2) {
@@ -137,9 +163,9 @@ export class AuthService {
   async remove(removeRequest: BaseEntityId) {
     const [removedUser, adminsCount] = await Promise.all([
       this.findById(removeRequest.uuid),
-      this.countOfAdmins()
+      this.countOfAdmins(),
     ]);
-    if(removedUser.role===UserRole.ADMIN && adminsCount < 2) {
+    if (removedUser.role === UserRole.ADMIN && adminsCount < 2) {
       // we wan't remove last admin
       throw new HttpException('Cannot remove last admin', HttpStatus.BAD_REQUEST);
     }
@@ -149,7 +175,7 @@ export class AuthService {
   }
 
   async find(findUserRequest: FindUserRequest): Promise<Page<UserInfoDto>> {
-    const { page, size, order, role, name } = findUserRequest;
+    const {page, size, order, role, name} = findUserRequest;
     const where: FindConditions<User> = {};
 
     if (role && role.length) {
@@ -165,32 +191,32 @@ export class AuthService {
         where,
         skip: (page - 1) * size,
         take: size,
-        order
+        order,
       }).then((foundUsers) => {
         return foundUsers.map((user) => {
           return {
             uuid: user.uuid,
             role: user.role,
-            username: user.username
+            username: user.username,
           };
         });
       }),
       this.userRepository.count({
-        where
-      })
+        where,
+      }),
     ]);
 
     return {
       list,
       total,
       page,
-      size
+      size,
     };
   }
 
   private async countOfAdmins() {
     return this.userRepository.count({
-      role: UserRole.ADMIN
+      role: UserRole.ADMIN,
     });
   }
 
@@ -205,7 +231,7 @@ export class AuthService {
       username: 'admin',
       role: UserRole.ADMIN,
       hashAlgo: 'sha256',
-      secret
+      secret,
     });
     await this.userRepository.save(creatingUser);
     console.log(`There are no admin yet, so create new one: "${creatingUser.username}"`);
