@@ -45,10 +45,15 @@ export const createUser = createAction(
 
 export const updateUser = createAction(
   '[UsersList] update user',
-  props<{user: UserInfoDto}>(),
+  props<{ user: UserInfoDto }>(),
 );
 
 export const setPassword = createAction(
   '[UsersList] set password',
-  props<{user: UserInfoDto}>(),
+  props<{ user: UserInfoDto }>(),
+)
+
+export const removeUser = createAction(
+  '[UsersList] remove user',
+  props<{ user: UserInfoDto }>(),
 )

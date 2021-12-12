@@ -56,7 +56,7 @@ export class UserListComponent implements OnInit {
   }
 
   handleRemoveClick(user: UserInfoDto) {
-
+    this.store.dispatch(ListStoreActions.removeUser({user}));
   }
 
   handleSetPasswordClick(user: UserInfoDto) {

@@ -26,6 +26,8 @@ import { UserUpdateComponent } from './user-update/user-update.component';
 import { UserUpdateModalService } from './user-update/user-update.modal.service';
 import { UserSetPasswordComponent } from './user-set-password/user-set-password.component';
 import { UserSetPasswordModalService } from './user-set-password/user-set-password.modal.service';
+import { UserRemoveComponent } from './user-remove/user-remove.component';
+import { UserRemoveModalService } from './user-remove/user-remove.modal.service';
 
 const routes: AppRoute[] = [
   {
@@ -63,11 +65,12 @@ const routes: AppRoute[] = [
       HeroX,
     }),
   ],
-  declarations: [UserListComponent, UserCreateComponent, UserUpdateComponent, UserSetPasswordComponent],
+  declarations: [UserListComponent, UserCreateComponent, UserUpdateComponent, UserSetPasswordComponent, UserRemoveComponent],
   providers: [
     UserCreateModalService,
     UserUpdateModalService,
     UserSetPasswordModalService,
+    UserRemoveModalService,
   ],
   exports: [],
 })

@@ -1,0 +1,20 @@
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <app-utils-modal-content
+    [activeModal]="modal"
+    modalTitle="Удалить пользователя"
+  >
+    <div class="form-group">
+      <label class="text-secondary">Имя пользователя</label>
+      <div class="form-control-plaintext">{{userName$ | async}}</div>
+      <app-utils-validation-message formControlName="uuid"></app-utils-validation-message>
+    </div>
+    <ng-container modalFooter="">
+      <div class="btn-group" role="group">
+        <button (click)="cancelClick()" type="button" class="btn btn-secondary">Отмена</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading$ | async">OK</button>
+      </div>
+    </ng-container>
+  </app-utils-modal-content>
+</form>
+
+

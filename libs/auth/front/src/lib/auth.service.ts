@@ -8,7 +8,7 @@ import {
   UpdateUserDto,
   UserInfoDto,
 } from '@jellyblog-nest/auth/model';
-import { Page } from '@jellyblog-nest/utils/common';
+import { BaseEntityId, Page } from '@jellyblog-nest/utils/common';
 
 @Injectable({
   providedIn: 'root',
@@ -97,6 +97,17 @@ export class AuthService {
       {
         observe: 'body',
         responseType: 'json',
+      },
+    );
+  }
+
+  removeUser(request: BaseEntityId) {
+    return this.httpClient.delete<boolean>(
+      `${this.apiPath}/user`,
+      {
+        observe: 'body',
+        responseType: 'json',
+        body: request,
       },
     );
   }
