@@ -11,6 +11,12 @@ ul.pagination {
   content: none;
 }
 
+.table {
+  th, td {
+    vertical-align: baseline;
+  }
+}
+
 ////
 
 // ng icon overrides
