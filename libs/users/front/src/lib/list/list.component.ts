@@ -48,11 +48,11 @@ export class UserListComponent implements OnInit {
   }
 
   handlePageChange(newPage: number) {
-    this.store.dispatch(ListStoreActions.goToPage({ page: newPage }));
+    this.store.dispatch(ListStoreActions.goToPage({page: newPage}));
   }
 
   handleChangeRoleClick(user: UserInfoDto) {
-    this.store.dispatch(ListStoreActions.updateUser({ user }));
+    this.store.dispatch(ListStoreActions.updateUser({user}));
   }
 
   handleRemoveClick(user: UserInfoDto) {
@@ -60,6 +60,6 @@ export class UserListComponent implements OnInit {
   }
 
   handleSetPasswordClick(user: UserInfoDto) {
-
+    this.store.dispatch(ListStoreActions.setPassword({user}));
   }
 }

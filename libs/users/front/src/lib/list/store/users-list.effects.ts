@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { createEffect, Actions, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 
 import * as UsersListActions from './users-list.actions';
 import * as fromUserSelectors from './users-list.selectors';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { FindUserRequest } from '@jellyblog-nest/auth/model';
-import { catchError, EMPTY, map, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, map, switchMap, withLatestFrom } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { UserCreateModalService } from '../../user-create/user-create.modal.service';
 import { UserUpdateModalService } from '../../user-update/user-update.modal.service';
+import { UserSetPasswordModalService } from '../../user-set-password/user-set-password.modal.service';
 
 @Injectable()
 export class UsersListEffects {
@@ -66,6 +67,10 @@ export class UsersListEffects {
       }),
       map((success) => {
         if (success) {
+          this.store.dispatch(GlobalActions.addGlobalToast({
+            severity: GlobalToastSeverity.SUCCESS,
+            text: 'User has been created.',
+          }));
           return UsersListActions.init();
         }
         return GlobalActions.noop();
@@ -88,6 +93,10 @@ export class UsersListEffects {
       }),
       map((success) => {
         if (success) {
+          this.store.dispatch(GlobalActions.addGlobalToast({
+            severity: GlobalToastSeverity.SUCCESS,
+            text: 'Uer has been updated.',
+          }));
           return UsersListActions.init();
         }
         return GlobalActions.noop();
@@ -99,8 +108,37 @@ export class UsersListEffects {
         }));
         return caught;
       }),
-    )
-  })
+    );
+  });
+
+  setPassword$ = createEffect(() => {
+    return this.actions$.pipe(
+     ofType(UsersListActions.setPassword),
+     switchMap((action) => {
+       return this.userSetPasswordModalService.show({
+         userId: action.user.uuid,
+         userName: action.user.username,
+       });
+     }),
+      map((success) => {
+        if (success) {
+          this.store.dispatch(GlobalActions.addGlobalToast({
+            severity: GlobalToastSeverity.SUCCESS,
+            text: 'Password has been changed.',
+          }));
+          return UsersListActions.init();
+        }
+        return GlobalActions.noop();
+      }),
+      catchError((error, caught) => {
+        this.store.dispatch(GlobalActions.addGlobalToast({
+          severity: GlobalToastSeverity.ERROR,
+          text: error.message || 'Fail',
+        }));
+        return caught;
+      }),
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,
@@ -108,6 +146,7 @@ export class UsersListEffects {
     private readonly store: Store,
     private readonly userCreateModalService: UserCreateModalService,
     private readonly userUpdateModalService: UserUpdateModalService,
+    private readonly userSetPasswordModalService: UserSetPasswordModalService,
   ) {
   }
 }

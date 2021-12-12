@@ -47,3 +47,8 @@ export const updateUser = createAction(
   '[UsersList] update user',
   props<{user: UserInfoDto}>(),
 );
+
+export const setPassword = createAction(
+  '[UsersList] set password',
+  props<{user: UserInfoDto}>(),
+)

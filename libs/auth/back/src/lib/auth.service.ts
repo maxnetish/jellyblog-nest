@@ -97,8 +97,8 @@ export class AuthService {
       existingUser.uuid,
       {secret},
     );
-    if (!result.affected) {
-      throw new HttpException('Update password fails.', HttpStatus.INTERNAL_SERVER_ERROR);
+    if (!result) {
+      throw new HttpException('Change password fails.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return true;
   }
@@ -119,7 +119,7 @@ export class AuthService {
       setPasswordDto.userId,
       {secret},
     );
-    if (!result.affected) {
+    if (!result) {
       throw new HttpException('Set password fails.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return true;

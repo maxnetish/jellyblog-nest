@@ -24,6 +24,8 @@ import {
 } from '@ng-icons/heroicons';
 import { UserUpdateComponent } from './user-update/user-update.component';
 import { UserUpdateModalService } from './user-update/user-update.modal.service';
+import { UserSetPasswordComponent } from './user-set-password/user-set-password.component';
+import { UserSetPasswordModalService } from './user-set-password/user-set-password.modal.service';
 
 const routes: AppRoute[] = [
   {
@@ -61,10 +63,11 @@ const routes: AppRoute[] = [
       HeroX,
     }),
   ],
-  declarations: [UserListComponent, UserCreateComponent, UserUpdateComponent],
+  declarations: [UserListComponent, UserCreateComponent, UserUpdateComponent, UserSetPasswordComponent],
   providers: [
     UserCreateModalService,
     UserUpdateModalService,
+    UserSetPasswordModalService,
   ],
   exports: [],
 })

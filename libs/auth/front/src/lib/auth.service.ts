@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CreateUserDto, CredentialsDto, FindUserRequest, UpdateUserDto, UserInfoDto } from '@jellyblog-nest/auth/model';
+import {
+  CreateUserDto,
+  CredentialsDto,
+  FindUserRequest,
+  SetPasswordDto,
+  UpdateUserDto,
+  UserInfoDto,
+} from '@jellyblog-nest/auth/model';
 import { Page } from '@jellyblog-nest/utils/common';
 
 @Injectable({
@@ -73,6 +80,20 @@ export class AuthService {
     return this.httpClient.put<boolean>(
       `${this.apiPath}/user`,
       updateUserDto,
+      {
+        observe: 'body',
+        responseType: 'json',
+      },
+    );
+  }
+
+  /**
+   * Set password for user (intended for admin usage)
+   */
+  setPassword(setPasswordDto: SetPasswordDto) {
+    return this.httpClient.put<boolean>(
+      `${this.apiPath}/user/resetpassword`,
+      setPasswordDto,
       {
         observe: 'body',
         responseType: 'json',
