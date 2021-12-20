@@ -28,6 +28,7 @@ import { UserSetPasswordComponent } from './user-set-password/user-set-password.
 import { UserSetPasswordModalService } from './user-set-password/user-set-password.modal.service';
 import { UserRemoveComponent } from './user-remove/user-remove.component';
 import { UserRemoveModalService } from './user-remove/user-remove.modal.service';
+import { UtilsFrontFileUploaderModule } from '@jellyblog-nest/utils/front-file-uploader';
 
 const routes: AppRoute[] = [
   {
@@ -42,29 +43,30 @@ const routes: AppRoute[] = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    StoreModule.forFeature(
-      fromUsersList.USERSLIST_FEATURE_KEY,
-      fromUsersList.reducer,
-    ),
-    EffectsModule.forFeature([UsersListEffects]),
-    ReactiveFormsModule,
-    NgSelectModule,
-    UtilsFrontModule,
-    NgbPaginationModule,
-    NgbDropdownModule,
-    NgIconsModule.withIcons({
-      HeroUserRemove,
-      HeroUser,
-      HeroUserGroup,
-      HeroDotsVerticalSolid,
-      HeroMenu,
-      HeroLockClosed,
-      HeroX,
-    }),
-  ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        StoreModule.forFeature(
+            fromUsersList.USERSLIST_FEATURE_KEY,
+            fromUsersList.reducer,
+        ),
+        EffectsModule.forFeature([UsersListEffects]),
+        ReactiveFormsModule,
+        NgSelectModule,
+        UtilsFrontModule,
+        NgbPaginationModule,
+        NgbDropdownModule,
+        NgIconsModule.withIcons({
+            HeroUserRemove,
+            HeroUser,
+            HeroUserGroup,
+            HeroDotsVerticalSolid,
+            HeroMenu,
+            HeroLockClosed,
+            HeroX,
+        }),
+        UtilsFrontFileUploaderModule,
+    ],
   declarations: [UserListComponent, UserCreateComponent, UserUpdateComponent, UserSetPasswordComponent, UserRemoveComponent],
   providers: [
     UserCreateModalService,

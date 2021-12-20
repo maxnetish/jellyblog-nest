@@ -9,6 +9,7 @@ import { LocalSerializer } from './passport-local-serializer';
 import { LoginGuard } from './login.guard';
 import { AuthenticatedGuard } from './authenticated.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { RequireRole } from './require-role.decorator';
 
 @Module({
   imports: [
@@ -38,4 +39,4 @@ import { APP_GUARD } from '@nestjs/core';
 export class AuthBackModule {
 }
 
-export { AuthService, LocalStrategy, LoginGuard };
+export { AuthService, LocalStrategy, LoginGuard, RequireRole };

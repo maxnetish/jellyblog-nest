@@ -5,6 +5,7 @@ import { Sortable } from './sortable';
 import { SortOrder } from './sort-order';
 import { Page } from './page';
 import { BaseEntityId } from './base-entity-id';
+import { SettingName } from './setting-name';
 
 export {
   LoadingStatus,
@@ -13,5 +14,6 @@ export {
   Sortable,
   SortOrder,
   Page,
-  BaseEntityId
+  BaseEntityId,
+  SettingName,
 };

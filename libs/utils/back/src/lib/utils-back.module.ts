@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ToArrayPipe } from './to-array.pipe';
+import { settingsDefault } from './settings-default';
 
 @Module({
   controllers: [],
@@ -15,4 +16,5 @@ export class UtilsBackModule {
 
 export {
   ToArrayPipe,
+  settingsDefault,
 }

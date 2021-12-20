@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 
 import { AppService } from './app.service';
-import { RequireRole } from '../../../../libs/auth/back/src/lib/require-role.decorator';
+import { RequireRole } from '@jellyblog-nest/auth/back';
 import { UserRole } from '@jellyblog-nest/utils/common';
 
 @Controller()

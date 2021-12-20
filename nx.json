@@ -50,6 +50,12 @@
       "tags": [],
       "implicitDependencies": ["frontend-admin"]
     },
+    "settings-back": {
+      "tags": []
+    },
+    "settings-model": {
+      "tags": []
+    },
     "shell-admin": {
       "tags": []
     },
@@ -63,6 +69,9 @@
       "tags": []
     },
     "utils-front": {
+      "tags": []
+    },
+    "utils-front-file-uploader": {
       "tags": []
     }
   }

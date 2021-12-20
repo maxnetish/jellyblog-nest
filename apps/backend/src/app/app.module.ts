@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { AuthBackModule } from '@jellyblog-nest/auth/back';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Session } from '@jellyblog-nest/entities';
+import { SettingsBackModule } from '@jellyblog-nest/settings/back';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { Session } from '@jellyblog-nest/entities';
       entities: [Session],
     }),
     AuthBackModule,
+    SettingsBackModule,
   ],
   controllers: [AppController],
   providers: [AppService],

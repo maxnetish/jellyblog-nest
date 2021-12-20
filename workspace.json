@@ -165,9 +165,7 @@
             ],
             "styles": ["apps/frontend/admin/src/styles.scss"],
             "scripts": [],
-            "allowedCommonJsDependencies": [
-              "validator"
-            ]
+            "allowedCommonJsDependencies": ["validator"]
           },
           "configurations": {
             "production": {
@@ -267,6 +265,50 @@
           "outputs": ["{options.outputFile}"],
           "options": {
             "lintFilePatterns": ["apps/frontend/admin-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "settings-back": {
+      "root": "libs/settings/back",
+      "sourceRoot": "libs/settings/back/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/settings/back/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/settings/back"],
+          "options": {
+            "jestConfig": "libs/settings/back/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "settings-model": {
+      "root": "libs/settings/model",
+      "sourceRoot": "libs/settings/model/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/settings/model/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/settings/model"],
+          "options": {
+            "jestConfig": "libs/settings/model/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
@@ -385,6 +427,31 @@
             "lintFilePatterns": [
               "libs/utils/front/src/**/*.ts",
               "libs/utils/front/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "utils-front-file-uploader": {
+      "projectType": "library",
+      "root": "libs/utils/front-file-uploader",
+      "sourceRoot": "libs/utils/front-file-uploader/src",
+      "prefix": "mg",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/utils/front-file-uploader"],
+          "options": {
+            "jestConfig": "libs/utils/front-file-uploader/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/utils/front-file-uploader/src/**/*.ts",
+              "libs/utils/front-file-uploader/src/**/*.html"
             ]
           }
         }
