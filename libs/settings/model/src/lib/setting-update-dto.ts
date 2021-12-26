@@ -4,10 +4,10 @@ import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-valid
 export class SettingUpdateDto {
   @IsEnum(SettingName)
   @IsNotEmpty()
-  name: SettingName;
+  name?: SettingName;
 
   @IsOptional()
   @IsString()
   @MaxLength(128)
-  value: string;
+  value?: string;
 }

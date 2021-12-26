@@ -14,6 +14,7 @@ import * as GlobalToastReducer from './global-toast/store/global-toast.reducer';
 import { NgbDropdownModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserWidgetComponent } from './user-widget/user-widget.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
 
 const routes: AppRoute[] = [
   {
@@ -78,6 +79,7 @@ const routes: AppRoute[] = [
     EffectsModule.forRoot([]),
     HttpClientModule,
     AuthFrontModule,
+    SettingsFrontModule,
     NgbToastModule,
     NgbDropdownModule,
   ],

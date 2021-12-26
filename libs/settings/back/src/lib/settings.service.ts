@@ -51,6 +51,12 @@ export class SettingsService {
     );
   }
 
+  async updateMany(updates: SettingUpdateDto[]) {
+    return Promise.all(updates.map((updateDto) => {
+      return this.update(updateDto);
+    }));
+  }
+
   private async seedDefaultSettings() {
     const existentSettings = await this.find({withSecure: true});
     const settingsToInserts = settingsDefault

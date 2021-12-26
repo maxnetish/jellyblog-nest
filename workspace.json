@@ -291,6 +291,31 @@
         }
       }
     },
+    "settings-front": {
+      "projectType": "library",
+      "root": "libs/settings/front",
+      "sourceRoot": "libs/settings/front/src",
+      "prefix": "app-settings",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/settings/front"],
+          "options": {
+            "jestConfig": "libs/settings/front/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/settings/front/src/**/*.ts",
+              "libs/settings/front/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
     "settings-model": {
       "root": "libs/settings/model",
       "sourceRoot": "libs/settings/model/src",
