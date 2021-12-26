@@ -4,7 +4,7 @@ import * as SettingsActions from './settings.actions';
 import { SettingsService } from '../settings.service';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { Store } from '@ngrx/store';
-import { catchError, map, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, map, switchMap, take } from 'rxjs';
 import { AuthFacade } from '@jellyblog-nest/auth/front';
 import { UserRole } from '@jellyblog-nest/utils/common';
 
@@ -16,8 +16,9 @@ export class SettingsEffects {
   loadSettings$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SettingsActions.loadSettings, GlobalActions.loadApp),
-      withLatestFrom(this.authFacade.userRole$),
-      switchMap(([, userRole]) => {
+      // update settings whenever role changes
+      switchMap(() => this.authFacade.userRole$),
+      switchMap((userRole) => {
         if (userRole === UserRole.ADMIN) {
           return this.settingsService.findPrivate();
         }

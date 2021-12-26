@@ -1,0 +1,20 @@
+<h1>Настройки</h1>
+
+<form [formGroup]="form">
+  <ng-container formArrayName="settings">
+    <ng-container *ngFor="let oneSetting of formSettingsArray.controls; index as ind">
+      <div class="form-group" *ngIf="oneSetting.value as oneSettingValue" [formGroupName]="ind">
+        <label class="text-secondary" [for]="oneSettingValue.name">{{oneSettingValue.label}}</label>
+        <input
+          type="text"
+          formControlName="value"
+          class="form-control"
+          [id]="oneSettingValue.name"
+        />
+        <small class="form-text text-muted">
+          {{oneSettingValue.description}}
+        </small>
+      </div>
+    </ng-container>
+  </ng-container>
+</form>

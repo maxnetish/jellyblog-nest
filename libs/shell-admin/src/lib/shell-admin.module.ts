@@ -45,6 +45,14 @@ const routes: AppRoute[] = [
     },
   },
   {
+    path: 'settings',
+    loadChildren: () => SettingsFrontModule,
+    canActivate: [AuthGuardNg],
+    data: {
+      role: UserRole.ADMIN,
+    },
+  },
+  {
     path: 'insufficient-rights',
     component: InsufficientRightsComponent,
   },
