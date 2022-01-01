@@ -10,6 +10,10 @@ import { EditFormComponent } from './edit-form/edit-form.component';
 import { AppRoute } from '@jellyblog-nest/utils/front';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgIconsModule } from '@ng-icons/core';
+import {
+  HeroPencil
+} from '@ng-icons/heroicons';
 
 const routes: AppRoute[] = [
   {
@@ -30,6 +34,9 @@ const routes: AppRoute[] = [
       SettingsEffects,
     ]),
     ReactiveFormsModule,
+    NgIconsModule.withIcons({
+      HeroPencil,
+    }),
   ],
   providers: [
     SettingsFacade,

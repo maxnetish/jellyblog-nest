@@ -18,12 +18,12 @@ export const failSettings = createAction(
 
 export const updateSetting = createAction(
   '[Settings] Update settings',
-  props<{ name: SettingName, value: string }>(),
+  props<{ name: SettingName, value?: string }>(),
 );
 
 export const successUpdateSetting = createAction(
   '[Settings] success update setting',
-  props<{ name: SettingName, value: string }>(),
+  props<{ name: SettingName, value?: string }>(),
 );
 
 export const failUpdateSetting = createAction(

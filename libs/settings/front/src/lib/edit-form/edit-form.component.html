@@ -10,6 +10,7 @@
           formControlName="value"
           class="form-control"
           [id]="oneSettingValue.name"
+          [class.app-dirty]="oneSetting.dirty"
         />
         <small class="form-text text-muted">
           {{oneSettingValue.description}}

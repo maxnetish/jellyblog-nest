@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as SettingsSelectors from './settings.selectors';
+import * as SettingsActions from './settings.actions';
 import { LoadingStatus, SettingName } from '@jellyblog-nest/utils/common';
 import { filter, map, switchMap } from 'rxjs';
+import { SettingDto } from '@jellyblog-nest/settings/model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,5 +38,12 @@ export class SettingsFacade {
       }),
     );
   };
+
+  saveSetting(setting: SettingDto) {
+   this.store.dispatch(SettingsActions.updateSetting({
+     name: setting.name,
+     value: setting.value,
+   }));
+  }
 
 }

@@ -2,8 +2,9 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestro
 import { SettingDto } from '@jellyblog-nest/settings/model';
 import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
 import { FormBuilder } from '@angular/forms';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { combineLatest, debounceTime, filter, Observable, Subject, take, takeUntil } from 'rxjs';
 import { SettingsFacade } from './../store/settings.facade';
+import { HeroPencil } from '@ng-icons/heroicons';
 
 interface SettingsFormModel {
   settings: SettingFormModel[];
@@ -26,6 +27,12 @@ export class EditFormComponent implements OnInit, OnDestroy {
 
   private readonly unsubscribe$ = new Subject();
 
+  private updateSetting(updateSettingDto: SettingDto | null) {
+    if(updateSettingDto) {
+      this.settingsFacade.saveSetting(updateSettingDto);
+    }
+  }
+
   constructor(
     public readonly settingsFacade: SettingsFacade,
     fb: FormBuilder,
@@ -39,17 +46,43 @@ export class EditFormComponent implements OnInit, OnDestroy {
     this.formSettingsArray = this.form.controls.settings as IFormArray<SettingFormModel>;
 
     this.settingsFacade.settings$.pipe(
-      takeUntil(this.unsubscribe$),
+      take(1),
     ).subscribe((settings) => {
       this.formSettingsArray.clear();
       settings.forEach((setting) => {
-       this.formSettingsArray.push(this.formBuilder.group<SettingFormModel>({
+       const oneSettingControl = this.formBuilder.group<SettingFormModel>({
          name: [setting.name],
          value: [setting.value],
          label: [setting.label],
          description: [setting.description],
-       }));
+       });
+       this.formSettingsArray.push(oneSettingControl);
+       oneSettingControl.valueChanges.pipe(
+         takeUntil(this.unsubscribe$),
+         debounceTime(2000),
+         filter((settingDtoOrNull) => !!settingDtoOrNull),
+       ).subscribe((settingDto) => {
+         this.updateSetting(settingDto);
+       });
       });
+    });
+
+    // mark as pristine after save complete
+    combineLatest([
+      this.settingsFacade.settings$,
+      this.formSettingsArray.valueChanges,
+    ]).pipe(
+      takeUntil(this.unsubscribe$),
+    ).subscribe(([persistedSettings, formSettingsValue]) => {
+      formSettingsValue.forEach((formSetting) => {
+        const persistedSetting = persistedSettings.find(item => item.name === formSetting.name);
+        if(persistedSetting && (persistedSetting.value === formSetting.value)) {
+          const formControl = this.formSettingsArray.controls.find((control) => control.value && (control.value.name === formSetting.name));
+          if(formControl) {
+            formControl.markAsPristine();
+          }
+        }
+      })
     });
 
   }
@@ -60,6 +93,7 @@ export class EditFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
   }
 
 }

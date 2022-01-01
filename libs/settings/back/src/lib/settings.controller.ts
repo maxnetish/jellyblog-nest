@@ -1,10 +1,9 @@
-import { Controller, Get, Put } from '@nestjs/common';
+import { Body, Controller, Get, Put } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RequireRole } from '@jellyblog-nest/auth/back';
 import { SettingName, UserRole } from '@jellyblog-nest/utils/common';
 import { UpdateResult } from 'typeorm';
-import { SettingDto } from '@jellyblog-nest/settings/model';
 
 @ApiTags('Settings')
 @Controller('settings')
@@ -37,7 +36,7 @@ export class SettingsController {
     type: UpdateResult,
   })
   @RequireRole(UserRole.ADMIN)
-  async updateSetting({name, value}: { name: SettingName, value?: string }) {
+  async updateSetting(@Body() {name, value}: { name: SettingName, value?: string }) {
     return this.settingsService.update({name, value});
   }
 }
