@@ -1,18 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FileUploaderComponent } from './file-uploader/file-uploader.component';
+import {
+  FileUploaderComponent,
+  FileInfo,
+  UploadErrorEvent,
+  UploadSuccessEvent,
+  UploadBeginEvent,
+} from './file-uploader/file-uploader.component';
 
 @NgModule({
   imports: [CommonModule],
   declarations: [
-    FileUploaderComponent
+    FileUploaderComponent,
   ],
   exports: [
-    FileUploaderComponent
+    FileUploaderComponent,
   ],
 })
-export class UtilsFrontFileUploaderModule {}
+export class UtilsFrontFileUploaderModule {
+}
 
 export {
   FileUploaderComponent,
+  FileInfo,
+  UploadSuccessEvent,
+  UploadBeginEvent,
+  UploadErrorEvent,
 }

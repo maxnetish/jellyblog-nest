@@ -3,8 +3,9 @@ import { Store } from '@ngrx/store';
 import * as SettingsSelectors from './settings.selectors';
 import * as SettingsActions from './settings.actions';
 import { LoadingStatus, SettingName } from '@jellyblog-nest/utils/common';
-import { filter, map, switchMap } from 'rxjs';
+import { combineLatest, filter, map, switchMap } from 'rxjs';
 import { SettingDto } from '@jellyblog-nest/settings/model';
+import { S3ClientConfig } from '@aws-sdk/client-s3';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +25,24 @@ export class SettingsFacade {
     }),
     switchMap(() => {
       return this.store.select(SettingsSelectors.selectSettings);
+    }),
+  );
+
+  s3ClientConfig$ = combineLatest([
+    this.getSetting$(SettingName.S3_ACCESS_KEY),
+    this.getSetting$(SettingName.S3_ACCESS_SECRET),
+    this.getSetting$(SettingName.S3_ENDPOINT),
+    this.getSetting$(SettingName.S3_REGION),
+  ]).pipe(
+    map(([accessKeyId, secretAccessKey, endpoint, region]) => {
+      return {
+        endpoint,
+        credentials: {
+          accessKeyId,
+          secretAccessKey,
+        },
+        region,
+      } as S3ClientConfig;
     }),
   );
 

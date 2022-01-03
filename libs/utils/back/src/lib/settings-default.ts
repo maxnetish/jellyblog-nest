@@ -29,11 +29,19 @@ export const settingsDefault: Partial<Setting>[] = [
     value: 'jbfs',
     description: 'S3 compatible file store: bucket name, all uploaded files will be in specified bucket)',
     secure: false,
-  }, {
+  },
+  {
     name: SettingName.S3_ENDPOINT,
     label: 'Endpoint',
     value: '',
     description: 'S3 compatible file store: api endpoint (mandatory if we use not Amazon Web Services storage, ex. spaces in Digital Ocean)',
+    secure: false,
+  },
+  {
+    name: SettingName.S3_PUBLIC_ENDPOINT,
+    label: 'Public endpoint',
+    value: '',
+    description: 'Host to use as public storage endpoint. Cloudfront or some other... Public url will be like "[public endpoint]/[file key]". Mandatory field.',
     secure: false,
   },
 ];

@@ -1,10 +1,19 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { SettingDto } from '@jellyblog-nest/settings/model';
 import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
 import { FormBuilder } from '@angular/forms';
 import { combineLatest, debounceTime, filter, Observable, Subject, take, takeUntil } from 'rxjs';
 import { SettingsFacade } from './../store/settings.facade';
-import { HeroPencil } from '@ng-icons/heroicons';
+import { S3ClientConfig } from '@aws-sdk/client-s3';
+import {
+  FileInfo,
+  UploadBeginEvent,
+  UploadErrorEvent,
+  UploadSuccessEvent,
+} from '@jellyblog-nest/utils/front-file-uploader';
+import { Store } from '@ngrx/store';
+import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
+import { SettingName } from '@jellyblog-nest/utils/common';
 
 interface SettingsFormModel {
   settings: SettingFormModel[];
@@ -17,6 +26,7 @@ type SettingFormModel = SettingDto;
   templateUrl: './edit-form.component.html',
   styleUrls: ['./edit-form.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
+  // We cannot use OnPush. Form controls will not update bound elements after change dirty status
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class EditFormComponent implements OnInit, OnDestroy {
@@ -28,12 +38,13 @@ export class EditFormComponent implements OnInit, OnDestroy {
   private readonly unsubscribe$ = new Subject();
 
   private updateSetting(updateSettingDto: SettingDto | null) {
-    if(updateSettingDto) {
+    if (updateSettingDto) {
       this.settingsFacade.saveSetting(updateSettingDto);
     }
   }
 
   constructor(
+    private readonly store: Store,
     public readonly settingsFacade: SettingsFacade,
     fb: FormBuilder,
   ) {
@@ -50,20 +61,20 @@ export class EditFormComponent implements OnInit, OnDestroy {
     ).subscribe((settings) => {
       this.formSettingsArray.clear();
       settings.forEach((setting) => {
-       const oneSettingControl = this.formBuilder.group<SettingFormModel>({
-         name: [setting.name],
-         value: [setting.value],
-         label: [setting.label],
-         description: [setting.description],
-       });
-       this.formSettingsArray.push(oneSettingControl);
-       oneSettingControl.valueChanges.pipe(
-         takeUntil(this.unsubscribe$),
-         debounceTime(2000),
-         filter((settingDtoOrNull) => !!settingDtoOrNull),
-       ).subscribe((settingDto) => {
-         this.updateSetting(settingDto);
-       });
+        const oneSettingControl = this.formBuilder.group<SettingFormModel>({
+          name: [setting.name],
+          value: [setting.value],
+          label: [setting.label],
+          description: [setting.description],
+        });
+        this.formSettingsArray.push(oneSettingControl);
+        oneSettingControl.valueChanges.pipe(
+          takeUntil(this.unsubscribe$),
+          debounceTime(2000),
+          filter((settingDtoOrNull) => !!settingDtoOrNull),
+        ).subscribe((settingDto) => {
+          this.updateSetting(settingDto);
+        });
       });
     });
 
@@ -76,15 +87,14 @@ export class EditFormComponent implements OnInit, OnDestroy {
     ).subscribe(([persistedSettings, formSettingsValue]) => {
       formSettingsValue.forEach((formSetting) => {
         const persistedSetting = persistedSettings.find(item => item.name === formSetting.name);
-        if(persistedSetting && (persistedSetting.value === formSetting.value)) {
+        if (persistedSetting && (persistedSetting.value === formSetting.value)) {
           const formControl = this.formSettingsArray.controls.find((control) => control.value && (control.value.name === formSetting.name));
-          if(formControl) {
+          if (formControl) {
             formControl.markAsPristine();
           }
         }
       })
     });
-
   }
 
   ngOnDestroy(): void {
@@ -95,5 +105,4 @@ export class EditFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
   }
-
 }

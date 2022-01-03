@@ -5079,6 +5079,11 @@ constants-browserify@^1.0.0:
   resolved "https://registry.yarnpkg.com/constants-browserify/-/constants-browserify-1.0.0.tgz#c20b96d8c617748aaf1c16021760cd27fcb8cb75"
   integrity sha1-wguW2MYXdIqvHBYCF2DNJ/y4y3U=
 
+content-disposition-header@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/content-disposition-header/-/content-disposition-header-0.6.0.tgz#6346d1e9311bbe739ec5036dabbd38cdb87681a7"
+  integrity sha512-+PKF6Y7JHgwD2Dld48L5jozC6pGDdnioJHfM7VyfF92pAU6wDF/N8K/cfecoq7b19KnelOnjntkVyN5hMm2F+w==
+
 content-disposition@0.5.3:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/content-disposition/-/content-disposition-0.5.3.tgz#e130caf7e7279087c5616c2007d0485698984fbd"

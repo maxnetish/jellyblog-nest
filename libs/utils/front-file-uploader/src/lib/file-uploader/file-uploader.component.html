@@ -1,7 +1,18 @@
-<p>file-uploader works!</p>
+<button
+  type="button"
+  [class]="buttonClass"
+  (click)="handleButtonClick($event)"
+  *ngIf="showButton$ | async"
+>
+  {{buttonText}}
+  <ng-content select="[buttonContent]"></ng-content>
+</button>
 
 <input
+  class="hidden-input"
   type="file"
+  #fileInputRef
   [multiple]="multiple$ | async"
   [accept]="accept$ | async"
+  (change)="handleFileInputChange(fileInputRef)"
 />
