@@ -24,31 +24,4 @@ export class FindUserRequest extends Pageable<UserInfoDtoWithoutUuid> {
     this.size = size || this.size;
     this.page = page || this.page;
   }
-
-  toHttpParams() {
-    let result = new HttpParams()
-      .append('page', this.page)
-      .append('size', this.size);
-
-    if (this.order) {
-      Object.entries(this.order).forEach(([key, order]) => {
-        result = result.append(`order[${key}]`, order);
-      });
-    }
-    // Object.keys(this.order).forEach((key: keyof UserInfoDtoWithoutUuid) => {
-    //   result = this.order[key]
-    //     ? result.append(`order[${key}]`, this.order[key])
-    //     : result;
-    // });
-
-    if (this.role && this.role.length) {
-      result = result.appendAll({ role: this.role });
-    }
-
-    if (this.name) {
-      result = result.append('name', this.name);
-    }
-
-    return result;
-  }
 }

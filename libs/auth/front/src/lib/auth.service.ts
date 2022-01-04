@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   CreateUserDto,
   CredentialsDto,
@@ -16,6 +16,28 @@ import { BaseEntityId, Page } from '@jellyblog-nest/utils/common';
 export class AuthService {
 
   private readonly apiPath = '/api/auth';
+
+  private findUserRequestToHttpParams(findUserRequest: FindUserRequest) {
+    let result = new HttpParams()
+      .append('page', findUserRequest.page)
+      .append('size', findUserRequest.size);
+
+    if (findUserRequest.order) {
+      Object.entries(findUserRequest.order).forEach(([key, order]) => {
+        result = result.append(`order[${key}]`, order);
+      });
+    }
+
+    if (findUserRequest.role && findUserRequest.role.length) {
+      result = result.appendAll({ role: findUserRequest.role });
+    }
+
+    if (findUserRequest.name) {
+      result = result.append('name', findUserRequest.name);
+    }
+
+    return result;
+  }
 
   constructor(
     private httpClient: HttpClient,
@@ -60,7 +82,7 @@ export class AuthService {
       {
         observe: 'body',
         responseType: 'json',
-        params: findUserRequest.toHttpParams(),
+        params: this.findUserRequestToHttpParams(findUserRequest),
       },
     );
   }

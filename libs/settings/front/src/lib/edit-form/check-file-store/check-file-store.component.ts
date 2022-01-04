@@ -60,7 +60,7 @@ export class CheckFileStoreComponent implements OnInit {
         severity: GlobalToastSeverity.SUCCESS,
       }));
       return result;
-    } catch (err) {
+    } catch (err: any) {
       this.store.dispatch(GlobalActions.addGlobalToast({
         text: err.message,
         severity: GlobalToastSeverity.ERROR,

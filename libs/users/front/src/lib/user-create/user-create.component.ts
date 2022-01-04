@@ -53,7 +53,7 @@ export class UserCreateComponent implements OnInit {
         role: value.role,
       }));
       return true;
-    } catch (err) {
+    } catch (err: any) {
       this.store.dispatch(GlobalActions.addGlobalToast({
         severity: GlobalToastSeverity.ERROR,
         text: err.message,

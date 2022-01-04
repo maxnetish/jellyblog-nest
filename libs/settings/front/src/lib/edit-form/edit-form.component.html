@@ -5,7 +5,7 @@
   <app-settings-check-file-store></app-settings-check-file-store>
 </details>
 
-<form [formGroup]="form">
+<form [formGroup]="$any(form)">
   <ng-container formArrayName="settings">
     <ng-container *ngFor="let oneSetting of formSettingsArray.controls; index as ind">
       <div class="form-group" *ngIf="oneSetting.value as oneSettingValue" [formGroupName]="ind">

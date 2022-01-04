@@ -82,7 +82,7 @@ export class UserSetPasswordComponent implements OnDestroy {
       await firstValueFrom(this.authService.setPassword(value));
       this.loading$.next(false);
       this.modal.close(true);
-    } catch (err) {
+    } catch (err: any) {
       this.loading$.next(false);
       this.store.dispatch(GlobalActions.addGlobalToast({
         severity: GlobalToastSeverity.ERROR,

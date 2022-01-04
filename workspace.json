@@ -21,7 +21,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "auth-front": {
       "projectType": "library",
@@ -46,7 +47,8 @@
             ]
           }
         }
-      }
+      },
+      "tags": []
     },
     "auth-model": {
       "root": "libs/auth/model",
@@ -68,7 +70,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "backend": {
       "root": "apps/backend",
@@ -119,7 +122,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "entities": {
       "root": "libs/entities",
@@ -141,7 +145,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "frontend-admin": {
       "projectType": "application",
@@ -165,7 +170,13 @@
             ],
             "styles": ["apps/frontend/admin/src/styles.scss"],
             "scripts": [],
-            "allowedCommonJsDependencies": ["validator"]
+            "allowedCommonJsDependencies": [
+              "validator",
+              "entities",
+              "fast-xml-parser",
+              "@aws-crypto/sha256-browser",
+              "@aws-crypto/crc32"
+            ]
           },
           "configurations": {
             "production": {
@@ -240,7 +251,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "frontend/admin-e2e": {
       "root": "apps/frontend/admin-e2e",
@@ -267,7 +279,9 @@
             "lintFilePatterns": ["apps/frontend/admin-e2e/**/*.{js,ts}"]
           }
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": ["frontend-admin"]
     },
     "settings-back": {
       "root": "libs/settings/back",
@@ -289,7 +303,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "settings-front": {
       "projectType": "library",
@@ -314,7 +329,8 @@
             ]
           }
         }
-      }
+      },
+      "tags": []
     },
     "settings-model": {
       "root": "libs/settings/model",
@@ -336,7 +352,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "shell-admin": {
       "projectType": "library",
@@ -361,7 +378,8 @@
             ]
           }
         }
-      }
+      },
+      "tags": []
     },
     "users-front": {
       "projectType": "library",
@@ -386,7 +404,8 @@
             ]
           }
         }
-      }
+      },
+      "tags": []
     },
     "utils-back": {
       "root": "libs/utils/back",
@@ -408,7 +427,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "utils-common": {
       "root": "libs/utils/common",
@@ -430,7 +450,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "utils-front": {
       "projectType": "library",
@@ -455,7 +476,8 @@
             ]
           }
         }
-      }
+      },
+      "tags": []
     },
     "utils-front-file-uploader": {
       "projectType": "library",
@@ -480,27 +502,8 @@
             ]
           }
         }
-      }
-    }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/nest"
-  },
-  "defaultProject": "backend",
-  "generators": {
-    "@nrwl/angular:application": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
-    },
-    "@nrwl/angular:library": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest"
-    },
-    "@nrwl/angular:component": {
-      "style": "scss"
+      },
+      "tags": []
     }
   }
 }

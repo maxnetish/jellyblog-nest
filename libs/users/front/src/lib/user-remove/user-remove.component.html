@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="submitForm()">
+<form [formGroup]="$any(form)" (ngSubmit)="submitForm()">
   <app-utils-modal-content
     [activeModal]="modal"
     modalTitle="Удалить пользователя"

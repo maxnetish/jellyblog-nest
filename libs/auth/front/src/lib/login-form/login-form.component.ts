@@ -61,7 +61,7 @@ export class LoginFormComponent {
         user: result || null,
       }));
       this.modal.close(result);
-    } catch (err) {
+    } catch (err: any) {
       this.store.dispatch(GlobalActions.addGlobalToast({
         severity: GlobalToastSeverity.ERROR,
         text: err.message,
