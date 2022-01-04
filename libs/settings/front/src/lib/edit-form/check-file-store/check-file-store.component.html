@@ -2,6 +2,8 @@
   [s3Config]="s3Config$ | async"
   (uploadEvents)="handleTestUploadEvents($event)"
   [s3Bucket]="s3Bucket$ | async"
+  [multiple]="true"
+  class="mb-2"
 >
   <ng-container buttonContent="">
     <ng-icon name="hero-upload"></ng-icon>
@@ -9,7 +11,7 @@
   </ng-container>
 </mg-file-uploader>
 <ng-container *ngIf="testUploadResult.length">
-  <h5>Линки - аттачменты</h5>
+  <label class="text-secondary">Линки - аттачменты</label>
   <div *ngFor="let fileInfo of testUploadResult">
     <a
       [href]="fileInfo.key | s3FileUrl : (s3PublicEndpoint$ | async) | appendResponseContentDisposition : fileInfo.name : 'attachment'"
@@ -18,7 +20,7 @@
       {{fileInfo.name}} - ({{fileInfo.length | number : '1.0-0'}} Б) - {{fileInfo.type}}
     </a>
   </div>
-  <h5>Линки - инлайн</h5>
+  <label class="text-secondary">Линки - инлайн</label>
   <div *ngFor="let fileInfo of testUploadResult">
     <a
       [href]="fileInfo.key | s3FileUrl : (s3PublicEndpoint$ | async) | appendResponseContentDisposition : fileInfo.name : 'inline'"
@@ -27,7 +29,7 @@
       {{fileInfo.name}} - ({{fileInfo.length | number : '1.0-0'}} Б) - {{fileInfo.type}}
     </a>
   </div>
-  <h5>Линки по умолчанию</h5>
+  <label class="text-secondary">Линки по умолчанию</label>
   <div *ngFor="let fileInfo of testUploadResult">
     <a
       [href]="fileInfo.key | s3FileUrl : (s3PublicEndpoint$ | async)"

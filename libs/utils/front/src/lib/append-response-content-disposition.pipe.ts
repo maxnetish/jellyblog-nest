@@ -14,12 +14,16 @@ export function appendResponseContentDisposition(baseUrl?: string | null, fileNa
   return `${baseUrlNorm}${queryParam}`;
 }
 
+/**
+ * Добавить к урлу параметр "response-content-disposition".
+ * Чтобы сервер отдал файл с соответствующим заголовком content=disposition
+ */
 @Pipe({
   name: 'appendResponseContentDisposition',
 })
 export class AppendResponseContentDispositionPipe implements PipeTransform {
 
-  transform(baseUrl?: string | null, fileName?: string | null, disposition?: 'attachment' | 'inline' | null): unknown {
+  transform(baseUrl?: string | null, fileName?: string | null, disposition?: 'attachment' | 'inline' | null): string {
     return appendResponseContentDisposition(
       baseUrl,
       fileName,
