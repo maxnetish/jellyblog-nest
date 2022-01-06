@@ -8,8 +8,11 @@ This project was generated using [Nx](https://nx.dev).
 
 🔎 **Smart, Extensible Build Framework**
 
+## TODO
+Use https://github.com/reactjs/express-react-views as template engine for public parts
+
 ## Useful
-* `nx g @nrwl/workspace:library --skipBabelrc --testEnvironment=node` Create usual ts non-buildable lib 
+* `nx g @nrwl/workspace:library --skipBabelrc --testEnvironment=node` Create usual ts non-buildable lib
 
 ## Adding capabilities to your workspace
 
