@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import {
   ChangePasswordDto,
   CreateUserDto,
@@ -24,6 +24,7 @@ export class AuthService {
     });
   }
 
+  private readonly logger = new Logger(AuthService.name);
   private hashAlgorythm = 'sha256';
 
   async createUser(createUserDto: CreateUserDto): Promise<UserInfoDto> {
@@ -223,7 +224,7 @@ export class AuthService {
   private async seedDefaultAdminIfNoOne() {
     const foundAnyAdminUser = (await this.countOfAdmins()) > 0;
     if (foundAnyAdminUser) {
-      console.log('We have admin');
+      this.logger.log('We have admin');
       return true;
     }
     const secret = AuthService.textToHash('jelly', this.hashAlgorythm);
@@ -234,7 +235,7 @@ export class AuthService {
       secret,
     });
     await this.userRepository.save(creatingUser);
-    console.log(`There are no admin yet, so create new one: "${creatingUser.username}"`);
+    this.logger.log(`There are no admin yet, so create new one: "${creatingUser.username}"`);
     return true;
   }
 
