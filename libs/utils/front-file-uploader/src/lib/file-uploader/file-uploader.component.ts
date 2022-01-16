@@ -28,6 +28,7 @@ export class FileInfo {
       type: file.type,
     } as FileInfo;
   }
+
   static fromHeadObjectCommandOutput(response: HeadObjectCommandOutput, key?: string) {
     return {
       key: key || '',
@@ -89,8 +90,19 @@ export class FileUploaderComponent implements OnInit {
   @Input() s3Meta?: Record<string, string>;
   @Input() buttonClass = 'btn btn-primary';
   @Input() buttonText?: string;
+  /**
+   * "Folder" to upload file(s). File key will prepends with prefix.
+   * "cool/images/" -> file will be at "cool/images/[key]".
+   * Shouls ends with path delimiter ("/")
+   */
+  @Input() prefix?: string;
+  /**
+   * If true - we use original file name as file key.
+   * Else (default) - key will be new uuid.
+   */
+  @Input() revealOriginalFileName?: boolean;
 
-  @Output() uploadEvents = new EventEmitter<UploadBeginEvent | UploadSuccessEvent | UploadErrorEvent>()
+  @Output() uploadEvents = new EventEmitter<UploadBeginEvent | UploadSuccessEvent | UploadErrorEvent>();
 
   @ViewChild('fileInputRef') fileInputRef?: ElementRef<HTMLInputElement>;
 
@@ -98,16 +110,22 @@ export class FileUploaderComponent implements OnInit {
   accept$ = new BehaviorSubject('');
   showButton$ = new BehaviorSubject(true);
 
-  private async uploadOneFile(client: S3Client, file: File) {
+  private async _uploadOneFile(client: S3Client, file: File) {
+
+    const prefix = this.prefix || '';
+    const s3Filename = this.revealOriginalFileName
+      ? file.name
+      : v4();
+    const key = `${prefix}${s3Filename}`;
 
     const putCommand = new PutObjectCommand({
-      Key: v4(),
+      Key: key,
       Body: file,
       Bucket: this.s3Bucket || undefined,
       ContentType: file.type,
       Metadata: {
         ...(this.s3Meta || {}),
-        originalName: encodeURI(file.name),
+        originalname: encodeURI(file.name),
       },
       Tagging: this.s3Tagging || undefined,
     });
@@ -148,16 +166,18 @@ export class FileUploaderComponent implements OnInit {
   }
 
 
-  async handleFileInputChange(fileInput: HTMLInputElement) {
+  handleFileInputChange(fileInput: HTMLInputElement) {
+    const files = Array.prototype.slice.call(fileInput.files || []) as File[];
+    return this.uploadFiles(files);
+  }
 
+  async uploadFiles(files: File[]) {
     const s3Client = new S3Client({
       ...this.s3Config,
     });
 
-    const files = Array.prototype.slice.call(fileInput.files || []) as File[];
-
     const uploadPromises = files.map((file) => {
-      return this.uploadOneFile(s3Client, file);
+      return this._uploadOneFile(s3Client, file);
     });
 
     try {

@@ -148,6 +148,7 @@
       },
       "tags": []
     },
+    "filestore-front": "libs/filestore/front",
     "frontend-admin": {
       "projectType": "application",
       "root": "apps/frontend/admin",

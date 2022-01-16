@@ -67,7 +67,13 @@ const routes: AppRoute[] = [
         }),
         UtilsFrontFileUploaderModule,
     ],
-  declarations: [UserListComponent, UserCreateComponent, UserUpdateComponent, UserSetPasswordComponent, UserRemoveComponent],
+  declarations: [
+    UserListComponent,
+    UserCreateComponent,
+    UserUpdateComponent,
+    UserSetPasswordComponent,
+    UserRemoveComponent,
+  ],
   providers: [
     UserCreateModalService,
     UserUpdateModalService,

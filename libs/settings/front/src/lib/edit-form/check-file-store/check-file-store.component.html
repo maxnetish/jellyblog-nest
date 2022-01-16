@@ -1,9 +1,12 @@
 <mg-file-uploader
   [s3Config]="s3Config$ | async"
   (uploadEvents)="handleTestUploadEvents($event)"
-  [s3Bucket]="s3Bucket$ | async"
+  [s3Bucket]="
+s3Bucket$ | async"
   [multiple]="true"
   class="mb-2"
+  prefix="prefix-as/folder/"
+  [revealOriginalFileName]="true"
 >
   <ng-container buttonContent="">
     <ng-icon name="hero-upload"></ng-icon>

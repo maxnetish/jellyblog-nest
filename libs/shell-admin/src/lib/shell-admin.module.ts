@@ -4,8 +4,6 @@ import { LayoutComponent } from './layout/layout.component';
 import { NoPreloading, RouterModule } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { AppRoute } from '@jellyblog-nest/utils/front';
-import { UserRole } from '@jellyblog-nest/utils/common';
 import { InsufficientRightsComponent } from './insufficient-rights/insufficient-rights.component';
 import { AuthFrontModule, AuthGuardNg } from '@jellyblog-nest/auth/front';
 import { HttpClientModule } from '@angular/common/http';
@@ -15,57 +13,12 @@ import { NgbDropdownModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserWidgetComponent } from './user-widget/user-widget.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
-
-const routes: AppRoute[] = [
-  {
-    path: '',
-    redirectTo: 'users',
-    pathMatch: 'full',
-  },
-  {
-    path: 'users',
-    loadChildren: async () => {
-      try {
-        const m = await import('@jellyblog-nest/users/front');
-        return m.UsersFrontModule;
-      } catch (e) {
-        console.error(e);
-        return null;
-      }
-    },
-    canActivate: [AuthGuardNg],
-    data: {
-      role: UserRole.ADMIN,
-      redirectOptionsIfNoRole: {
-        queryParams: {
-          afterLogin: '/users',
-        },
-        queryParamsHandling: 'merge',
-      },
-    },
-  },
-  {
-    path: 'settings',
-    loadChildren: () => SettingsFrontModule,
-    canActivate: [AuthGuardNg],
-    data: {
-      role: UserRole.ADMIN,
-    },
-  },
-  {
-    path: 'insufficient-rights',
-    component: InsufficientRightsComponent,
-  },
-  {
-    path: '**',
-    component: NotFoundComponent,
-  },
-];
+import { shellAdminRoutes } from './shell-admin.routes';
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes, {
+    RouterModule.forRoot(shellAdminRoutes, {
       preloadingStrategy: NoPreloading,
       scrollPositionRestoration: 'enabled',
       anchorScrolling: 'enabled',

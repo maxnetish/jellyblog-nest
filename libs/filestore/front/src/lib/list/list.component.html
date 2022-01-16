@@ -1,0 +1,4 @@
+<p>list works!</p>
+<div *ngFor="let oneObject of storeFacade.objects$ | async">
+  {{oneObject | json}}
+</div>
