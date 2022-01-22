@@ -2,7 +2,7 @@
 
 <div class="list">
   <div class="folder-item" *ngFor="let oneFolder of storeFacade.commonPrefixes$ | async">
-    <a [routerLink]="[]" [queryParams]="{prefix: oneFolder.Prefix}">{{oneFolder.Prefix}}</a>
+    <button class="" (click)="handleFolderClick(oneFolder)">{{oneFolder.Prefix}}</button>
   </div>
 </div>
 

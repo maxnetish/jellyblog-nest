@@ -2,6 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import * as fromFilestoreListActions from './filestore-list.actions';
 import { ListObjectsCommandOutput } from '@aws-sdk/client-s3';
 import { LoadingStatus } from '@jellyblog-nest/utils/common';
+import { beginBrowse } from './filestore-list.actions';
 
 export const filestoreListFeatureKey = 'filestoreList';
 
@@ -23,12 +24,21 @@ export const reducer = createReducer(
   initialState,
 
   on(
-    fromFilestoreListActions.beginBrowseAtPrefix,
-    (state, action) => {
+    fromFilestoreListActions.beginBrowse,
+    (state) => {
       return {
         ...state,
         loadingStatus: LoadingStatus.LOADING,
-        prefix: action.prefix || '',
+      };
+    },
+  ),
+
+  on(
+    fromFilestoreListActions.changeFolder,
+    (state) => {
+      return {
+        ...state,
+        loadingStatus: LoadingStatus.LOADING,
       };
     },
   ),
@@ -50,6 +60,7 @@ export const reducer = createReducer(
         ...state,
         listObjectsCommandOutputs: [action.response],
         loadingStatus: LoadingStatus.SUCCESS,
+        prefix: action.response.Prefix || '',
       };
     },
   ),

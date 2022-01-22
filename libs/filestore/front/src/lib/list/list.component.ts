@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
 import { FilestorelistFacade } from './store/filestore-list.facade';
-import { ActivatedRoute } from '@angular/router';
 import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { CommonPrefix } from '@aws-sdk/client-s3';
 
 @Component({
   selector: 'mg-filestore-list',
@@ -18,19 +16,10 @@ export class FilestoreListComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly storeFacade: FilestorelistFacade,
-    private readonly route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(
-      takeUntil(this.unsubscribe$),
-      map(queryParam => queryParam.get('prefix')),
-      map(prefix => prefix || undefined),
-      distinctUntilChanged(),
-    ).subscribe((prefix) => {
-      console.log('prefix: ', prefix);
-      this.storeFacade.handleBeginBrowsePrefix(prefix);
-    });
+   this.storeFacade.handleBeginBrowse();
   }
 
   ngOnDestroy(): void {
@@ -38,4 +27,7 @@ export class FilestoreListComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  handleFolderClick(oneFolder: CommonPrefix) {
+    this.storeFacade.handleChangeFolder(oneFolder.Prefix || '');
+  }
 }

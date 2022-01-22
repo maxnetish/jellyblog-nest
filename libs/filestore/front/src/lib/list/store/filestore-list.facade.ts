@@ -38,7 +38,11 @@ export class FilestorelistFacade {
     }),
   );
 
-  handleBeginBrowsePrefix(prefix?: string) {
-    this.store.dispatch(fromFilestoreListActions.beginBrowseAtPrefix({ prefix }));
+  handleBeginBrowse() {
+    this.store.dispatch(fromFilestoreListActions.beginBrowse());
+  }
+
+  handleChangeFolder(prefix: string) {
+    this.store.dispatch(fromFilestoreListActions.changeFolder({ prefix }));
   }
 }
