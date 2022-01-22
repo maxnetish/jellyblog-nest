@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { filter, map, switchMap, tap, withLatestFrom, take } from 'rxjs/operators';
 import * as fromFilestroreListActions from './filestore-list.actions';
 import { Store } from '@ngrx/store';
 import * as fromFilestoreListSelectors from './filestore-list.selectors';
-import { LoadingStatus, SettingName } from '@jellyblog-nest/utils/common';
+import { SettingName } from '@jellyblog-nest/utils/common';
 import { SettingsFacade } from '@jellyblog-nest/settings/front';
 import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 import { catchError, combineLatest, from } from 'rxjs';
@@ -15,7 +15,9 @@ export class FilestoreListEffects {
 
   initFilestoreLists$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(fromFilestroreListActions.initList),
+      ofType(
+        fromFilestroreListActions.beginBrowseAtPrefix,
+      ),
       switchMap(() => {
         return combineLatest([
           this.store.select(fromFilestoreListSelectors.selectLoadingStatus),
@@ -23,7 +25,9 @@ export class FilestoreListEffects {
           this.store.select(fromFilestoreListSelectors.selectPrefix),
           this.settingsFacade.s3ClientConfig$,
           this.settingsFacade.getSetting$(SettingName.S3_BUCKET),
-        ]);
+        ]).pipe(
+          take(1),
+        );
       }),
       switchMap(([, delimiter, prefix, s3ClientConfig, s3Bucket]) => {
         const s3Client = new S3Client(s3ClientConfig);

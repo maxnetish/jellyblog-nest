@@ -23,11 +23,12 @@ export const reducer = createReducer(
   initialState,
 
   on(
-    fromFilestoreListActions.initList,
-    (state) => {
+    fromFilestoreListActions.beginBrowseAtPrefix,
+    (state, action) => {
       return {
         ...state,
         loadingStatus: LoadingStatus.LOADING,
+        prefix: action.prefix || '',
       };
     },
   ),
@@ -52,4 +53,5 @@ export const reducer = createReducer(
       };
     },
   ),
+
 );

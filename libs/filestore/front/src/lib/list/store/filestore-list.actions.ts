@@ -1,8 +1,9 @@
 import { createAction, props } from '@ngrx/store';
 import { ListObjectsCommandOutput } from '@aws-sdk/client-s3';
 
-export const initList = createAction(
+export const beginBrowseAtPrefix = createAction(
   '[FilestoreList] Init List',
+  props<{prefix?: string}>(),
 );
 
 export const gotListObjectsCommandOutput = createAction(

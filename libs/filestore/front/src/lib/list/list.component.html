@@ -1,4 +1,11 @@
-<p>list works!</p>
+<h1>Файлы в хранилище</h1>
+
+<div class="list">
+  <div class="folder-item" *ngFor="let oneFolder of storeFacade.commonPrefixes$ | async">
+    <a [routerLink]="[]" [queryParams]="{prefix: oneFolder.Prefix}">{{oneFolder.Prefix}}</a>
+  </div>
+</div>
+
 <div *ngFor="let oneObject of storeFacade.objects$ | async">
   {{oneObject | json}}
 </div>
