@@ -26,11 +26,64 @@ export class FilestoreListEffects {
           this.settingsFacade.getSetting$(SettingName.S3_BUCKET),
         ]).pipe(
           take(1),
+          map(([prefix, delimiter, s3ClientConfig, s3Bucket]) => {
+            return {
+              prefix,
+              delimiter,
+              s3ClientConfig,
+              s3Bucket,
+              nextMarker: null,
+            };
+          }),
         );
       }),
       switchMap(this.fetchObjects.bind(this)),
       map(({ response }) => {
         return fromFilestroreListActions.gotListObjectsCommandOutput({ response });
+      }),
+      catchError((err, caught) => {
+        this.store.dispatch(fromFilestroreListActions.failListObjectsCommandOutput({ err }));
+        this.store.dispatch(
+          GlobalActions.addGlobalToast({
+            text: err.message,
+            severity: GlobalToastSeverity.ERROR,
+          }),
+        );
+        return caught;
+      }),
+    );
+  });
+
+  // TODO допилить постраничную загрузку. Если в ответе
+  // стоит признак Trunkated, то сразу дернуть continue,
+  // иначе в списке могут быть не все commonPrefixes.
+  // Все commonPrefixes гарантированно будут только когда Trunkated станет false
+  continueBrowseFolder$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(fromFilestroreListActions.continueBrowse),
+      switchMap(() => {
+        return combineLatest([
+          this.store.select(fromFilestoreListSelectors.selectPrefix),
+          this.store.select(fromFilestoreListSelectors.selectDelimiter),
+          this.settingsFacade.s3ClientConfig$,
+          this.settingsFacade.getSetting$(SettingName.S3_BUCKET),
+          this.store.select(fromFilestoreListSelectors.selectListObjectsCommandsOutputs),
+        ]).pipe(
+          take(1),
+          map(([prefix, delimiter, s3ClientConfig, s3Bucket, currentOutputs]) => {
+            return {
+              prefix,
+              delimiter,
+              s3ClientConfig,
+              s3Bucket,
+              nextMarker: currentOutputs[currentOutputs.length - 1].NextMarker,
+            };
+          }),
+        );
+      }),
+      switchMap(this.fetchObjects.bind(this)),
+      map(({ response }) => {
+        return fromFilestroreListActions.gotNextListObjectsCommandOutput({ response });
       }),
       catchError((err, caught) => {
         this.store.dispatch(fromFilestroreListActions.failListObjectsCommandOutput({ err }));
@@ -58,12 +111,13 @@ export class FilestoreListEffects {
         ]).pipe(
           take(1),
           map(([delimiter, s3ClientConfig, s3Bucket]) => {
-            return [
-              action.prefix,
+            return {
+              prefix: action.prefix,
               delimiter,
               s3ClientConfig,
               s3Bucket,
-            ] as [string, string, S3ClientConfig, string | null | undefined];
+              nextMarker: null,
+            };
           }),
         );
       }),
@@ -121,17 +175,19 @@ export class FilestoreListEffects {
   }
 
   private fetchObjects(
-    [prefix, delimiter, s3ClientConfig, s3Bucket]
-      : [string, string, S3ClientConfig, string | null | undefined],
+    {prefix, delimiter, s3ClientConfig, s3Bucket, nextMarker}
+      : {prefix: string, delimiter: string, s3ClientConfig: S3ClientConfig, s3Bucket: string | null | undefined, nextMarker?: string | null},
   ) {
     const s3Client = this.getS3Client(s3ClientConfig);
     const command = new ListObjectsCommand({
       Bucket: s3Bucket || undefined,
       Delimiter: delimiter,
       Prefix: prefix,
+      Marker: nextMarker || undefined,
     });
     return from(s3Client.send(command)).pipe(
       map((response) => {
+        console.log('GOT ', response);
         return {
           response,
         };

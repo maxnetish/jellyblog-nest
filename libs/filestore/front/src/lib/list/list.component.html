@@ -37,3 +37,5 @@
 <div *ngFor="let oneFileInfo of storeFacade.files$ | async">
   {{oneFileInfo.name}} {{oneFileInfo.Size}} {{oneFileInfo.LastModified | date : 'medium'}}
 </div>
+
+<button type="button" (click)="storeFacade.handleContinueBrowse()">Continue</button>

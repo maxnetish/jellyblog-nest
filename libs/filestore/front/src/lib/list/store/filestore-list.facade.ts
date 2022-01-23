@@ -146,5 +146,7 @@ export class FilestorelistFacade {
     this.store.dispatch(fromFilestoreListActions.changeFolder({ prefix }));
   }
 
-
+  handleContinueBrowse() {
+    this.store.dispatch(fromFilestoreListActions.continueBrowse());
+  }
 }

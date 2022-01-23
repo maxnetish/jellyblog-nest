@@ -65,4 +65,28 @@ export const reducer = createReducer(
     },
   ),
 
+  on(
+    fromFilestoreListActions.continueBrowse,
+    (state) => {
+      return {
+        ...state,
+        loadingStatus: LoadingStatus.LOADING,
+      };
+    },
+  ),
+
+  on(
+    fromFilestoreListActions.gotNextListObjectsCommandOutput,
+    (state, action) => {
+      return {
+        ...state,
+        loadingStatus: LoadingStatus.SUCCESS,
+        listObjectsCommandOutputs: [
+          ...state.listObjectsCommandOutputs,
+          action.response,
+        ],
+      };
+    },
+  ),
+
 );
