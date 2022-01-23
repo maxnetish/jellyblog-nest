@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { FilestorelistFacade } from './store/filestore-list.facade';
+import { FilestorelistFacade, FolderInfo } from './store/filestore-list.facade';
 import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { CommonPrefix } from '@aws-sdk/client-s3';
 
@@ -27,7 +27,11 @@ export class FilestoreListComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  handleFolderClick(oneFolder: CommonPrefix) {
-    this.storeFacade.handleChangeFolder(oneFolder.Prefix || '');
+  handleFolderClick(oneFolder: FolderInfo) {
+    this.storeFacade.handleChangeFolder(oneFolder.prefix || '');
+  }
+
+  trackFolderInfo(index: number, item: FolderInfo) {
+    return item.prefix;
   }
 }

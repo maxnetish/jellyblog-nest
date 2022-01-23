@@ -1,11 +1,39 @@
 <h1>Файлы в хранилище</h1>
 
+<div class="browse-path mb-4">
+  <ng-container *ngFor="let folderInfo of storeFacade.parentFoldersHierarchy$ | async; last as isLast; trackBy: trackFolderInfo">
+    <button
+      class="btn btn-outline-primary btn-sm mr-2 text-nowrap"
+      [class.active]="isLast"
+      (click)="handleFolderClick(folderInfo)"
+    >
+      {{folderInfo.name}}
+    </button>
+    <span class="mr-2">/</span>
+  </ng-container>
+</div>
+
 <div class="list">
-  <div class="folder-item" *ngFor="let oneFolder of storeFacade.commonPrefixes$ | async">
-    <button class="" (click)="handleFolderClick(oneFolder)">{{oneFolder.Prefix}}</button>
+  <div class="folder-item folder-item_parent mb-2" *ngIf="storeFacade.parentFolder$ | async as parentFolderInfo">
+    <button
+      class="btn btn-outline-primary btn-sm"
+      (click)="handleFolderClick(parentFolderInfo)"
+    >
+      <ng-icon name="hero-arrow-sm-up"></ng-icon>
+      {{parentFolderInfo.name}}
+    </button>
+  </div>
+  <div class="folder-item mb-2" *ngFor="let oneFolder of storeFacade.folders$ | async; trackBy: trackFolderInfo">
+    <button
+      class="btn btn-outline-primary btn-sm"
+      (click)="handleFolderClick(oneFolder)"
+    >
+      <ng-icon name="hero-folder"></ng-icon>
+      {{oneFolder.name}}
+    </button>
   </div>
 </div>
 
-<div *ngFor="let oneObject of storeFacade.objects$ | async">
-  {{oneObject | json}}
+<div *ngFor="let oneFileInfo of storeFacade.files$ | async">
+  {{oneFileInfo.name}} {{oneFileInfo.Size}} {{oneFileInfo.LastModified | date : 'medium'}}
 </div>

@@ -8,6 +8,8 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { FilestoreListEffects } from './list/store/filestore-list.effects';
 import { FilestorelistFacade } from './list/store/filestore-list.facade';
+import { HeroArrowSmUp, HeroFolder } from '@ng-icons/heroicons';
+import { NgIconsModule } from '@ng-icons/core';
 
 const routes: AppRoute[] = [
   {
@@ -32,6 +34,10 @@ const routes: AppRoute[] = [
     EffectsModule.forFeature([
       FilestoreListEffects,
     ]),
+    NgIconsModule.withIcons({
+      HeroArrowSmUp,
+      HeroFolder,
+    })
   ],
   declarations: [
     FilestoreListComponent,
