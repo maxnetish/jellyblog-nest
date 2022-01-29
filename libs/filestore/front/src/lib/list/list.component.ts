@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { FilestorelistFacade, FolderInfo } from './store/filestore-list.facade';
-import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
-import { CommonPrefix } from '@aws-sdk/client-s3';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'mg-filestore-list',

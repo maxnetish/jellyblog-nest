@@ -13,6 +13,7 @@ import {
   AppendResponseContentDispositionPipe,
   appendResponseContentDisposition,
 } from './append-response-content-disposition.pipe';
+import { ToStrictBooleanPipe } from './to-strict-boolean.pipe';
 
 @NgModule({
   imports: [
@@ -26,12 +27,14 @@ import {
     ModalContentComponent,
     S3FileUrlPipe,
     AppendResponseContentDispositionPipe,
+    ToStrictBooleanPipe,
   ],
   exports: [
     ValidationMessageComponent,
     ModalContentComponent,
     S3FileUrlPipe,
     AppendResponseContentDispositionPipe,
+    ToStrictBooleanPipe,
   ],
 })
 export class UtilsFrontModule {
@@ -47,4 +50,5 @@ export {
   buildS3FileUrl,
   AppendResponseContentDispositionPipe,
   appendResponseContentDisposition,
+  ToStrictBooleanPipe,
 };

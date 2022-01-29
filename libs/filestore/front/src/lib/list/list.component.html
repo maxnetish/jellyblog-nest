@@ -32,8 +32,11 @@
       {{oneFolder.name}}
     </button>
   </div>
-</div>
-
-<div *ngFor="let oneFileInfo of storeFacade.files$ | async">
-  {{oneFileInfo.name}} {{oneFileInfo.Size}} {{oneFileInfo.LastModified | date : 'medium'}}
+  <ng-container
+    *ngFor="let oneFileInfo of storeFacade.files$ | async"
+  >
+    <mg-filestore-list-item
+      [fileInfo]="oneFileInfo"
+    ></mg-filestore-list-item>
+  </ng-container>
 </div>

@@ -1,0 +1,8 @@
+<ng-container *ngIf="store.shortFileInfo$ | async as shortFileInfo">
+
+  <button class="btn btn-link" (click)="store.toggleExpanded()">{{shortFileInfo.name}}</button> {{shortFileInfo.Size}} {{shortFileInfo.LastModified | date : 'medium'}}
+
+  <div [ngbCollapse]="store.collapsed$ | async | toStrictBoolean">
+    EXPANDED
+  </div>
+</ng-container>

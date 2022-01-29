@@ -177,7 +177,6 @@ export class FilestoreListEffects {
     });
     return from(s3Client.send(command)).pipe(
       map((response) => {
-        console.log('GOT ', response);
         return {
           response,
         };
