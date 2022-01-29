@@ -5,10 +5,6 @@ export const beginBrowse = createAction(
   '[FilestoreList] Begin Browse',
 );
 
-export const continueBrowse = createAction(
-  '[FilestoreList] Browse Next Page'
-);
-
 export const changeFolder = createAction(
   '[FilestoreList] Change Folder',
   props<{prefix: string}>(),

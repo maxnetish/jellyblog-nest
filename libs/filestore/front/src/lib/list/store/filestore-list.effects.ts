@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, switchMap, take } from 'rxjs/operators';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 import * as fromFilestroreListActions from './filestore-list.actions';
 import { Store } from '@ngrx/store';
 import * as fromFilestoreListSelectors from './filestore-list.selectors';
 import { SettingName } from '@jellyblog-nest/utils/common';
 import { SettingsFacade } from '@jellyblog-nest/settings/front';
 import { ListObjectsCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
-import { catchError, combineLatest, from } from 'rxjs';
+import { catchError, combineLatest, from, Observable } from 'rxjs';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 
 @Injectable()
@@ -38,62 +38,59 @@ export class FilestoreListEffects {
         );
       }),
       switchMap(this.fetchObjects.bind(this)),
-      map(({ response }) => {
-        return fromFilestroreListActions.gotListObjectsCommandOutput({ response });
+      map(({response}) => {
+        return fromFilestroreListActions.gotListObjectsCommandOutput({response});
       }),
       catchError((err, caught) => {
-        this.store.dispatch(fromFilestroreListActions.failListObjectsCommandOutput({ err }));
-        this.store.dispatch(
-          GlobalActions.addGlobalToast({
-            text: err.message,
-            severity: GlobalToastSeverity.ERROR,
-          }),
-        );
-        return caught;
+        return this.onCatchError(err, caught);
       }),
     );
   });
 
-  // TODO допилить постраничную загрузку. Если в ответе
-  // стоит признак Trunkated, то сразу дернуть continue,
-  // иначе в списке могут быть не все commonPrefixes.
-  // Все commonPrefixes гарантированно будут только когда Trunkated станет false
+  /**
+   * Если предыдущий запрос списка имеет IsTruncated: true -
+   * это значит, что не все объекты еще получили. Посылаем запрос за следующей порцией,
+   * используя маркер из предыдущего запроса.
+   */
   continueBrowseFolder$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(fromFilestroreListActions.continueBrowse),
-      switchMap(() => {
+      ofType(
+        fromFilestroreListActions.gotListObjectsCommandOutput,
+        fromFilestroreListActions.gotNextListObjectsCommandOutput,
+      ),
+      filter((action) => {
+        return !!action.response.IsTruncated;
+      }),
+      switchMap((action) => {
         return combineLatest([
-          this.store.select(fromFilestoreListSelectors.selectPrefix),
-          this.store.select(fromFilestoreListSelectors.selectDelimiter),
           this.settingsFacade.s3ClientConfig$,
           this.settingsFacade.getSetting$(SettingName.S3_BUCKET),
-          this.store.select(fromFilestoreListSelectors.selectListObjectsCommandsOutputs),
         ]).pipe(
           take(1),
-          map(([prefix, delimiter, s3ClientConfig, s3Bucket, currentOutputs]) => {
+          map(([s3ClientConfig, s3Bucket]) => {
             return {
-              prefix,
-              delimiter,
+              action,
               s3ClientConfig,
               s3Bucket,
-              nextMarker: currentOutputs[currentOutputs.length - 1].NextMarker,
             };
           }),
         );
       }),
-      switchMap(this.fetchObjects.bind(this)),
-      map(({ response }) => {
-        return fromFilestroreListActions.gotNextListObjectsCommandOutput({ response });
+      switchMap(({action, s3ClientConfig, s3Bucket}) => {
+        const previousResponse = action.response;
+        return this.fetchObjects({
+          prefix: previousResponse.Prefix || '',
+          delimiter: previousResponse.Delimiter || '',
+          nextMarker: previousResponse.NextMarker,
+          s3Bucket,
+          s3ClientConfig,
+        });
+      }),
+      map(({response}) => {
+        return fromFilestroreListActions.gotNextListObjectsCommandOutput({response});
       }),
       catchError((err, caught) => {
-        this.store.dispatch(fromFilestroreListActions.failListObjectsCommandOutput({ err }));
-        this.store.dispatch(
-          GlobalActions.addGlobalToast({
-            text: err.message,
-            severity: GlobalToastSeverity.ERROR,
-          }),
-        );
-        return caught;
+        return this.onCatchError(err, caught);
       }),
     );
   });
@@ -122,18 +119,11 @@ export class FilestoreListEffects {
         );
       }),
       switchMap(this.fetchObjects.bind(this)),
-      map(({ response }) => {
-        return fromFilestroreListActions.gotListObjectsCommandOutput({ response });
+      map(({response}) => {
+        return fromFilestroreListActions.gotListObjectsCommandOutput({response});
       }),
       catchError((err, caught) => {
-        this.store.dispatch(fromFilestroreListActions.failListObjectsCommandOutput({ err }));
-        this.store.dispatch(
-          GlobalActions.addGlobalToast({
-            text: err.message,
-            severity: GlobalToastSeverity.ERROR,
-          }),
-        );
-        return caught;
+        return this.onCatchError(err, caught);
       }),
     );
   });
@@ -176,7 +166,7 @@ export class FilestoreListEffects {
 
   private fetchObjects(
     {prefix, delimiter, s3ClientConfig, s3Bucket, nextMarker}
-      : {prefix: string, delimiter: string, s3ClientConfig: S3ClientConfig, s3Bucket: string | null | undefined, nextMarker?: string | null},
+      : { prefix: string, delimiter: string, s3ClientConfig: S3ClientConfig, s3Bucket: string | null | undefined, nextMarker?: string | null },
   ) {
     const s3Client = this.getS3Client(s3ClientConfig);
     const command = new ListObjectsCommand({
@@ -195,4 +185,14 @@ export class FilestoreListEffects {
     );
   }
 
+  private onCatchError<D>(err: any, caught: Observable<D>) {
+    this.store.dispatch(fromFilestroreListActions.failListObjectsCommandOutput({err}));
+    this.store.dispatch(
+      GlobalActions.addGlobalToast({
+        text: err.message,
+        severity: GlobalToastSeverity.ERROR,
+      }),
+    );
+    return caught;
+  }
 }

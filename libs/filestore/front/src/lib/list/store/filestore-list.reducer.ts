@@ -2,7 +2,6 @@ import { createReducer, on } from '@ngrx/store';
 import * as fromFilestoreListActions from './filestore-list.actions';
 import { ListObjectsCommandOutput } from '@aws-sdk/client-s3';
 import { LoadingStatus } from '@jellyblog-nest/utils/common';
-import { beginBrowse } from './filestore-list.actions';
 
 export const filestoreListFeatureKey = 'filestoreList';
 
@@ -59,18 +58,10 @@ export const reducer = createReducer(
       return {
         ...state,
         listObjectsCommandOutputs: [action.response],
-        loadingStatus: LoadingStatus.SUCCESS,
+        loadingStatus: action.response.IsTruncated
+          ? state.loadingStatus
+          : LoadingStatus.SUCCESS,
         prefix: action.response.Prefix || '',
-      };
-    },
-  ),
-
-  on(
-    fromFilestoreListActions.continueBrowse,
-    (state) => {
-      return {
-        ...state,
-        loadingStatus: LoadingStatus.LOADING,
       };
     },
   ),
@@ -80,7 +71,9 @@ export const reducer = createReducer(
     (state, action) => {
       return {
         ...state,
-        loadingStatus: LoadingStatus.SUCCESS,
+        loadingStatus: action.response.IsTruncated
+          ? state.loadingStatus
+          : LoadingStatus.SUCCESS,
         listObjectsCommandOutputs: [
           ...state.listObjectsCommandOutputs,
           action.response,
@@ -88,5 +81,4 @@ export const reducer = createReducer(
       };
     },
   ),
-
 );
