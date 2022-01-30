@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { FileInfo } from '../store/filestore-list.facade';
 import { LoadingStatus, SettingName } from '@jellyblog-nest/utils/common';
 import { from, switchMap, tap, withLatestFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HeadObjectCommand, HeadObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
 import { SettingsFacade } from '@jellyblog-nest/settings/front';
+import { FileInfo } from '../store/file-info';
 
 export interface ListItemState {
   shortFileInfo: FileInfo | null;
@@ -29,6 +29,21 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
     super(initialState);
   }
 
+  readonly expanded$ = this.select(
+    state => state.expanded,
+  );
+
+  readonly collapsed$ = this.select(
+    state => !state.expanded,
+  );
+
+  readonly shortFileInfo$ = this.select(
+    state => state.shortFileInfo,
+  );
+
+  readonly detailsLoadingStatus$ = this.select(
+    state => state.detailsLoadingStatus,
+  );
 
   readonly fetchDetails = this.effect((fetch$) => {
     return fetch$.pipe(
@@ -55,6 +70,7 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
         return from(client.send(command)).pipe(
           tapResponse(
             (response) => {
+              console.log('GOT ', response);
               this.patchState({
                 details: {...response},
                 detailsLoadingStatus: LoadingStatus.SUCCESS,
@@ -70,49 +86,22 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
     );
   });
 
-
   readonly setFileInfo = this.updater((state, fileInfo: FileInfo) => {
     return {
       ...state,
       shortFileInfo: fileInfo,
       detailsLoadingStatus: LoadingStatus.INITIAL,
-      expanded: false,
     };
   });
 
   readonly toggleExpanded = this.updater((state) => {
-    // if (!state.expanded) {
-    //   this.fetchDetails();
-    // }
+    if (!state.expanded) {
+      this.fetchDetails();
+    }
     return {
       ...state,
       expanded: !state.expanded,
     };
   });
-
-  readonly expanded$ = this.select(
-    (state) => {
-      return state.expanded;
-    },
-  );
-
-  readonly collapsed$ = this.select(
-    (state) => {
-      return !state.expanded;
-    },
-  )
-
-  readonly shortFileInfo$ = this.select(
-    (state) => {
-      return state.shortFileInfo;
-    },
-  );
-
-  readonly detailsLoadingStatus$ = this.select(
-    (state) => {
-      return state.detailsLoadingStatus;
-    },
-  )
-
 
 }

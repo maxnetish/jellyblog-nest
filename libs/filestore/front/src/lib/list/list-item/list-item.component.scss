@@ -1,3 +1,41 @@
 :host {
   display: block;
+  padding: 8px 0;
+}
+
+.details-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0 16px;
+}
+
+.details-header_name {
+  width: 60%;
+}
+
+.details-header_size {
+  width: 20%;
+}
+
+.details-header_time {
+  width: 20%;
+}
+
+.collapse-marker-icon {
+  transform-origin: 40% 80%;
+  transition: ease transform 250ms;
+  position: relative;
+  top: -2px;
+
+  &.expanded {
+    transform: rotate(90deg);
+  }
+}
+
+.details-header_name_button-content {
+  display: inline-flex;
+}
+
+.details-header_name_button-label {
+
 }

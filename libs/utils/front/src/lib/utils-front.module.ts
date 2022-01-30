@@ -14,6 +14,7 @@ import {
   appendResponseContentDisposition,
 } from './append-response-content-disposition.pipe';
 import { ToStrictBooleanPipe } from './to-strict-boolean.pipe';
+import { HumanFileSizePipe } from './human-file-size.pipe';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { ToStrictBooleanPipe } from './to-strict-boolean.pipe';
     S3FileUrlPipe,
     AppendResponseContentDispositionPipe,
     ToStrictBooleanPipe,
+    HumanFileSizePipe,
   ],
   exports: [
     ValidationMessageComponent,
@@ -35,6 +37,7 @@ import { ToStrictBooleanPipe } from './to-strict-boolean.pipe';
     S3FileUrlPipe,
     AppendResponseContentDispositionPipe,
     ToStrictBooleanPipe,
+    HumanFileSizePipe,
   ],
 })
 export class UtilsFrontModule {
@@ -51,4 +54,5 @@ export {
   AppendResponseContentDispositionPipe,
   appendResponseContentDisposition,
   ToStrictBooleanPipe,
+  HumanFileSizePipe,
 };

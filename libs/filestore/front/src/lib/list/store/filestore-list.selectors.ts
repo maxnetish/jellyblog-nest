@@ -24,3 +24,8 @@ export const selectListObjectsCommandsOutputs = createSelector(
   selectFilestoreListState,
   state => state.listObjectsCommandOutputs,
 );
+
+export const selectSort = createSelector(
+  selectFilestoreListState,
+  state => state.sort,
+);

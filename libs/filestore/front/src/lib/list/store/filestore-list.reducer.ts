@@ -1,7 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
 import * as fromFilestoreListActions from './filestore-list.actions';
 import { ListObjectsCommandOutput } from '@aws-sdk/client-s3';
-import { LoadingStatus } from '@jellyblog-nest/utils/common';
+import { LoadingStatus, SortOption } from '@jellyblog-nest/utils/common';
+import { FileInfo } from './file-info';
+import { availableSortOptions } from './filestore-sort-options';
 
 export const filestoreListFeatureKey = 'filestoreList';
 
@@ -10,6 +12,7 @@ export interface State {
   delimiter: string;
   listObjectsCommandOutputs: ListObjectsCommandOutput[],
   loadingStatus: LoadingStatus,
+  sort: SortOption<FileInfo>,
 }
 
 export const initialState: State = {
@@ -17,6 +20,7 @@ export const initialState: State = {
   prefix: '',
   listObjectsCommandOutputs: [],
   loadingStatus: LoadingStatus.INITIAL,
+  sort: availableSortOptions[0],
 };
 
 export const reducer = createReducer(
@@ -81,4 +85,17 @@ export const reducer = createReducer(
       };
     },
   ),
+
+  on(
+    fromFilestoreListActions.changeSort,
+    (state, action) => {
+      return {
+        ...state,
+        sort: {
+          ...action.sort,
+        },
+      };
+    },
+  ),
+
 );

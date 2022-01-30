@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
-import { FileInfo } from '../store/filestore-list.facade';
 import { FilestoreListItemStore } from './list-item-store.service';
 import { Subject } from 'rxjs';
+import { FileInfo } from '../store/file-info';
 
 @Component({
   selector: 'mg-filestore-list-item',
@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     FilestoreListItemStore,
-  ]
+  ],
 })
 export class ListItemComponent implements OnInit, OnDestroy {
 

@@ -1,8 +1,30 @@
 <ng-container *ngIf="store.shortFileInfo$ | async as shortFileInfo">
 
-  <button class="btn btn-link" (click)="store.toggleExpanded()">{{shortFileInfo.name}}</button> {{shortFileInfo.Size}} {{shortFileInfo.LastModified | date : 'medium'}}
+  <div class="details-header">
+    <div class="details-header_name">
+      <a class="" href="javascript:void 0" (click)="store.toggleExpanded()">
+        <div class="details-header_name_button-content">
+          <ng-icon
+            name="hero-chevron-right"
+            class="collapse-marker-icon"
+            [class.expanded]="store.expanded$ | async"
+            [class.collapsed]="store.collapsed$ | async"
+          ></ng-icon>
+          <div class="details-header_name_button-label text-left">
+            {{shortFileInfo.name}}
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="details-header_size">
+      {{shortFileInfo.Size | fileSizeForHuman}}
+    </div>
+    <time class="details-header_time">
+      {{shortFileInfo.LastModified | date : 'medium'}}
+    </time>
+  </div>
 
-  <div [ngbCollapse]="store.collapsed$ | async | toStrictBoolean">
+  <div class="details-body" [ngbCollapse]="store.collapsed$ | async | toStrictBoolean">
     EXPANDED
   </div>
 </ng-container>

@@ -1,11 +1,34 @@
 <h1>Файлы в хранилище</h1>
 
+<div>
+  <div ngbDropdown>
+    <button
+      class="btn btn-outline-primary btn-sm"
+      id="dropdownSortOptions"
+      ngbDropdownToggle
+    >
+      {{storeFacade.sortLabel$ | async}}
+    </button>
+    <div ngbDropdownMenu aria-labelledby="dropdownSortOptions">
+      <button
+        ngbDropdownItem
+        *ngFor="let sortOption of availableSortOptions"
+        (click)="storeFacade.handleChangeSort(sortOption)"
+      >
+        {{sortOption.label}}
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="browse-path mb-4">
-  <ng-container *ngFor="let folderInfo of storeFacade.parentFoldersHierarchy$ | async; last as isLast; trackBy: trackFolderInfo">
+  <ng-container
+    *ngFor="let folderInfo of storeFacade.parentFoldersHierarchy$ | async; last as isLast; trackBy: trackFolderInfo">
     <button
       class="btn btn-outline-primary btn-sm mr-2 text-nowrap"
       [class.active]="isLast"
       (click)="handleFolderClick(folderInfo)"
+      type="button"
     >
       {{folderInfo.name}}
     </button>
@@ -18,6 +41,7 @@
     <button
       class="btn btn-outline-primary btn-sm"
       (click)="handleFolderClick(parentFolderInfo)"
+      type="button"
     >
       <ng-icon name="hero-arrow-sm-up"></ng-icon>
       {{parentFolderInfo.name}}
@@ -33,9 +57,10 @@
     </button>
   </div>
   <ng-container
-    *ngFor="let oneFileInfo of storeFacade.files$ | async"
+    *ngFor="let oneFileInfo of storeFacade.files$ | async; trackBy: trackFileInfo"
   >
     <mg-filestore-list-item
+      class="list-item"
       [fileInfo]="oneFileInfo"
     ></mg-filestore-list-item>
   </ng-container>

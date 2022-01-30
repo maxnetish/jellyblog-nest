@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { FilestorelistFacade, FolderInfo } from './store/filestore-list.facade';
 import { Subject } from 'rxjs';
+import { availableSortOptions } from './store/filestore-sort-options';
+import { FileInfo } from './store/file-info';
 
 @Component({
   selector: 'mg-filestore-list',
@@ -12,6 +14,7 @@ import { Subject } from 'rxjs';
 export class FilestoreListComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new Subject();
+  availableSortOptions = availableSortOptions;
 
   constructor(
     public readonly storeFacade: FilestorelistFacade,
@@ -32,5 +35,10 @@ export class FilestoreListComponent implements OnInit, OnDestroy {
 
   trackFolderInfo(index: number, item: FolderInfo) {
     return item.prefix;
+  }
+
+  trackFileInfo(index: number, item: FileInfo) {
+    console.log('trackFileInfo: ', item.Key);
+    return item.Key;
   }
 }
