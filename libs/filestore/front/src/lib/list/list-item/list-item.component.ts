@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
 import { FileMetadataItem, FilestoreListItemStore } from './list-item-store.service';
 import { Subject } from 'rxjs';
 import { FileInfo } from '../store/file-info';
+import { FilestorelistFacade } from '../store/filestore-list.facade';
 
 @Component({
   selector: 'mg-filestore-list-item',
@@ -13,7 +14,7 @@ import { FileInfo } from '../store/file-info';
     FilestoreListItemStore,
   ],
 })
-export class ListItemComponent implements OnInit, OnDestroy {
+export class ListItemComponent implements OnDestroy {
 
   private unsubscribe$ = new Subject();
 
@@ -23,6 +24,7 @@ export class ListItemComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly store: FilestoreListItemStore,
+    public readonly listFacade: FilestorelistFacade,
   ) {
   }
 
@@ -31,11 +33,7 @@ export class ListItemComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  ngOnInit(): void {
-  }
-
   trackMetadata(ind: number, value: FileMetadataItem) {
     return value.name;
   }
-
 }

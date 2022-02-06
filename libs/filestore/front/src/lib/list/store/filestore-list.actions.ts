@@ -31,3 +31,18 @@ export const changeSort = createAction(
   '[FilestoreList] Change Sort',
   props<{ sort: SortOption<FileInfo> }>(),
 );
+
+export const deleteObject = createAction(
+  '[FilestoreList] Delete Object',
+  props<{ key: string }>(),
+);
+
+export const deleteObjectSuccess = createAction(
+  '[FilestoreList] Delete Object success',
+  props<{ key: string }>(),
+);
+
+export const deleteObjectFail = createAction(
+  '[FilestoreList] Delete Object fail',
+  props<{ err: any }>(),
+);

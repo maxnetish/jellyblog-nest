@@ -6,9 +6,9 @@ import { Store } from '@ngrx/store';
 import * as fromFilestoreListSelectors from './filestore-list.selectors';
 import { SettingName } from '@jellyblog-nest/utils/common';
 import { SettingsFacade } from '@jellyblog-nest/settings/front';
-import { ListObjectsCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
-import { catchError, combineLatest, from, Observable } from 'rxjs';
-import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
+import { DeleteObjectCommand, ListObjectsCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
+import { catchError, combineLatest, from, Observable, tap, withLatestFrom } from 'rxjs';
+import { ConfirmModalService, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 
 @Injectable()
 export class FilestoreListEffects {
@@ -128,6 +128,69 @@ export class FilestoreListEffects {
     );
   });
 
+  deleteObject$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(fromFilestroreListActions.deleteObject),
+      switchMap((action) => {
+        return this.confirmModalService.show({
+          title: 'Удаление',
+          message: `Удалить файл ${action.key} из хранилища?`,
+        }).pipe(
+          map((confirm) => {
+            return {
+              confirm,
+              key: action.key,
+            };
+          }),
+        );
+      }),
+      filter(({confirm}) => confirm),
+      withLatestFrom(
+        this.store.select(fromFilestoreListSelectors.selectDelimiter),
+        this.settingsFacade.s3ClientConfig$,
+        this.settingsFacade.getSetting$(SettingName.S3_BUCKET),
+      ),
+      switchMap(([{key}, delimiter, s3ClientConfig, s3Bucket]) => {
+        const command = new DeleteObjectCommand({
+          Bucket: s3Bucket || undefined,
+          Key: key,
+        });
+        const client = this.getS3Client(s3ClientConfig);
+        return from(client.send(command)).pipe(
+          map((response) => {
+            return {
+              response,
+              key,
+            };
+          }),
+        );
+      }),
+      map(({key}) => {
+        return fromFilestroreListActions.deleteObjectSuccess({key});
+      }),
+      catchError((err, caught) => {
+        this.store.dispatch(fromFilestroreListActions.deleteObjectFail({err}));
+        return this.onCatchError(err, caught);
+      }),
+    );
+  });
+
+  deleteObjectSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(fromFilestroreListActions.deleteObjectSuccess),
+      tap((action) => {
+        this.store.dispatch(
+          GlobalActions.addGlobalToast({
+            text: `${action.key} deleted`,
+            severity: GlobalToastSeverity.SUCCESS,
+          }),
+        );
+      }),
+    );
+  }, {
+    dispatch: false,
+  });
+
   // Переиспользуем S3Client, хотя никакого профита от этого наверно нет.
   private _s3Client: S3Client | null = null;
   private _s3ActualConfig: S3ClientConfig | null = null;
@@ -161,6 +224,7 @@ export class FilestoreListEffects {
     private actions$: Actions,
     private readonly store: Store,
     private readonly settingsFacade: SettingsFacade,
+    private readonly confirmModalService: ConfirmModalService,
   ) {
   }
 

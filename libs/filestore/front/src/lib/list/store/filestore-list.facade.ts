@@ -181,4 +181,10 @@ export class FilestorelistFacade {
     this.store.dispatch(fromFilestoreListActions.changeSort({sort}));
   }
 
+  handleDeleteObject(key?: string) {
+    if (key) {
+      this.store.dispatch(fromFilestoreListActions.deleteObject({key}));
+    }
+  }
+
 }

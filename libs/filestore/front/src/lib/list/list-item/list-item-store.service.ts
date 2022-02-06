@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { LoadingStatus, SettingName } from '@jellyblog-nest/utils/common';
 import { from, Observable, switchMap, tap, withLatestFrom } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { HeadObjectCommand, HeadObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
 import { SettingsFacade } from '@jellyblog-nest/settings/front';
 import { FileInfo } from '../store/file-info';
@@ -100,7 +100,9 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
     },
   )
 
-  readonly s3PublicEndpoint$ = this.settingsFacade.getSetting$(SettingName.S3_PUBLIC_ENDPOINT);
+  readonly s3PublicEndpoint$: Observable<string> = this.settingsFacade.getSetting$(SettingName.S3_PUBLIC_ENDPOINT).pipe(
+    map(s3PublicEndPointOrEmpty => s3PublicEndPointOrEmpty || ''),
+  );
 
   readonly fetchDetails = this.effect((fetch$) => {
     return fetch$.pipe(
@@ -127,7 +129,6 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
         return from(client.send(command)).pipe(
           tapResponse(
             (response) => {
-              console.log('GOT ', response);
               this.patchState({
                 details: {...response},
                 detailsLoadingStatus: LoadingStatus.SUCCESS,

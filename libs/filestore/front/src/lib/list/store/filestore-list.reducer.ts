@@ -98,4 +98,22 @@ export const reducer = createReducer(
     },
   ),
 
+  on(
+    fromFilestoreListActions.deleteObjectSuccess,
+    (state, action) => {
+      return {
+        ...state,
+        // Выпилить из стора инф. об удаленном файле
+        listObjectsCommandOutputs: state.listObjectsCommandOutputs.map((output) => {
+          return {
+            ...output,
+            Contents: output.Contents
+              ? output.Contents.filter(fileObject => fileObject.Key !== action.key)
+              : output.Contents,
+          };
+        }),
+      };
+    },
+  ),
+
 );

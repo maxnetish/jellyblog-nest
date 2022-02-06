@@ -15,6 +15,8 @@ import {
 } from './append-response-content-disposition.pipe';
 import { ToStrictBooleanPipe } from './to-strict-boolean.pipe';
 import { HumanFileSizePipe } from './human-file-size.pipe';
+import { ConfirmComponent } from './components/confirm/confirm.component';
+import { ConfirmModalService } from './components/confirm/confirm-modal.service';
 
 @NgModule({
   imports: [
@@ -30,6 +32,7 @@ import { HumanFileSizePipe } from './human-file-size.pipe';
     AppendResponseContentDispositionPipe,
     ToStrictBooleanPipe,
     HumanFileSizePipe,
+    ConfirmComponent,
   ],
   exports: [
     ValidationMessageComponent,
@@ -38,6 +41,7 @@ import { HumanFileSizePipe } from './human-file-size.pipe';
     AppendResponseContentDispositionPipe,
     ToStrictBooleanPipe,
     HumanFileSizePipe,
+    ConfirmComponent,
   ],
 })
 export class UtilsFrontModule {
@@ -55,4 +59,6 @@ export {
   appendResponseContentDisposition,
   ToStrictBooleanPipe,
   HumanFileSizePipe,
+  ConfirmComponent,
+  ConfirmModalService,
 };
