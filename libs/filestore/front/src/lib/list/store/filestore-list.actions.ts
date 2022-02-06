@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { ListObjectsCommandOutput } from '@aws-sdk/client-s3';
+import { CopyObjectCommandOutput, ListObjectsCommandOutput } from '@aws-sdk/client-s3';
 import { SortOption } from '@jellyblog-nest/utils/common';
 import { FileInfo } from './file-info';
 
@@ -45,4 +45,19 @@ export const deleteObjectSuccess = createAction(
 export const deleteObjectFail = createAction(
   '[FilestoreList] Delete Object fail',
   props<{ err: any }>(),
+);
+
+export const renameObject = createAction(
+  '[FilestoreList] Rename Object',
+  props<{ currentKey: string, newKey: string }>(),
+);
+
+export const renameObjectSuccess = createAction(
+  '[FilestoreList] Rename Object Success',
+  props<{ currentKey: string, newKey: string, output: CopyObjectCommandOutput }>(),
+);
+
+export const renameObjectFail = createAction(
+  '[FilestoreList] Rename Object Fail',
+  props<{err: any}>(),
 );

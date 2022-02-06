@@ -12,6 +12,7 @@ export interface ListItemState {
   expanded: boolean;
   detailsLoadingStatus: LoadingStatus;
   details: HeadObjectCommandOutput | null;
+  renameActive: boolean;
 };
 
 export interface FileMetadataItem {
@@ -24,6 +25,7 @@ const initialState: ListItemState = {
   expanded: false,
   detailsLoadingStatus: LoadingStatus.INITIAL,
   details: null,
+  renameActive: false,
 };
 
 @Injectable()
@@ -104,6 +106,11 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
     map(s3PublicEndPointOrEmpty => s3PublicEndPointOrEmpty || ''),
   );
 
+  readonly renameActive$ = this.select(
+    (state) => state.renameActive,
+  );
+
+
   readonly fetchDetails = this.effect((fetch$) => {
     return fetch$.pipe(
       withLatestFrom(
@@ -159,6 +166,13 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
     return {
       ...state,
       expanded: !state.expanded,
+    };
+  });
+
+  readonly renameToggle = this.updater((state) => {
+    return {
+      ...state,
+      renameActive: !state.renameActive,
     };
   });
 

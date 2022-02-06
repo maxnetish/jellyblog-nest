@@ -187,4 +187,15 @@ export class FilestorelistFacade {
     }
   }
 
+  handleRenameObject(currentKey: string, newKey: string) {
+    if (currentKey && newKey) {
+      this.store.dispatch(fromFilestoreListActions.renameObject({
+        newKey,
+        currentKey,
+      }));
+    }
+  }
+
 }
+
+

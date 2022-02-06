@@ -17,11 +17,18 @@ import {
   HeroSortDescending,
   HeroExternalLink,
   HeroDownload,
+  HeroPencil,
+  HeroX,
+  HeroDocumentDuplicate,
+  HeroClipboardCopy,
+  HeroGlobe,
+  HeroCheck,
 } from '@ng-icons/heroicons';
 import { NgIconsModule } from '@ng-icons/core';
 import { ListItemComponent } from './list/list-item/list-item.component';
 import { NgbCollapseModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveComponentModule } from '@ngrx/component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: AppRoute[] = [
   {
@@ -55,11 +62,19 @@ const routes: AppRoute[] = [
       HeroSortDescending,
       HeroExternalLink,
       HeroDownload,
+      HeroPencil,
+      HeroX,
+      HeroDocumentDuplicate,
+      HeroClipboardCopy,
+      HeroGlobe,
+      HeroCheck,
     }),
     NgbCollapseModule,
     UtilsFrontModule,
     NgbDropdownModule,
     ReactiveComponentModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   declarations: [
     FilestoreListComponent,

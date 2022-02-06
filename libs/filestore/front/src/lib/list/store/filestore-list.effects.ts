@@ -6,8 +6,14 @@ import { Store } from '@ngrx/store';
 import * as fromFilestoreListSelectors from './filestore-list.selectors';
 import { SettingName } from '@jellyblog-nest/utils/common';
 import { SettingsFacade } from '@jellyblog-nest/settings/front';
-import { DeleteObjectCommand, ListObjectsCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
-import { catchError, combineLatest, from, Observable, tap, withLatestFrom } from 'rxjs';
+import {
+  CopyObjectCommand,
+  DeleteObjectCommand,
+  ListObjectsCommand,
+  S3Client,
+  S3ClientConfig,
+} from '@aws-sdk/client-s3';
+import { catchError, combineLatest, from, Observable, takeUntil, tap, withLatestFrom } from 'rxjs';
 import { ConfirmModalService, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 
 @Injectable()
@@ -146,11 +152,10 @@ export class FilestoreListEffects {
       }),
       filter(({confirm}) => confirm),
       withLatestFrom(
-        this.store.select(fromFilestoreListSelectors.selectDelimiter),
         this.settingsFacade.s3ClientConfig$,
         this.settingsFacade.getSetting$(SettingName.S3_BUCKET),
       ),
-      switchMap(([{key}, delimiter, s3ClientConfig, s3Bucket]) => {
+      switchMap(([{key}, s3ClientConfig, s3Bucket]) => {
         const command = new DeleteObjectCommand({
           Bucket: s3Bucket || undefined,
           Key: key,
@@ -182,6 +187,94 @@ export class FilestoreListEffects {
         this.store.dispatch(
           GlobalActions.addGlobalToast({
             text: `${action.key} deleted`,
+            severity: GlobalToastSeverity.SUCCESS,
+          }),
+        );
+      }),
+    );
+  }, {
+    dispatch: false,
+  });
+
+  renameObject$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(fromFilestroreListActions.renameObject),
+      switchMap((action) => {
+        return this.confirmModalService.show({
+          title: 'Переименование',
+          message: `Переименовать файл ${action.currentKey} в ${action.newKey}? У файла изменится его постоянный URL.`,
+        }).pipe(
+          map((confirm) => {
+            return {
+              confirm,
+              currentKey: action.currentKey,
+              newKey: action.newKey,
+            };
+          }),
+        );
+      }),
+      filter(({confirm}) => confirm),
+      withLatestFrom(
+        this.settingsFacade.s3ClientConfig$,
+        this.settingsFacade.getSetting$(SettingName.S3_BUCKET),
+      ),
+      switchMap(([{currentKey, newKey}, s3ClientConfig, s3Bucket])=> {
+        const command = new CopyObjectCommand({
+          Bucket: s3Bucket || undefined,
+          Key: newKey,
+          // encode required because parameter passed in header
+          CopySource:  encodeURI(`${s3Bucket}/${currentKey}`),
+        });
+        const client = this.getS3Client(s3ClientConfig);
+        return from(client.send(command)).pipe(
+          map((copyResponse) => {
+            return {
+              copyResponse,
+              currentKey,
+              newKey,
+              s3ClientConfig,
+              s3Bucket,
+            };
+          }),
+        );
+      }),
+      switchMap(({copyResponse, currentKey, newKey, s3ClientConfig, s3Bucket}) => {
+        const command = new DeleteObjectCommand({
+          Bucket: s3Bucket || undefined,
+          Key: currentKey,
+        });
+        const client = this.getS3Client(s3ClientConfig);
+        return from(client.send(command)).pipe(
+          map((deleteResponse) => {
+            return {
+              currentKey,
+              newKey,
+              output: copyResponse,
+            };
+          }),
+        );
+      }),
+      map(({currentKey, newKey, output})=> {
+        return fromFilestroreListActions.renameObjectSuccess({
+          currentKey,
+          newKey,
+          output,
+        });
+      }),
+      catchError((err, caught) => {
+        this.store.dispatch(fromFilestroreListActions.renameObjectFail({err}));
+        return this.onCatchError(err, caught);
+      }),
+    );
+  });
+
+  renameObjectSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(fromFilestroreListActions.renameObjectSuccess),
+      tap((action) => {
+        this.store.dispatch(
+          GlobalActions.addGlobalToast({
+            text: `${action.currentKey} now become ${action.newKey}`,
             severity: GlobalToastSeverity.SUCCESS,
           }),
         );

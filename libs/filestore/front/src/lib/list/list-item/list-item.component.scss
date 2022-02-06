@@ -30,6 +30,10 @@
   &.expanded {
     transform: rotate(90deg);
   }
+
+  &.hidden {
+    visibility: hidden;
+  }
 }
 
 .details-header_name_button-content {
