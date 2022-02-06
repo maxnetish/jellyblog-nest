@@ -38,7 +38,6 @@ export class FilestoreListComponent implements OnInit, OnDestroy {
   }
 
   trackFileInfo(index: number, item: FileInfo) {
-    console.log('trackFileInfo: ', item.Key);
     return item.Key;
   }
 }

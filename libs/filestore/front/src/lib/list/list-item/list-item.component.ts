@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
-import { FilestoreListItemStore } from './list-item-store.service';
+import { FileMetadataItem, FilestoreListItemStore } from './list-item-store.service';
 import { Subject } from 'rxjs';
 import { FileInfo } from '../store/file-info';
 
@@ -32,6 +32,10 @@ export class ListItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+  }
+
+  trackMetadata(ind: number, value: FileMetadataItem) {
+    return value.name;
   }
 
 }

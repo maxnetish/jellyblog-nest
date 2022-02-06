@@ -1,13 +1,28 @@
 <h1>Файлы в хранилище</h1>
 
-<div>
-  <div ngbDropdown>
+<div class="mb-4 d-flex">
+  <div class="browse-path flex-grow-1">
+    <ng-container
+      *ngFor="let folderInfo of storeFacade.parentFoldersHierarchy$ | async; last as isLast; trackBy: trackFolderInfo">
+      <button
+        class="btn btn-outline-primary btn-sm mr-2 text-nowrap"
+        [class.active]="isLast"
+        (click)="handleFolderClick(folderInfo)"
+        type="button"
+      >
+        {{folderInfo.name}}
+      </button>
+      <span class="mr-2">/</span>
+    </ng-container>
+  </div>
+  <div class="browse-sort flex-shrink-0" ngbDropdown>
     <button
       class="btn btn-outline-primary btn-sm"
       id="dropdownSortOptions"
       ngbDropdownToggle
     >
-      {{storeFacade.sortLabel$ | async}}
+      <ng-icon [name]="(storeFacade.sortIcon$ | ngrxPush) || ''"></ng-icon>
+      {{storeFacade.sortLabel$ | ngrxPush}}
     </button>
     <div ngbDropdownMenu aria-labelledby="dropdownSortOptions">
       <button
@@ -19,21 +34,6 @@
       </button>
     </div>
   </div>
-</div>
-
-<div class="browse-path mb-4">
-  <ng-container
-    *ngFor="let folderInfo of storeFacade.parentFoldersHierarchy$ | async; last as isLast; trackBy: trackFolderInfo">
-    <button
-      class="btn btn-outline-primary btn-sm mr-2 text-nowrap"
-      [class.active]="isLast"
-      (click)="handleFolderClick(folderInfo)"
-      type="button"
-    >
-      {{folderInfo.name}}
-    </button>
-    <span class="mr-2">/</span>
-  </ng-container>
 </div>
 
 <div class="list">

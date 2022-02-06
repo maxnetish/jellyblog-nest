@@ -5,7 +5,7 @@ import * as fromFilestoreListSelectors from './filestore-list.selectors';
 import { map } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 import { SettingsFacade } from '@jellyblog-nest/settings/front';
-import { SettingName, SortOption } from '@jellyblog-nest/utils/common';
+import { SettingName, SortOption, SortOrder } from '@jellyblog-nest/utils/common';
 import { FileInfo } from './file-info';
 import { filestoreListComparators } from './filestore-list-comparators';
 
@@ -24,6 +24,11 @@ export class FilestorelistFacade {
     private readonly settingsFacade: SettingsFacade,
   ) {
   }
+
+  private sortIconMap: Record<SortOrder, string> = {
+    [SortOrder.ASC]: 'hero-sort-ascending',
+    [SortOrder.DESC]: 'hero-sort-descending',
+  };
 
   files$: Observable<FileInfo[]> = combineLatest([
     this.store.select(fromFilestoreListSelectors.selectListObjectsCommandsOutputs),
@@ -141,6 +146,20 @@ export class FilestorelistFacade {
   ).pipe(
     map((sort) => {
       return sort.label;
+    }),
+  );
+
+  sortOrder$: Observable<SortOrder> = this.store.select(
+    fromFilestoreListSelectors.selectSort,
+  ).pipe(
+    map((sort) => {
+      return sort.order;
+    }),
+  );
+
+  sortIcon$: Observable<string> = this.sortOrder$.pipe(
+    map((sortOrder) => {
+      return this.sortIconMap[sortOrder];
     }),
   );
 

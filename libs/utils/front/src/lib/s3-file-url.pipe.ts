@@ -1,11 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 export function buildS3FileUrl(
-  key: string,
+  keyOrEmpty?: string,
   endpoint?: string | null,
   query?: Record<string, string> | null,
 ): string {
 
+  const key = keyOrEmpty || '';
   let result = `${endpoint || ''}/${key}`;
 
   if (query) {
@@ -24,7 +25,7 @@ export function buildS3FileUrl(
 export class S3FileUrlPipe implements PipeTransform {
 
   transform(
-    key: string,
+    key?: string,
     endpoint?: string | null,
     query?: Record<string, string> | null,
   ): string {

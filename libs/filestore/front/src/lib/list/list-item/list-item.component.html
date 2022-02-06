@@ -25,6 +25,61 @@
   </div>
 
   <div class="details-body" [ngbCollapse]="store.collapsed$ | async | toStrictBoolean">
-    EXPANDED
+    <div class="list-group list-group-flush">
+      <div class="list-group-item">
+        <div class="small text-secondary">Content type</div>
+        <div class="text-body">{{store.detailsContentType$ | ngrxPush}}</div>
+      </div>
+      <div class="list-group-item" *ngFor="let metadataItem of store.detailsMetadata$ | async; trackBy: trackMetadata">
+        <div class="small text-secondary">{{metadataItem.name}}</div>
+        <div class="text-body">{{metadataItem.value}}</div>
+      </div>
+      <div class="list-group-item" *ngIf="store.contentTypeImage$ | ngrxPush">
+        <div class="small text-secondary">Preview</div>
+        <a
+          [href]="store.fileKey$ | ngrxPush | s3FileUrl : (store.s3PublicEndpoint$ | ngrxPush)"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="img-preview"
+            [src]="store.fileKey$ | ngrxPush | s3FileUrl : (store.s3PublicEndpoint$ | ngrxPush)"
+            [alt]="store.fileKey$ | ngrxPush"
+          />
+        </a>
+      </div>
+      <div class="list-group-item">
+        <div class="small text-secondary">Url</div>
+        <a
+          class="text-break"
+          #simpledAnchor
+          [href]="store.fileKey$ | ngrxPush | s3FileUrl : (store.s3PublicEndpoint$ | ngrxPush)"
+        >
+          {{simpledAnchor.href}}
+        </a>
+      </div>
+      <div class="list-group-item">
+        <div class="small text-secondary">Url (force download)</div>
+        <a
+          class="text-break"
+          #downloadAnchor
+          [href]="store.fileKey$ | ngrxPush | s3FileUrl : (store.s3PublicEndpoint$ | ngrxPush) | appendResponseContentDisposition : (store.fileDownloadName$ | ngrxPush) : 'attachment'"
+        >
+          <ng-icon name="hero-download" size=""></ng-icon>
+          {{downloadAnchor.href}}
+        </a>
+      </div>
+      <div class="list-group-item">
+        <div class="small text-secondary">Url (force inline)</div>
+        <a
+          class="text-break"
+          #inlineAnchor
+          [href]="store.fileKey$ | ngrxPush | s3FileUrl : (store.s3PublicEndpoint$ | ngrxPush) | appendResponseContentDisposition : (store.fileDownloadName$ | ngrxPush) : 'inline'"
+        >
+          <ng-icon name="hero-external-link" size=""></ng-icon>
+          {{inlineAnchor.href}}
+        </a>
+      </div>
+    </div>
   </div>
 </ng-container>

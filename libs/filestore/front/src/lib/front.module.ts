@@ -8,10 +8,20 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { FilestoreListEffects } from './list/store/filestore-list.effects';
 import { FilestorelistFacade } from './list/store/filestore-list.facade';
-import { HeroArrowSmUp, HeroFolder, HeroChevronRight, HeroChevronDown } from '@ng-icons/heroicons';
+import {
+  HeroArrowSmUp,
+  HeroFolder,
+  HeroChevronRight,
+  HeroChevronDown,
+  HeroSortAscending,
+  HeroSortDescending,
+  HeroExternalLink,
+  HeroDownload,
+} from '@ng-icons/heroicons';
 import { NgIconsModule } from '@ng-icons/core';
 import { ListItemComponent } from './list/list-item/list-item.component';
 import { NgbCollapseModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { ReactiveComponentModule } from '@ngrx/component';
 
 const routes: AppRoute[] = [
   {
@@ -26,27 +36,31 @@ const routes: AppRoute[] = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        StoreModule.forFeature(
-            fromFilestoreListReducer.filestoreListFeatureKey,
-            fromFilestoreListReducer.reducer,
-        ),
-        EffectsModule.forFeature([
-            FilestoreListEffects,
-        ]),
-        NgIconsModule.withIcons({
-            HeroArrowSmUp,
-            HeroFolder,
-            HeroChevronRight,
-            HeroChevronDown,
-
-        }),
-        NgbCollapseModule,
-        UtilsFrontModule,
-        NgbDropdownModule,
-    ],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    StoreModule.forFeature(
+      fromFilestoreListReducer.filestoreListFeatureKey,
+      fromFilestoreListReducer.reducer,
+    ),
+    EffectsModule.forFeature([
+      FilestoreListEffects,
+    ]),
+    NgIconsModule.withIcons({
+      HeroArrowSmUp,
+      HeroFolder,
+      HeroChevronRight,
+      HeroChevronDown,
+      HeroSortAscending,
+      HeroSortDescending,
+      HeroExternalLink,
+      HeroDownload,
+    }),
+    NgbCollapseModule,
+    UtilsFrontModule,
+    NgbDropdownModule,
+    ReactiveComponentModule,
+  ],
   declarations: [
     FilestoreListComponent,
     ListItemComponent,
