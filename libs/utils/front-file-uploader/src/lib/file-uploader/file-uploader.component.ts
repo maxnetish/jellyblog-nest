@@ -8,8 +8,13 @@ import {
   ElementRef, Output, EventEmitter,
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { S3ClientConfig } from '@aws-sdk/client-s3/dist-types/S3Client';
-import { HeadObjectCommandOutput, PutObjectCommand, PutObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
+import {
+  HeadObjectCommandOutput,
+  PutObjectCommand,
+  PutObjectCommandOutput,
+  S3Client,
+  S3ClientConfig,
+} from '@aws-sdk/client-s3';
 import { v4 } from 'uuid';
 
 export interface FileInfo {

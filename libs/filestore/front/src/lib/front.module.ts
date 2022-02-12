@@ -29,6 +29,7 @@ import { ListItemComponent } from './list/list-item/list-item.component';
 import { NgbCollapseModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UploadFormComponent } from './list/upload-form/upload-form.component';
 
 const routes: AppRoute[] = [
   {
@@ -79,6 +80,7 @@ const routes: AppRoute[] = [
   declarations: [
     FilestoreListComponent,
     ListItemComponent,
+    UploadFormComponent,
   ],
   providers: [
     FilestorelistFacade,
