@@ -116,28 +116,4 @@ export const reducer = createReducer(
     },
   ),
 
-  on(
-    fromFilestoreListActions.renameObjectSuccess,
-    (state, action) => {
-      return {
-        ...state,
-        listObjectsCommandOutputs: state.listObjectsCommandOutputs.map((output) => {
-          return {
-            ...output,
-            Contents: output.Contents
-              ? output.Contents.map((fileObject) => {
-                if(fileObject.Key === action.currentKey) {
-                  return {
-                    ...fileObject,
-                    Key: action.newKey,
-                  };
-                }
-                return fileObject;
-              })
-              : output.Contents,
-          };
-        }),
-      };
-    },
-  ),
 );

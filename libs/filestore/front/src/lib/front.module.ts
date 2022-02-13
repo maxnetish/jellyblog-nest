@@ -23,6 +23,7 @@ import {
   HeroClipboardCopy,
   HeroGlobe,
   HeroCheck,
+  HeroUpload,
 } from '@ng-icons/heroicons';
 import { NgIconsModule } from '@ng-icons/core';
 import { ListItemComponent } from './list/list-item/list-item.component';
@@ -30,6 +31,7 @@ import { NgbCollapseModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap
 import { ReactiveComponentModule } from '@ngrx/component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UploadFormComponent } from './list/upload-form/upload-form.component';
+import { UtilsFrontFileUploaderModule } from '@jellyblog-nest/utils/front-file-uploader';
 
 const routes: AppRoute[] = [
   {
@@ -69,6 +71,7 @@ const routes: AppRoute[] = [
       HeroClipboardCopy,
       HeroGlobe,
       HeroCheck,
+      HeroUpload,
     }),
     NgbCollapseModule,
     UtilsFrontModule,
@@ -76,6 +79,7 @@ const routes: AppRoute[] = [
     ReactiveComponentModule,
     FormsModule,
     ReactiveFormsModule,
+    UtilsFrontFileUploaderModule,
   ],
   declarations: [
     FilestoreListComponent,

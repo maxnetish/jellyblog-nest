@@ -6,6 +6,7 @@ import {
   UploadErrorEvent,
   UploadSuccessEvent,
   UploadBeginEvent,
+  UploadEvent,
 } from './file-uploader/file-uploader.component';
 
 @NgModule({
@@ -26,4 +27,5 @@ export {
   UploadSuccessEvent,
   UploadBeginEvent,
   UploadErrorEvent,
+  UploadEvent,
 }

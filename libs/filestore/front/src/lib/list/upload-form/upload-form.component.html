@@ -1,1 +1,37 @@
-<p>upload-form works!</p>
+<mg-file-uploader
+  [s3Bucket]="componentStore.s3Bucket$ | ngrxPush"
+  [s3Config]="componentStore.s3Config$ | ngrxPush"
+  (uploadEvents)="handleUploaderEvents($event)"
+  [multiple]="true"
+  [prefix]="componentStore.prefix$ | ngrxPush"
+  [revealOriginalFileName]="componentStore.revealOriginalFileName$ | ngrxPush"
+>
+  <ng-container buttonContent="">
+    <ng-icon name="hero-upload"></ng-icon>
+    Выбрать файлы для загрузки
+  </ng-container>
+</mg-file-uploader>
+
+<div class="form-group">
+  <label class="text-secondary" for="custom-prefix">
+    С префиксом ("директория"). Если не будет разделителяв конце, сольётся с именем.
+  </label>
+  <input
+    type="text"
+    [formControl]="$any(prefixFormControl)"
+    class="form-control"
+    id="custom-prefix"
+  />
+</div>
+
+<div class="form-check">
+  <input
+    type="checkbox"
+    [formControl]="$any(revealFilenameControl)"
+    class="form-check-input mt-2"
+    id="reveal-filename"
+  />
+  <label class="form-check-label" for="reveal-filename">
+    Использовать оригинальное имя файла (по умолчанию используем новый guid)
+  </label>
+</div>

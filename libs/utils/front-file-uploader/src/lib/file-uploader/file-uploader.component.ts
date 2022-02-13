@@ -61,6 +61,8 @@ export interface UploadErrorEvent {
   errorInfo: any;
 }
 
+export type UploadEvent = UploadBeginEvent | UploadSuccessEvent | UploadErrorEvent;
+
 @Component({
   selector: 'mg-file-uploader',
   templateUrl: './file-uploader.component.html',
@@ -82,7 +84,7 @@ export class FileUploaderComponent implements OnInit {
     this.showButton$.next(!val);
   }
 
-  @Input() s3Config: S3ClientConfig | null = {};
+  @Input() s3Config?: S3ClientConfig | null = {};
   @Input() s3Bucket?: string | null;
   /**
    * See https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/modules/putobjectrequest.html#tagging
@@ -107,7 +109,7 @@ export class FileUploaderComponent implements OnInit {
    */
   @Input() revealOriginalFileName?: boolean;
 
-  @Output() uploadEvents = new EventEmitter<UploadBeginEvent | UploadSuccessEvent | UploadErrorEvent>();
+  @Output() uploadEvents = new EventEmitter<UploadEvent>();
 
   @ViewChild('fileInputRef') fileInputRef?: ElementRef<HTMLInputElement>;
 

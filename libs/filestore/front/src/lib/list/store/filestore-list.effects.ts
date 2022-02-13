@@ -23,6 +23,9 @@ export class FilestoreListEffects {
     return this.actions$.pipe(
       ofType(
         fromFilestroreListActions.beginBrowse,
+        // refetch Objects after rename.
+        // Because we don't know, how changed prefixes
+        fromFilestroreListActions.renameObjectSuccess,
       ),
       switchMap(() => {
         return combineLatest([

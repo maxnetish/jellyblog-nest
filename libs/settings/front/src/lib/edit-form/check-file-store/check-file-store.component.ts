@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { HeadObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
-import { SettingsFacade } from '@jellyblog-nest/settings/front';
+import { SettingsFacade } from './../../store/settings.facade';
 import {
   FileInfo,
   UploadBeginEvent,

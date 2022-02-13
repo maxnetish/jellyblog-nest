@@ -18,6 +18,12 @@ class RenameFormModel {
   key = '';
 }
 
+function replaceOnlyLastKeySegment(inputKey: string, replace: string): string {
+  const segments = inputKey.split('/');
+  segments[segments.length - 1] = replace;
+  return segments.join('/');
+}
+
 @Component({
   selector: 'mg-filestore-list-item',
   templateUrl: './list-item.component.html',
@@ -81,16 +87,18 @@ export class ListItemComponent implements OnDestroy {
     ).subscribe((meta) => {
       const originalNameMetadataItem = meta.find(m => m.name === 'originalname');
       if (originalNameMetadataItem) {
+        const currentKey = this.renameForm.value ? this.renameForm.value.key : '';
         this.renameForm.patchValue({
-          key: originalNameMetadataItem.value,
+          key: replaceOnlyLastKeySegment(currentKey, originalNameMetadataItem.value),
         });
       }
     });
   }
 
   renameKeyInsertNewUid() {
+    const currentKey = this.renameForm.value ? this.renameForm.value.key : '';
     this.renameForm.patchValue({
-      key: v4(),
+      key: replaceOnlyLastKeySegment(currentKey, v4()),
     });
   }
 
@@ -100,7 +108,7 @@ export class ListItemComponent implements OnDestroy {
       renameForm.markAllAsTouched();
       return;
     }
-    const {value} = renameForm;
+    const { value } = renameForm;
     if (value && value.key) {
       this.listFacade.handleRenameObject(shortFileInfo.Key || '', value.key);
     }

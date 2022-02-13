@@ -163,6 +163,8 @@ export class FilestorelistFacade {
     }),
   );
 
+  readonly prefix$ = this.store.select(fromFilestoreListSelectors.selectPrefix);
+
   private static removeEndingDelimiter(path: string | null | undefined, delimiter: string) {
     return (path && path.endsWith(delimiter))
       ? path.substring(0, path.length - 1)
