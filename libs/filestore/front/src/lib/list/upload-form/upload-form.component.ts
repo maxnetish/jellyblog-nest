@@ -4,7 +4,7 @@ import { FormControl } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { IFormControl } from '@rxweb/types';
 import { map } from 'rxjs/operators';
-import { UploadEvent } from '@jellyblog-nest/utils/front-file-uploader';
+import { UploadEvents } from '@jellyblog-nest/utils/front-file-uploader';
 
 @Component({
   selector: 'mg-filestore-upload-form',
@@ -49,7 +49,7 @@ export class UploadFormComponent implements OnInit, OnDestroy {
 
   }
 
-  handleUploaderEvents(event: UploadEvent) {
+  handleUploaderEvents(event: UploadEvents.UploadEvent) {
     this.componentStore.handleUploadEvents(event);
   }
 
@@ -57,4 +57,5 @@ export class UploadFormComponent implements OnInit, OnDestroy {
     this.unsubscribe$.next(null);
     this.unsubscribe$.complete();
   }
+
 }

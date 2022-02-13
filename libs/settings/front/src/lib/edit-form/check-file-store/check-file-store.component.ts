@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnInit,
   ViewEncapsulation,
 } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -10,14 +9,11 @@ import { HeadObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3'
 import { SettingsFacade } from './../../store/settings.facade';
 import {
   FileInfo,
-  UploadBeginEvent,
-  UploadErrorEvent,
-  UploadSuccessEvent,
+  UploadEvents,
 } from '@jellyblog-nest/utils/front-file-uploader';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { Store } from '@ngrx/store';
 import { SettingName } from '@jellyblog-nest/utils/common';
-import { create } from 'content-disposition-header';
 
 @Component({
   selector: 'app-settings-check-file-store',
@@ -26,7 +22,7 @@ import { create } from 'content-disposition-header';
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckFileStoreComponent implements OnInit {
+export class CheckFileStoreComponent {
 
   s3Config$: Observable<S3ClientConfig>;
   s3Bucket$: Observable<string | null | undefined>;
@@ -90,10 +86,7 @@ export class CheckFileStoreComponent implements OnInit {
     this.s3PublicEndpoint$ = this.settingsFacade.getSetting$(SettingName.S3_PUBLIC_ENDPOINT);
   }
 
-  ngOnInit(): void {
-  }
-
-  handleTestUploadEvents($event: UploadBeginEvent | UploadSuccessEvent | UploadErrorEvent) {
+  handleTestUploadEvents($event: UploadEvents.UploadEvent) {
     console.log('Upload: ', $event);
     switch ($event.type) {
       case 'UploadBegin': {
@@ -122,9 +115,4 @@ export class CheckFileStoreComponent implements OnInit {
     }
   }
 
-  getQueryParamsForAttachment(fileInfo: FileInfo) {
-    return {
-      'response-content-disposition': create(fileInfo.name, {type: 'attachment'}),
-    };
-  }
 }

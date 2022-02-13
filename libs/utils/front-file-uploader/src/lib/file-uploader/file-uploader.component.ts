@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   ViewEncapsulation,
   ChangeDetectionStrategy,
   Input,
@@ -9,59 +8,13 @@ import {
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {
-  HeadObjectCommandOutput,
   PutObjectCommand,
-  PutObjectCommandOutput,
   S3Client,
   S3ClientConfig,
 } from '@aws-sdk/client-s3';
 import { v4 } from 'uuid';
-
-export interface FileInfo {
-  name: string;
-  key: string;
-  type: string;
-  length: number;
-}
-
-export class FileInfo {
-  static fromFile(file: File, key?: string) {
-    return {
-      key: key || '',
-      length: file.size,
-      name: file.name,
-      type: file.type,
-    } as FileInfo;
-  }
-
-  static fromHeadObjectCommandOutput(response: HeadObjectCommandOutput, key?: string) {
-    return {
-      key: key || '',
-      length: response.ContentLength,
-      name: response.Metadata && decodeURI(response.Metadata.originalname),
-      type: response.ContentType,
-    } as FileInfo;
-  }
-}
-
-export interface UploadBeginEvent {
-  type: 'UploadBegin';
-  fileInfo: FileInfo;
-}
-
-export interface UploadSuccessEvent {
-  type: 'UploadSuccess';
-  fileInfo: FileInfo;
-  resultInfo: PutObjectCommandOutput;
-}
-
-export interface UploadErrorEvent {
-  type: 'UploadError';
-  fileInfo: FileInfo;
-  errorInfo: any;
-}
-
-export type UploadEvent = UploadBeginEvent | UploadSuccessEvent | UploadErrorEvent;
+import { UploadEvent } from './file-uploader-events';
+import { FileInfo } from './file-info';
 
 @Component({
   selector: 'mg-file-uploader',
@@ -70,7 +23,7 @@ export type UploadEvent = UploadBeginEvent | UploadSuccessEvent | UploadErrorEve
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileUploaderComponent implements OnInit {
+export class FileUploaderComponent {
 
   @Input() set multiple(val: boolean) {
     this.multiple$.next(val);
@@ -160,18 +113,11 @@ export class FileUploaderComponent implements OnInit {
     }
   }
 
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
-
   handleButtonClick($event: MouseEvent) {
     if (this.fileInputRef && this.fileInputRef.nativeElement) {
       this.fileInputRef.nativeElement.click();
     }
   }
-
 
   handleFileInputChange(fileInput: HTMLInputElement) {
     const files = Array.prototype.slice.call(fileInput.files || []) as File[];
@@ -182,15 +128,16 @@ export class FileUploaderComponent implements OnInit {
     const s3Client = new S3Client({
       ...this.s3Config,
     });
-
-    const uploadPromises = files.map((file) => {
-      return this._uploadOneFile(s3Client, file);
-    });
+    const result = [];
 
     try {
-      await Promise.all(uploadPromises);
+      for (const file of files) {
+        result.push(await this._uploadOneFile(s3Client, file));
+      }
     } finally {
       s3Client.destroy();
     }
+
+    return result;
   }
 }

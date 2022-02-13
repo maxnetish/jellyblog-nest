@@ -4,7 +4,7 @@ import { SettingsFacade } from '@jellyblog-nest/settings/front';
 import { SettingName } from '@jellyblog-nest/utils/common';
 import { Observable, tap } from 'rxjs';
 import { FilestorelistFacade } from '../store/filestore-list.facade';
-import { UploadEvent } from '@jellyblog-nest/utils/front-file-uploader';
+import { UploadEvents } from '@jellyblog-nest/utils/front-file-uploader';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { Store } from '@ngrx/store';
 
@@ -28,9 +28,12 @@ export class UploadFormStore extends ComponentStore<UploadFormState> {
     super(initialState);
 
     // Когда в списке меняют "директорию" - установить такую же здесь
-    this.setPrefix(
-      this.filelistFacade.prefix$,
-    );
+    // setTimeout чтобы updater дергался после инициализации.
+    setTimeout(() => {
+      this.setPrefix(
+        this.filelistFacade.prefix$,
+      );
+    });
   }
 
   readonly s3Bucket$: Observable<string | null | undefined> = this.settingsFacade.getSetting$(SettingName.S3_BUCKET);
@@ -52,7 +55,7 @@ export class UploadFormStore extends ComponentStore<UploadFormState> {
     };
   });
 
-  readonly handleUploadEvents = this.effect((event$: Observable<UploadEvent>) => {
+  readonly handleUploadEvents = this.effect((event$: Observable<UploadEvents.UploadEvent>) => {
     return event$.pipe(
       tap((event) => {
         switch (event.type) {

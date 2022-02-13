@@ -1,19 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { SettingDto } from '@jellyblog-nest/settings/model';
 import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
 import { FormBuilder } from '@angular/forms';
-import { combineLatest, debounceTime, filter, Observable, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, debounceTime, filter, Subject, take, takeUntil } from 'rxjs';
 import { SettingsFacade } from './../store/settings.facade';
-import { S3ClientConfig } from '@aws-sdk/client-s3';
-import {
-  FileInfo,
-  UploadBeginEvent,
-  UploadErrorEvent,
-  UploadSuccessEvent,
-} from '@jellyblog-nest/utils/front-file-uploader';
 import { Store } from '@ngrx/store';
-import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
-import { SettingName } from '@jellyblog-nest/utils/common';
 
 interface SettingsFormModel {
   settings: SettingFormModel[];
@@ -29,7 +20,7 @@ type SettingFormModel = SettingDto;
   // We cannot use OnPush. Form controls will not update bound elements after change dirty status
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export class EditFormComponent implements OnInit, OnDestroy {
+export class EditFormComponent implements OnDestroy {
 
   form: IFormGroup<SettingsFormModel>;
   formSettingsArray: IFormArray<SettingFormModel>;
@@ -102,7 +93,4 @@ export class EditFormComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  ngOnInit(): void {
-
-  }
 }
