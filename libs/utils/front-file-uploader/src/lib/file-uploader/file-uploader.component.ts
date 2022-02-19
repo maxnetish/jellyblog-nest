@@ -4,9 +4,9 @@ import {
   ChangeDetectionStrategy,
   Input,
   ViewChild,
-  ElementRef, Output, EventEmitter,
+  ElementRef, Output, EventEmitter, OnInit, OnDestroy,
 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, concatMap, from, Subject, takeUntil, tap } from 'rxjs';
 import {
   PutObjectCommand,
   S3Client,
@@ -23,7 +23,7 @@ import { FileInfo } from './file-info';
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileUploaderComponent {
+export class FileUploaderComponent implements OnInit, OnDestroy {
 
   @Input() set multiple(val: boolean) {
     this.multiple$.next(val);
@@ -70,7 +70,14 @@ export class FileUploaderComponent {
   accept$ = new BehaviorSubject('');
   showButton$ = new BehaviorSubject(true);
 
-  private async _uploadOneFile(client: S3Client, file: File) {
+  /**
+   * You shouldn't subscribe.
+   */
+  private _pendingItems$ = new Subject<File>();
+  private unsubscribe$ = new Subject();
+  private _pendingsCount = 0;
+
+  private async _uploadOneFile(file: File) {
 
     const prefix = this.prefix || '';
     const s3Filename = this.revealOriginalFileName
@@ -96,7 +103,11 @@ export class FileUploaderComponent {
     });
 
     try {
+      const client = new S3Client({
+        ...this.s3Config,
+      });
       const result = await client.send(putCommand);
+      client.destroy();
       this.uploadEvents.emit({
         type: 'UploadSuccess',
         fileInfo: FileInfo.fromFile(file, putCommand.input.Key),
@@ -113,6 +124,15 @@ export class FileUploaderComponent {
     }
   }
 
+  private handleUploadCompleteOrError() {
+    this._pendingsCount--;
+    if (this._pendingsCount === 0) {
+      this.uploadEvents.emit({
+        type: 'UploadQueueExhaust',
+      });
+    }
+  }
+
   handleButtonClick($event: MouseEvent) {
     if (this.fileInputRef && this.fileInputRef.nativeElement) {
       this.fileInputRef.nativeElement.click();
@@ -121,23 +141,35 @@ export class FileUploaderComponent {
 
   handleFileInputChange(fileInput: HTMLInputElement) {
     const files = Array.prototype.slice.call(fileInput.files || []) as File[];
-    return this.uploadFiles(files);
+    return this.addFilesToUpload(files);
   }
 
-  async uploadFiles(files: File[]) {
-    const s3Client = new S3Client({
-      ...this.s3Config,
+  addFilesToUpload(files: File[]) {
+    files.forEach(oneFile => this._pendingItems$.next(oneFile));
+  }
+
+  ngOnInit(): void {
+    this._pendingItems$.pipe(
+      tap((oneFile) => {
+        this._pendingsCount++;
+        this.uploadEvents.emit({
+          type: 'UploadItemAdded',
+          file: oneFile,
+          pendingFilesCount: this._pendingsCount,
+        });
+      }),
+      concatMap((oneFile) => {
+        return from(this._uploadOneFile(oneFile));
+      }),
+      takeUntil(this.unsubscribe$),
+    ).subscribe({
+      next: () => this.handleUploadCompleteOrError(),
+      error: () => this.handleUploadCompleteOrError(),
     });
-    const result = [];
+  }
 
-    try {
-      for (const file of files) {
-        result.push(await this._uploadOneFile(s3Client, file));
-      }
-    } finally {
-      s3Client.destroy();
-    }
-
-    return result;
+  ngOnDestroy(): void {
+    this.unsubscribe$.next(null);
+    this.unsubscribe$.complete();
   }
 }

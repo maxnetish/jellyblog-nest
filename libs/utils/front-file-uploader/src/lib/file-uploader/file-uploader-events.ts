@@ -18,4 +18,14 @@ export interface UploadErrorEvent {
   errorInfo: any;
 }
 
-export type UploadEvent = UploadBeginEvent | UploadSuccessEvent | UploadErrorEvent;
+export interface UploadItemAddedEvent {
+  type: 'UploadItemAdded',
+  file: File;
+  pendingFilesCount: number;
+}
+
+export interface UploadQueueExhaustEvent {
+  type: 'UploadQueueExhaust',
+}
+
+export type UploadEvent = UploadBeginEvent | UploadSuccessEvent | UploadErrorEvent | UploadItemAddedEvent | UploadQueueExhaustEvent;

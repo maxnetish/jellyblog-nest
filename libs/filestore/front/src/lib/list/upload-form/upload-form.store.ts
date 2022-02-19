@@ -7,6 +7,7 @@ import { FilestorelistFacade } from '../store/filestore-list.facade';
 import { UploadEvents } from '@jellyblog-nest/utils/front-file-uploader';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { Store } from '@ngrx/store';
+import * as fromFilelistActions from '../store/filestore-list.actions';
 
 export interface UploadFormState {
   prefix: string;
@@ -79,9 +80,25 @@ export class UploadFormStore extends ComponentStore<UploadFormState> {
               severity: GlobalToastSeverity.SUCCESS,
             }));
             // TODO notify filelist store after upload all pending files
+            break;
+          }
+          case 'UploadItemAdded': {
+            this.globalStore.dispatch(GlobalActions.addGlobalToast({
+              text: `${event.file.name} added. ${event.pendingFilesCount} items wait for upload`,
+              severity: GlobalToastSeverity.INFO,
+            }));
+            break;
+          }
+          case 'UploadQueueExhaust': {
+            this.globalStore.dispatch(GlobalActions.addGlobalToast({
+              text: 'Uploading queue empty',
+              severity: GlobalToastSeverity.INFO,
+            }));
+            this.globalStore.dispatch(fromFilelistActions.beginBrowse());
           }
         }
       }),
     );
   });
 }
+
