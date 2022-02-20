@@ -24,6 +24,7 @@ export class AuthController {
   ) {
   }
 
+  @RequireRole(UserRole.ADMIN)
   @Post('create')
   async createUser(@Body() createUserDto: CreateUserDto) {
     return await this.authService.createUser(createUserDto);

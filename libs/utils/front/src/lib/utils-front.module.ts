@@ -17,6 +17,7 @@ import { ToStrictBooleanPipe } from './to-strict-boolean.pipe';
 import { HumanFileSizePipe } from './human-file-size.pipe';
 import { ConfirmComponent } from './components/confirm/confirm.component';
 import { ConfirmModalService } from './components/confirm/confirm-modal.service';
+import { NativeDatePipe } from './native-date.pipe';
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { ConfirmModalService } from './components/confirm/confirm-modal.service'
     ToStrictBooleanPipe,
     HumanFileSizePipe,
     ConfirmComponent,
+    NativeDatePipe,
   ],
   exports: [
     ValidationMessageComponent,
@@ -42,6 +44,7 @@ import { ConfirmModalService } from './components/confirm/confirm-modal.service'
     ToStrictBooleanPipe,
     HumanFileSizePipe,
     ConfirmComponent,
+    NativeDatePipe,
   ],
 })
 export class UtilsFrontModule {
@@ -61,4 +64,5 @@ export {
   HumanFileSizePipe,
   ConfirmComponent,
   ConfirmModalService,
+  NativeDatePipe,
 };

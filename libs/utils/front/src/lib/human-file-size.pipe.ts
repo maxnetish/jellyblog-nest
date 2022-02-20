@@ -6,7 +6,7 @@ export function getHumanFileSize(bytes?: number | string | null): string {
 
   let bytesNumber = Number(bytes);
 
-  if(isNaN(bytesNumber)) {
+  if (isNaN(bytesNumber)) {
     return '';
   }
 
@@ -21,8 +21,9 @@ export function getHumanFileSize(bytes?: number | string | null): string {
     u++;
   } while (Math.round(bytesNumber * 100) / 100 >= unitSize && u < units.length - 1);
 
+  const bytesLocalized = bytesNumber.toLocaleString();
 
-  return `${bytesNumber.toFixed(2)} ${units[u]}`;
+  return `${bytesLocalized} ${units[u]}`;
 }
 
 @Pipe({

@@ -41,6 +41,16 @@ export class ListItemComponent implements OnDestroy {
 
   renameForm: IFormGroup<RenameFormModel>;
 
+  /**
+   * https://github.com/microsoft/TypeScript/issues/44632
+   * So use
+   * "target": "es2020"
+   */
+  dateOptions: Intl.DateTimeFormatOptions = {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  };
+
   @Input() set fileInfo(val: FileInfo) {
     this.store.setFileInfo(val);
   }

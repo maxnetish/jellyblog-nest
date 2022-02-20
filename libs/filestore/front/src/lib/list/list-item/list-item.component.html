@@ -73,7 +73,7 @@
             {{shortFileInfo.Size | fileSizeForHuman}}
           </div>
           <time class="details-header_time">
-            {{shortFileInfo.LastModified | date : 'medium'}}
+            {{shortFileInfo.LastModified | nativeDate : dateOptions }}
           </time>
         </div>
 
