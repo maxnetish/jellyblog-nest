@@ -186,26 +186,25 @@ export class AuthService {
       where.username = Like(`%${name}%`);
     }
 
-    const [list, total] = await Promise.all([
-      this.userRepository.find({
+    const {list, total} = await this.userRepository.findAndCount({
         select: ['uuid', 'role', 'username'],
         where,
         skip: (page - 1) * size,
         take: size,
         order,
-      }).then((foundUsers) => {
-        return foundUsers.map((user) => {
-          return {
-            uuid: user.uuid,
-            role: user.role,
-            username: user.username,
-          };
-        });
-      }),
-      this.userRepository.count({
-        where,
-      }),
-    ]);
+      })
+      .then(([foundUsers, total]) => {
+        return {
+          list: foundUsers.map((user) => {
+            return {
+              uuid: user.uuid,
+              role: user.role,
+              username: user.username,
+            };
+          }),
+          total,
+        };
+      });
 
     return {
       list,

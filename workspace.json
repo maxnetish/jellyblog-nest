@@ -284,6 +284,52 @@
       "tags": [],
       "implicitDependencies": ["frontend-admin"]
     },
+    "post-back": {
+      "root": "libs/post/back",
+      "sourceRoot": "libs/post/back/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/post/back/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/post/back"],
+          "options": {
+            "jestConfig": "libs/post/back/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "post-model": {
+      "root": "libs/post/model",
+      "sourceRoot": "libs/post/model/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/post/model/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/post/model"],
+          "options": {
+            "jestConfig": "libs/post/model/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
     "settings-back": {
       "root": "libs/settings/back",
       "sourceRoot": "libs/settings/back/src",

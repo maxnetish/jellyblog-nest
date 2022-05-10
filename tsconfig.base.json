@@ -21,6 +21,8 @@
       "@jellyblog-nest/auth/model": ["libs/auth/model/src/index.ts"],
       "@jellyblog-nest/entities": ["libs/entities/src/index.ts"],
       "@jellyblog-nest/filestore/front": ["libs/filestore/front/src/index.ts"],
+      "@jellyblog-nest/post/back": ["libs/post/back/src/index.ts"],
+      "@jellyblog-nest/post/model": ["libs/post/model/src/index.ts"],
       "@jellyblog-nest/settings/back": ["libs/settings/back/src/index.ts"],
       "@jellyblog-nest/settings/front": ["libs/settings/front/src/index.ts"],
       "@jellyblog-nest/settings/model": ["libs/settings/model/src/index.ts"],

@@ -2,7 +2,6 @@ import { SortOrder, UserRole } from '@jellyblog-nest/utils/common';
 import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Pageable } from '@jellyblog-nest/utils/common';
 import { UserInfoDto } from './user-info-dto';
-import { HttpParams } from '@angular/common/http';
 
 type UserInfoDtoWithoutUuid = Omit<UserInfoDto, 'uuid'>;
 
