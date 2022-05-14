@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindConditions, Like, Repository } from 'typeorm';
+import { Brackets, FindConditions, In, Like, Repository } from 'typeorm';
 import { Post, Tag } from '@jellyblog-nest/entities';
-import { FindTagRequest, TagDto } from '@jellyblog-nest/post/model';
+import { FindPostRequest, FindTagRequest, PostShortDto, TagDto } from '@jellyblog-nest/post/model';
 import { Page } from '@jellyblog-nest/utils/common';
 
 @Injectable()
@@ -46,6 +46,27 @@ export class PostService {
       page,
       size,
     };
+  }
+
+  async findPosts(request: FindPostRequest): Promise<Page<PostShortDto>> {
+    const {allowRead, text} = request;
+    const where: FindConditions<Post> = {};
+
+    if(allowRead && allowRead.length) {
+      where.allowRead = In(allowRead);
+    }
+
+    if(text) {
+      where.title = Like(`%${text}%`);
+    }
+
+    this.postRepository.createQueryBuilder('post')
+      .where(new Brackets((web) => {
+        web
+          .where('post.allowRead IN (:...allowRead)', {allowRead})
+          .orWhere(':withoutAllowRead', {withoutAllowRead: !allowRead});
+      }))
+      .orWhere()
   }
 
 }
