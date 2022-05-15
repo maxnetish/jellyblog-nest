@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, FindConditions, In, Like, Repository } from 'typeorm';
+import { Brackets, FindConditions, Like, Repository } from 'typeorm';
 import { Post, Tag } from '@jellyblog-nest/entities';
-import { FindPostRequest, FindTagRequest, PostShortDto, TagDto } from '@jellyblog-nest/post/model';
+import { FindPostRequest, FindTagRequest, PostShortDto, PostUpdateRequest, TagDto } from '@jellyblog-nest/post/model';
 import { Page } from '@jellyblog-nest/utils/common';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class PostService {
     })
       .then(([foundTags, total]) => {
         return {
-          list: foundTags.map((t)=>{
+          list: foundTags.map((t) => {
             return {
               uuid: t.uuid,
               content: t.content,
@@ -48,25 +48,110 @@ export class PostService {
     };
   }
 
-  async findPosts(request: FindPostRequest): Promise<Page<PostShortDto>> {
-    const {allowRead, text} = request;
-    const where: FindConditions<Post> = {};
+  async findPosts(request: FindPostRequest, author: string): Promise<Page<PostShortDto>> {
+    const {allowRead, text, status, createdAtFrom, createdAtTo, order, page, size} = request;
+    const postAlias = 'post';
+    // Use query builder
 
-    if(allowRead && allowRead.length) {
-      where.allowRead = In(allowRead);
+    // Add projection and criteria
+    const query = this.postRepository.createQueryBuilder(postAlias)
+      .select([
+        `${postAlias}.uuid`,
+        `${postAlias}.createdAtt`,
+        `${postAlias}.status`,
+        `${postAlias}.allowRead`,
+        `${postAlias}.author`,
+        `${postAlias}.title`,
+        `${postAlias}.hru`,
+      ])
+      .where(`${postAlias}.author = :author`, {author});
+
+    if (allowRead && allowRead.length) {
+      query.andWhere(`${postAlias}.allowRead IN (:...allowRead)`, {allowRead});
     }
 
-    if(text) {
-      where.title = Like(`%${text}%`);
+    if (text) {
+      query.andWhere(new Brackets((wb) => {
+        wb
+          .where(`${postAlias}.title LIKE :titleLike`, {titleLile: `%${text}%`})
+          .orWhere(`${postAlias}.content LIKE :contentLike`, {contentLike: `%${text}%`})
+      }));
     }
 
-    this.postRepository.createQueryBuilder('post')
-      .where(new Brackets((web) => {
-        web
-          .where('post.allowRead IN (:...allowRead)', {allowRead})
-          .orWhere(':withoutAllowRead', {withoutAllowRead: !allowRead});
-      }))
-      .orWhere()
+    query.andWhere((status && status.length) ? `${postAlias}.status IN (:...status)` : 'TRUE', {status});
+
+    if (createdAtFrom && !isNaN(createdAtFrom.valueOf())) {
+      query.andWhere(`${postAlias}.createdAt >= date(:createdAtFrom)`, {createdAtFrom: createdAtFrom.toISOString()});
+    }
+
+    if (createdAtTo && !isNaN(createdAtTo.valueOf())) {
+      query.andWhere(`${postAlias}.createdAt <= date(:createdAtTo)`, {createdAtTo: createdAtTo.toISOString()});
+    }
+
+    // add sort order
+    if (order) {
+      Object.entries(order).forEach(([field, sortOrder], index) => {
+        if (index === 0) {
+          query.orderBy(`${postAlias}.${field}`, sortOrder);
+        } else {
+          query.addOrderBy(`${postAlias}.${field}`, sortOrder);
+        }
+      });
+    }
+
+    // add pagination
+    query
+      .skip((page - 1) * size)
+      .take(size);
+
+    // execute query
+    const [posts, total] = await query.getManyAndCount();
+
+    return {
+      list: posts.map((p) => {
+        return {
+          uuid: p.uuid,
+          createdAt: p.createdAt,
+          title: p.title,
+          status: p.status,
+          author: p.author,
+          hru: p.hru,
+          allowRead: p.allowRead,
+        };
+      }),
+      total,
+      size,
+      page,
+    } as Page<PostShortDto>;
   }
+
+  async getPostByAnyId(uuidOrHumanId: string): Promise<Post | undefined> {
+    const where: FindConditions<Post>[] = [
+      {
+        uuid: uuidOrHumanId,
+      },
+      {
+        hru: uuidOrHumanId,
+      },
+    ];
+
+    return this.postRepository.findOne({
+      where,
+      relations: ['tags'],
+    });
+  }
+
+  async getPostById(uuid: string): Promise<Post | undefined> {
+    return this.postRepository.findOne(
+      uuid,
+      {
+        relations: ['tags'],
+      },
+    );
+  }
+
+  // async createOrUpdatePost(request: PostUpdateRequest): Promise<string> {
+  //
+  // }
 
 }
