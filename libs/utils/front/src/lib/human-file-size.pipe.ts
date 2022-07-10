@@ -21,7 +21,7 @@ export function getHumanFileSize(bytes?: number | string | null): string {
     u++;
   } while (Math.round(bytesNumber * 100) / 100 >= unitSize && u < units.length - 1);
 
-  const bytesLocalized = bytesNumber.toLocaleString();
+  const bytesLocalized = bytesNumber.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 2});
 
   return `${bytesLocalized} ${units[u]}`;
 }

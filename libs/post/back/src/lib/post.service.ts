@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, FindConditions, Like, Repository } from 'typeorm';
 import { Post, Tag } from '@jellyblog-nest/entities';
-import { FindPostRequest, FindTagRequest, PostShortDto, PostUpdateRequest, TagDto } from '@jellyblog-nest/post/model';
+import { FindPostRequest, FindTagRequest, PostShortDto, TagDto } from '@jellyblog-nest/post/model';
 import { Page } from '@jellyblog-nest/utils/common';
 
 @Injectable()
@@ -73,7 +73,7 @@ export class PostService {
     if (text) {
       query.andWhere(new Brackets((wb) => {
         wb
-          .where(`${postAlias}.title LIKE :titleLike`, {titleLile: `%${text}%`})
+          .where(`${postAlias}.title LIKE :titleLike`, {titleLike: `%${text}%`})
           .orWhere(`${postAlias}.content LIKE :contentLike`, {contentLike: `%${text}%`})
       }));
     }
