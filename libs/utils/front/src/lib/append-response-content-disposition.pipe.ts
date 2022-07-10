@@ -3,7 +3,7 @@ import { create } from 'content-disposition-header';
 
 export function appendResponseContentDisposition(baseUrl?: string | null, fileName?: string | null, disposition?: 'attachment' | 'inline' | null) {
   let queryParam = disposition
-    ? `response-content-disposition=${encodeURI(create(fileName || undefined, {type: disposition}))}`
+    ? `response-content-disposition=${encodeURIComponent(create(fileName || undefined, {type: disposition}))}`
     : '';
   const baseUrlNorm = baseUrl || '';
   if (queryParam) {
