@@ -56,13 +56,17 @@ export class SettingsFacade {
         return null;
       }),
     );
-  };
+  }
 
   saveSetting(setting: SettingDto) {
    this.store.dispatch(SettingsActions.updateSetting({
      name: setting.name,
      value: setting.value,
    }));
+  }
+
+  loadSettings() {
+    this.store.dispatch(SettingsActions.loadSettings());
   }
 
 }

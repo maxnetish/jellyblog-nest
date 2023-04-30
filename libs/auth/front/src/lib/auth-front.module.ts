@@ -25,6 +25,9 @@ import { UtilsFrontModule } from '@jellyblog-nest/utils/front';
   declarations: [
     LoginFormComponent,
   ],
+  exports: [
+    LoginFormComponent,
+  ],
 })
 export class AuthFrontModule {
 }
@@ -35,4 +38,5 @@ export {
   AuthService,
   LoginFormModalService,
   AuthActions,
+  LoginFormComponent,
 };

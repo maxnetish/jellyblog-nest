@@ -36,6 +36,8 @@ export class FilestoreListEffects {
         ]).pipe(
           take(1),
           map(([prefix, delimiter, s3ClientConfig, s3Bucket]) => {
+            // FIXME если разлогинится и залогиниться, здесь будет неполный s3 конфиг,
+            //  без кредов. Т.к. настройки приезжают после того как перешли на эту страницу.
             return {
               prefix,
               delimiter,

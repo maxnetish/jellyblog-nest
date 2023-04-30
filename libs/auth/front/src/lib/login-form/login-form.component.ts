@@ -67,6 +67,8 @@ export class LoginFormComponent {
       this.store.dispatch(AuthActions.gotUserInfo({
         user: result || null,
       }));
+      // После авторизации, дернем обновление справочников и настроек
+      // this.store.dispatch(GlobalActions.loadApp());
       this.successSubmit.emit();
     } catch (err: any) {
       this.store.dispatch(GlobalActions.addGlobalToast({

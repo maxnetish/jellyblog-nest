@@ -5,7 +5,7 @@ import { NoPreloading, RouterModule } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { InsufficientRightsComponent } from './insufficient-rights/insufficient-rights.component';
-import { AuthFrontModule, AuthGuardNg } from '@jellyblog-nest/auth/front';
+import { AuthFrontModule } from '@jellyblog-nest/auth/front';
 import { HttpClientModule } from '@angular/common/http';
 import { GlobalToastComponent } from './global-toast/global-toast.component';
 import * as GlobalToastReducer from './global-toast/store/global-toast.reducer';
@@ -14,26 +14,30 @@ import { UserWidgetComponent } from './user-widget/user-widget.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
 import { shellAdminRoutes } from './shell-admin.routes';
+import { LoginPageComponent } from './login-page/login-page.component';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forRoot(shellAdminRoutes, {
-    preloadingStrategy: NoPreloading,
-    scrollPositionRestoration: 'enabled',
-    anchorScrolling: 'enabled'
-}),
-    StoreModule.forRoot({
-      [GlobalToastReducer.globalToastFeatureKey]: GlobalToastReducer.reducer,
-    }, {
-      runtimeChecks: {
-        strictActionImmutability: true,
-        strictStateImmutability: true,
-        strictActionTypeUniqueness: true,
-        strictStateSerializability: true,
-        strictActionWithinNgZone: true,
-      },
+      preloadingStrategy: NoPreloading,
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled',
     }),
+    StoreModule.forRoot(
+      {
+        [GlobalToastReducer.globalToastFeatureKey]: GlobalToastReducer.reducer,
+      },
+      {
+        runtimeChecks: {
+          strictActionImmutability: true,
+          strictStateImmutability: true,
+          strictActionTypeUniqueness: true,
+          strictStateSerializability: true,
+          strictActionWithinNgZone: true,
+        },
+      }
+    ),
     EffectsModule.forRoot([]),
     HttpClientModule,
     AuthFrontModule,
@@ -47,14 +51,10 @@ import { shellAdminRoutes } from './shell-admin.routes';
     GlobalToastComponent,
     UserWidgetComponent,
     NotFoundComponent,
+    LoginPageComponent,
   ],
-  exports: [
-    LayoutComponent,
-  ],
+  exports: [LayoutComponent],
 })
-export class ShellAdminModule {
-}
+export class ShellAdminModule {}
 
-export {
-  LayoutComponent,
-};
+export { LayoutComponent };

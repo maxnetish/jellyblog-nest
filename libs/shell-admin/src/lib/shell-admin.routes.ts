@@ -4,6 +4,7 @@ import { UserRole } from '@jellyblog-nest/utils/common';
 import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
 import { InsufficientRightsComponent } from './insufficient-rights/insufficient-rights.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { LoginPageComponent } from './login-page/login-page.component';
 
 export const shellAdminRoutes: AppRoute[] = [
   {
@@ -25,12 +26,12 @@ export const shellAdminRoutes: AppRoute[] = [
     canActivate: [AuthGuardNg],
     data: {
       role: UserRole.ADMIN,
-      redirectOptionsIfNoRole: {
-        queryParams: {
-          afterLogin: '/users',
-        },
-        queryParamsHandling: 'merge',
-      },
+      // redirectOptionsIfNoRole: {
+      //   queryParams: {
+      //     afterLogin: '/users',
+      //   },
+      //   queryParamsHandling: 'merge',
+      // },
     },
   },
   {
@@ -39,6 +40,12 @@ export const shellAdminRoutes: AppRoute[] = [
     canActivate: [AuthGuardNg],
     data: {
       role: UserRole.ADMIN,
+      // redirectOptionsIfNoRole: {
+      //   queryParams: {
+      //     afterLogin: '/settings/edit',
+      //   },
+      //   queryParamsHandling: 'merge',
+      // },
     },
   },
   {
@@ -55,7 +62,17 @@ export const shellAdminRoutes: AppRoute[] = [
     canActivate: [AuthGuardNg],
     data: {
       role: UserRole.ADMIN,
+      // redirectOptionsIfNoRole: {
+      //   queryParams: {
+      //     afterLogin: '/files',
+      //   },
+      //   queryParamsHandling: 'merge',
+      // },
     },
+  },
+  {
+    path: 'login',
+    component: LoginPageComponent,
   },
   {
     path: 'insufficient-rights',

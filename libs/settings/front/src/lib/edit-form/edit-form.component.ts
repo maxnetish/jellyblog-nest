@@ -48,7 +48,7 @@ export class EditFormComponent implements OnDestroy {
     this.formSettingsArray = this.form.controls.settings as IFormArray<SettingFormModel>;
 
     this.settingsFacade.settings$.pipe(
-      take(1),
+      takeUntil(this.unsubscribe$),
     ).subscribe((settings) => {
       this.formSettingsArray.clear();
       settings.forEach((setting) => {

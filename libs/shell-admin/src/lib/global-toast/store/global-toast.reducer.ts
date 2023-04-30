@@ -21,6 +21,7 @@ export const reducer = createReducer(
   on(
     GlobalActions.addGlobalToast,
     (state, action) => {
+      console.log('GOT addGlobalToast ', action);
       const id = nanoid(8);
       return {
         ...state,
