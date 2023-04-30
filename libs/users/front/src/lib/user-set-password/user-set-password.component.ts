@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
 import { SetPasswordDto } from '@jellyblog-nest/auth/model';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { BehaviorSubject, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { AuthService } from '@jellyblog-nest/auth/front';
@@ -35,7 +35,7 @@ export class UserSetPasswordComponent implements OnDestroy {
   }
 
   constructor(
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private readonly authService: AuthService,
     private store: Store,
     readonly modal: NgbActiveModal,

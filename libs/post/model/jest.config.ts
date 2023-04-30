@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'post-post-model',
   preset: '../../../jest.preset.js',
   globals: {

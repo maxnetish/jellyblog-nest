@@ -6,7 +6,7 @@ import { FilestorelistFacade } from '../store/filestore-list.facade';
 import { take } from 'rxjs/operators';
 import { v4 } from 'uuid';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 import { AppValidators } from '@jellyblog-nest/utils/front';
 
@@ -58,7 +58,7 @@ export class ListItemComponent implements OnDestroy {
   constructor(
     public readonly store: FilestoreListItemStore,
     public readonly listFacade: FilestorelistFacade,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     this.formBuilder = fb;
 

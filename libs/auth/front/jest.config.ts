@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'utils-front-file-uploader',
+/* eslint-disable */
+export default {
+  displayName: 'auth-front',
   preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -8,7 +9,7 @@ module.exports = {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../../coverage/libs/utils/front-file-uploader',
+  coverageDirectory: '../../../coverage/libs/auth/front',
   transform: {
     '^.+.(ts|mjs|js|html)$': 'jest-preset-angular',
   },

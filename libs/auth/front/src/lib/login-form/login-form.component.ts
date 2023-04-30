@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../auth.service';
 import { firstValueFrom } from 'rxjs';
@@ -26,7 +26,7 @@ export class LoginFormComponent {
   form: IFormGroup<LoginFormModel>;
 
   constructor(
-    formBuilder: FormBuilder,
+    formBuilder: UntypedFormBuilder,
     private readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private readonly store: Store,

@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'auth-back',
+/* eslint-disable */
+export default {
+  displayName: 'settings-back',
   preset: '../../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -11,5 +12,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../coverage/libs/auth/back',
+  coverageDirectory: '../../../coverage/libs/settings/back',
 };

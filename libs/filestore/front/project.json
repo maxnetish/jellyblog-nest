@@ -1,6 +1,5 @@
 {
   "projectType": "library",
-  "root": "libs/filestore/front",
   "sourceRoot": "libs/filestore/front/src",
   "prefix": "mg-filestore",
   "targets": {
@@ -8,7 +7,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/filestore/front"],
       "options": {
-        "jestConfig": "libs/filestore/front/jest.config.js",
+        "jestConfig": "libs/filestore/front/jest.config.ts",
         "passWithNoTests": true
       }
     },

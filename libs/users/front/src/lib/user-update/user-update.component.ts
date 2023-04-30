@@ -5,7 +5,7 @@ import { BehaviorSubject, filter, firstValueFrom, map, Observable, Subject, take
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { UpdateUserDto, UserInfoDto } from '@jellyblog-nest/auth/model';
 
@@ -51,7 +51,7 @@ export class UserUpdateComponent implements OnDestroy {
     readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private readonly store: Store,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     this.formBuilder = fb;
     this.form = this.formBuilder.group<RoleChangeFormModel>({

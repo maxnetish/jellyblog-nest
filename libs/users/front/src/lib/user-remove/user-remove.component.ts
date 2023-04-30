@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
 import { BaseEntityId } from '@jellyblog-nest/utils/common';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, firstValueFrom, Subject, takeUntil } from 'rxjs';
@@ -39,7 +39,7 @@ export class UserRemoveComponent implements OnDestroy {
     readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private readonly store: Store,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     this.formBuilder = fb;
     this.form = this.formBuilder.group<UserRemoveFormModel>({

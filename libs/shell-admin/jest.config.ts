@@ -1,6 +1,7 @@
-module.exports = {
-  displayName: 'auth-front',
-  preset: '../../../jest.preset.js',
+/* eslint-disable */
+export default {
+  displayName: 'shell-admin',
+  preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
@@ -8,7 +9,7 @@ module.exports = {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../../coverage/libs/auth/front',
+  coverageDirectory: '../../coverage/libs/shell-admin',
   transform: {
     '^.+.(ts|mjs|js|html)$': 'jest-preset-angular',
   },

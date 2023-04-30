@@ -1,6 +1,7 @@
-module.exports = {
-  displayName: 'entities',
-  preset: '../../jest.preset.js',
+/* eslint-disable */
+export default {
+  displayName: 'auth-model',
+  preset: '../../../jest.preset.js',
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
@@ -11,5 +12,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/entities',
+  coverageDirectory: '../../../coverage/libs/auth/model',
 };

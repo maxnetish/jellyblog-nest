@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { SettingDto } from '@jellyblog-nest/settings/model';
 import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { combineLatest, debounceTime, filter, Subject, take, takeUntil } from 'rxjs';
 import { SettingsFacade } from './../store/settings.facade';
 import { Store } from '@ngrx/store';
@@ -37,7 +37,7 @@ export class EditFormComponent implements OnDestroy {
   constructor(
     private readonly store: Store,
     public readonly settingsFacade: SettingsFacade,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     this.formBuilder = fb;
 

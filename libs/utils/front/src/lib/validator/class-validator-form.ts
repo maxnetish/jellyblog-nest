@@ -1,5 +1,5 @@
 import {
-  FormArray, FormGroup,
+  UntypedFormArray, UntypedFormGroup,
   ValidationErrors,
   ValidatorFn,
 } from '@angular/forms';
@@ -27,7 +27,7 @@ export function classValidatorToSyncValidator<T extends Record<string, any>>(
     const instance = plainToClass(classType, control.value, transformOptions);
     const validationResults = validateSync(instance, validatorOptions);
 
-    if(control instanceof FormGroup || control instanceof FormArray) {
+    if(control instanceof UntypedFormGroup || control instanceof UntypedFormArray) {
       Object.entries(control.controls).forEach(([key, childControl])=>{
         const validationResultForControl = validationResults.find(vr => vr.property === key);
         if(validationResultForControl) {

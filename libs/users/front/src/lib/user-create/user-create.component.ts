@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { UserRole } from '@jellyblog-nest/utils/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '@jellyblog-nest/auth/front';
@@ -67,7 +67,7 @@ export class UserCreateComponent implements OnInit {
     readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private store: Store,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     this.formBuilder = fb;
     this.form = this.formBuilder.group<CreateUserFormModel>({

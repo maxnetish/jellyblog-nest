@@ -17,7 +17,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/auth/back"],
           "options": {
-            "jestConfig": "libs/auth/back/jest.config.js",
+            "jestConfig": "libs/auth/back/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -34,7 +34,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/auth/front"],
           "options": {
-            "jestConfig": "libs/auth/front/jest.config.js",
+            "jestConfig": "libs/auth/front/jest.config.ts",
             "passWithNoTests": true
           }
         },
@@ -66,7 +66,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/auth/model"],
           "options": {
-            "jestConfig": "libs/auth/model/jest.config.js",
+            "jestConfig": "libs/auth/model/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -79,13 +79,15 @@
       "projectType": "application",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:build",
+          "executor": "@nrwl/webpack:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/backend",
             "main": "apps/backend/src/main.ts",
             "tsConfig": "apps/backend/tsconfig.app.json",
-            "assets": ["apps/backend/src/assets"]
+            "assets": ["apps/backend/src/assets"],
+            "target": "node",
+            "compiler": "tsc"
           },
           "configurations": {
             "production": {
@@ -102,7 +104,7 @@
           }
         },
         "serve": {
-          "executor": "@nrwl/node:execute",
+          "executor": "@nrwl/node:node",
           "options": {
             "buildTarget": "backend:build"
           }
@@ -118,7 +120,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/backend"],
           "options": {
-            "jestConfig": "apps/backend/jest.config.js",
+            "jestConfig": "apps/backend/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -141,7 +143,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/entities"],
           "options": {
-            "jestConfig": "libs/entities/jest.config.js",
+            "jestConfig": "libs/entities/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -248,7 +250,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/frontend/admin"],
           "options": {
-            "jestConfig": "apps/frontend/admin/jest.config.js",
+            "jestConfig": "apps/frontend/admin/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -300,7 +302,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/post/back"],
           "options": {
-            "jestConfig": "libs/post/back/jest.config.js",
+            "jestConfig": "libs/post/back/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -323,7 +325,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/post/model"],
           "options": {
-            "jestConfig": "libs/post/model/jest.config.js",
+            "jestConfig": "libs/post/model/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -346,7 +348,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/settings/back"],
           "options": {
-            "jestConfig": "libs/settings/back/jest.config.js",
+            "jestConfig": "libs/settings/back/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -363,7 +365,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/settings/front"],
           "options": {
-            "jestConfig": "libs/settings/front/jest.config.js",
+            "jestConfig": "libs/settings/front/jest.config.ts",
             "passWithNoTests": true
           }
         },
@@ -395,7 +397,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/settings/model"],
           "options": {
-            "jestConfig": "libs/settings/model/jest.config.js",
+            "jestConfig": "libs/settings/model/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -412,7 +414,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/shell-admin"],
           "options": {
-            "jestConfig": "libs/shell-admin/jest.config.js",
+            "jestConfig": "libs/shell-admin/jest.config.ts",
             "passWithNoTests": true
           }
         },
@@ -438,7 +440,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/users/front"],
           "options": {
-            "jestConfig": "libs/users/front/jest.config.js",
+            "jestConfig": "libs/users/front/jest.config.ts",
             "passWithNoTests": true
           }
         },
@@ -470,7 +472,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/utils/back"],
           "options": {
-            "jestConfig": "libs/utils/back/jest.config.js",
+            "jestConfig": "libs/utils/back/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -493,7 +495,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/utils/common"],
           "options": {
-            "jestConfig": "libs/utils/common/jest.config.js",
+            "jestConfig": "libs/utils/common/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -510,7 +512,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/utils/front"],
           "options": {
-            "jestConfig": "libs/utils/front/jest.config.js",
+            "jestConfig": "libs/utils/front/jest.config.ts",
             "passWithNoTests": true
           }
         },
@@ -536,7 +538,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/utils/front-file-uploader"],
           "options": {
-            "jestConfig": "libs/utils/front-file-uploader/jest.config.js",
+            "jestConfig": "libs/utils/front-file-uploader/jest.config.ts",
             "passWithNoTests": true
           }
         },
