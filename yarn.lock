@@ -3112,17 +3112,17 @@
   dependencies:
     tslib "^2.3.0"
 
-"@ng-icons/core@^13.1.2":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@ng-icons/core/-/core-13.3.0.tgz#30e2bb8ccf0a433f08f8ee05d287924fb9a944d1"
-  integrity sha512-nOdkATobPI5BOhqiIYz2+FNyhKqgShzqNJcx8ZRiJqhYJ2VrKSuE8D51VAdQVCDC5WFKAa8h7Nnmj+J7S4270Q==
+"@ng-icons/core@^23.0.0":
+  version "23.3.0"
+  resolved "https://registry.yarnpkg.com/@ng-icons/core/-/core-23.3.0.tgz#cf146eb6cdef0930bb51baa72b704c5c737e6bf6"
+  integrity sha512-QEprUxFpoiXdBgEhhVPc+cdN7NVwe/9lAx8y61XrMNic6Qeg2ZtfJH0CGbYRgbUHxFArZ9faG79x0clZnQH2kw==
   dependencies:
     tslib "^2.2.0"
 
-"@ng-icons/heroicons@^13.1.2":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@ng-icons/heroicons/-/heroicons-13.3.0.tgz#3718fe7116d009b310a2bbebf61d189c17e02f38"
-  integrity sha512-N1WIZt4zHTSxkXwsjSkRgvuRa7QWJFW3w4JM3uXCjVLpMmHRRdnVVlxYJhSxvjv/Xqn43eDrwzpL9dQZ4tKdjw==
+"@ng-icons/heroicons@^23.0.0":
+  version "23.3.0"
+  resolved "https://registry.yarnpkg.com/@ng-icons/heroicons/-/heroicons-23.3.0.tgz#b3e7d1197128248c2b046ff4a32d2707b9954e57"
+  integrity sha512-Q6xk0D8K/bzDUHaoabfqy/r7DBHXb656F+m8gnUE51gW/Yfb5Eb6U/J/F1NhCr+PffxQQWB/ClMbv4tOlY4NtA==
   dependencies:
     tslib "^2.2.0"
 

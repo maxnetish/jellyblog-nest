@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { BehaviorSubject, map, merge, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ControlValueAccessor, FormGroupDirective, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { validationMessageDict } from './validation-message-dict';
 
 @Component({
   selector: 'app-utils-validation-message',
@@ -55,8 +56,13 @@ export class ValidationMessageComponent implements OnDestroy, ControlValueAccess
         }
       }),
       map((control) => {
-        if (control && control.errors) {
-          return [...Object.values(control.errors)];
+        if (control && control.errors && !control.disabled) {
+          return [...Object.entries(control.errors).map(([key, value]) => {
+            if(typeof value === 'string') {
+              return value;
+            }
+            return validationMessageDict.get(key) || key;
+          })];
         }
         return [];
       }),
@@ -79,5 +85,4 @@ export class ValidationMessageComponent implements OnDestroy, ControlValueAccess
   writeValue(obj: any): void {
     // We never write any value
   }
-
 }

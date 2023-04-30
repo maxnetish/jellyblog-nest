@@ -42,7 +42,7 @@
             class="btn btn-link align-baseline mr-2"
             ngbDropdownToggle
           >
-            <ng-icon name="hero-menu"></ng-icon>
+            <ng-icon name="heroBars3"></ng-icon>
           </button>
           <div ngbDropdownMenu>
             <button
@@ -50,7 +50,7 @@
               type="button"
               (click)="handleChangeRoleClick(user)"
             >
-              <ng-icon name="hero-user-group"></ng-icon>
+              <ng-icon name="heroUsers"></ng-icon>
               Роль
             </button>
             <button
@@ -58,11 +58,11 @@
               type="button"
               (click)="handleSetPasswordClick(user)"
             >
-              <ng-icon name="hero-lock-closed"></ng-icon>
+              <ng-icon name="heroLockClosed"></ng-icon>
               Установить пароль
             </button>
             <button ngbDropdownItem type="button" class="text-danger" (click)="handleRemoveClick(user)">
-              <ng-icon name="hero-user-remove"></ng-icon>
+              <ng-icon name="heroUserMinus"></ng-icon>
               Удалить
             </button>
           </div>

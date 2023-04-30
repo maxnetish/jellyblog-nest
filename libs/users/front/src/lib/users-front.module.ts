@@ -14,14 +14,14 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbDropdownModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgIconsModule } from '@ng-icons/core';
 import {
-  HeroUserRemove,
-  HeroUser,
-  HeroUserGroup,
-  HeroDotsVerticalSolid,
-  HeroMenu,
-  HeroLockClosed,
-  HeroX,
-} from '@ng-icons/heroicons';
+  heroUserMinus,
+  heroUser,
+  heroUsers,
+  heroEllipsisVertical,
+  heroBars3,
+  heroLockClosed,
+  heroXMark,
+} from '@ng-icons/heroicons/outline';
 import { UserUpdateComponent } from './user-update/user-update.component';
 import { UserUpdateModalService } from './user-update/user-update.modal.service';
 import { UserSetPasswordComponent } from './user-set-password/user-set-password.component';
@@ -57,13 +57,13 @@ const routes: AppRoute[] = [
         NgbPaginationModule,
         NgbDropdownModule,
         NgIconsModule.withIcons({
-            HeroUserRemove,
-            HeroUser,
-            HeroUserGroup,
-            HeroDotsVerticalSolid,
-            HeroMenu,
-            HeroLockClosed,
-            HeroX,
+          heroUserMinus,
+          heroUser,
+          heroUsers,
+          heroEllipsisVertical,
+          heroBars3,
+          heroLockClosed,
+          heroXMark,
         }),
         UtilsFrontFileUploaderModule,
     ],

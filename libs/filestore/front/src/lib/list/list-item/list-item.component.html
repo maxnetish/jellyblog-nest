@@ -7,7 +7,7 @@
             <a class="" href="javascript:void 0" (click)="store.toggleExpanded()">
               <div class="details-header_name_button-content">
                 <ng-icon
-                  name="hero-chevron-right"
+                  name="heroChevronRight"
                   class="collapse-marker-icon"
                   [class.expanded]="expanded"
                   [class.collapsed]="!expanded"
@@ -29,7 +29,7 @@
                       (click)="store.renameToggle()"
                       title="Отмена"
                     >
-                      <ng-icon name="hero-x"></ng-icon>
+                      <ng-icon name="heroXMark"></ng-icon>
                     </button>
                     <button
                       type="button"
@@ -37,7 +37,7 @@
                       (click)="renameKeyInsertOriginalName()"
                       title="Вставить originalname"
                     >
-                      <ng-icon name="hero-clipboard-copy"></ng-icon>
+                      <ng-icon name="heroClipboard"></ng-icon>
                     </button>
                     <button
                       type="button"
@@ -45,14 +45,14 @@
                       (click)="renameKeyInsertNewUid()"
                       title="Сгенерировать новый UID"
                     >
-                      <ng-icon name="hero-globe"></ng-icon>
+                      <ng-icon name="heroGlobeAlt"></ng-icon>
                     </button>
                     <button
                       type="submit"
                       class="btn btn-primary"
                       title="Применить"
                     >
-                      <ng-icon name="hero-check"></ng-icon>
+                      <ng-icon name="heroCheck"></ng-icon>
                     </button>
                   </div>
                 </div>
@@ -66,7 +66,7 @@
               title="Переименовать"
               (click)="store.renameToggle()"
             >
-              <ng-icon name="hero-pencil"></ng-icon>
+              <ng-icon name="heroPencil"></ng-icon>
             </button>
           </div>
           <div class="details-header_size">
@@ -120,7 +120,7 @@
                   #downloadAnchor
                   [href]="shortFileInfo.Key | s3FileUrl : s3PublicEndPoint | appendResponseContentDisposition : fileDownloadName : 'attachment'"
                 >
-                  <ng-icon name="hero-download" size=""></ng-icon>
+                  <ng-icon name="heroCloudArrowDown" size=""></ng-icon>
                   {{downloadAnchor.href}}
                 </a>
               </div>
@@ -131,7 +131,7 @@
                   #inlineAnchor
                   [href]="shortFileInfo.Key | s3FileUrl : s3PublicEndPoint | appendResponseContentDisposition : fileDownloadName : 'inline'"
                 >
-                  <ng-icon name="hero-external-link" size=""></ng-icon>
+                  <ng-icon name="heroArrowTopRightOnSquare" size=""></ng-icon>
                   {{inlineAnchor.href}}
                 </a>
               </div>

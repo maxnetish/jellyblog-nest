@@ -1,10 +1,12 @@
-<ngb-toast
-  *ngFor="let toast of toasts$ | async; trackBy: trackToasts"
-  [header]="headerBySeverity[toast.severity]"
-  [autohide]="true"
-  [delay]="delayBySeverity[toast.severity]"
-  (hidden)="handleToastHidden(toast)"
-  [class]="classBySeverity[toast.severity]"
->
-  {{toast.text}}
-</ngb-toast>
+<div class="d-flex flex-column gap-2">
+  <ngb-toast
+    *ngFor="let toast of toasts$ | async; trackBy: trackToasts"
+    [header]="headerBySeverity[toast.severity]"
+    [autohide]="true"
+    [delay]="delayBySeverity[toast.severity]"
+    (hidden)="handleToastHidden(toast)"
+    [class]="classBySeverity[toast.severity]"
+  >
+    {{toast.text}}
+  </ngb-toast>
+</div>

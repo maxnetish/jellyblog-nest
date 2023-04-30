@@ -1,17 +1,22 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { UntypedFormBuilder } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { firstValueFrom } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as AuthActions from './../store/auth.actions';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 
-interface LoginFormModel {
-  username: string;
-  password: string;
-}
+type LoginFormGroup = FormGroup<{
+  username: FormControl<string | null>;
+  password: FormControl<string | null>;
+}>;
 
 @Component({
   selector: 'app-auth-login-form',
@@ -22,36 +27,38 @@ interface LoginFormModel {
 })
 export class LoginFormComponent {
 
-  private fb: IFormBuilder;
-  form: IFormGroup<LoginFormModel>;
+  form: LoginFormGroup = new FormGroup({
+    username: new FormControl<string | null>(null, Validators.required),
+    password: new FormControl<string | null>(null, Validators.required),
+  });
+
+  @Input() disallowCancel = false;
+  @Output() cancel = new EventEmitter();
+  @Output() successSubmit = new EventEmitter();
 
   constructor(
-    formBuilder: UntypedFormBuilder,
-    private readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private readonly store: Store,
   ) {
-    this.fb = formBuilder;
-
-    this.form = this.fb.group<LoginFormModel>({
-      username: [null],
-      password: [null],
-    });
   }
 
   cancelClick() {
-    this.modal.dismiss('cancel');
+    this.cancel.emit();
   }
 
   async submitForm() {
+    if(this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     const formValue = this.form.value;
     if (!formValue) {
       return;
     }
     try {
       const result = await firstValueFrom(this.authService.login({
-        username: formValue.username,
-        password: formValue.password,
+        username: formValue.username || '',
+        password: formValue.password || '',
       }));
       this.store.dispatch(GlobalActions.addGlobalToast({
         severity: GlobalToastSeverity.SUCCESS,
@@ -60,7 +67,7 @@ export class LoginFormComponent {
       this.store.dispatch(AuthActions.gotUserInfo({
         user: result || null,
       }));
-      this.modal.close(result);
+      this.successSubmit.emit();
     } catch (err: any) {
       this.store.dispatch(GlobalActions.addGlobalToast({
         severity: GlobalToastSeverity.ERROR,

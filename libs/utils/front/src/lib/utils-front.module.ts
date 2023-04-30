@@ -7,7 +7,7 @@ import * as AppValidators from './validator';
 import { ValidationMessageComponent } from './components/validation-message/validation-message.component';
 import { ModalContentComponent } from './components/modal-content/modal-content.component';
 import { NgIconsModule } from '@ng-icons/core';
-import { HeroX } from '@ng-icons/heroicons';
+import { heroXMark } from '@ng-icons/heroicons/outline';
 import { S3FileUrlPipe, buildS3FileUrl } from './s3-file-url.pipe';
 import {
   AppendResponseContentDispositionPipe,
@@ -23,7 +23,7 @@ import { NativeDatePipe } from './native-date.pipe';
   imports: [
     CommonModule,
     NgIconsModule.withIcons({
-      HeroX,
+      heroXMark,
     }),
   ],
   declarations: [

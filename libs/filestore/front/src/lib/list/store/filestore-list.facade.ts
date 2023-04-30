@@ -26,8 +26,8 @@ export class FilestorelistFacade {
   }
 
   private sortIconMap: Record<SortOrder, string> = {
-    [SortOrder.ASC]: 'hero-sort-ascending',
-    [SortOrder.DESC]: 'hero-sort-descending',
+    [SortOrder.ASC]: 'heroBarsArrowDown',
+    [SortOrder.DESC]: 'heroBarsArrowUp',
   };
 
   files$: Observable<FileInfo[]> = combineLatest([

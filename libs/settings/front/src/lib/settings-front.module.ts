@@ -12,9 +12,9 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgIconsModule } from '@ng-icons/core';
 import {
-  HeroPencil,
-  HeroUpload,
-} from '@ng-icons/heroicons';
+  heroPencil,
+  heroCloudArrowUp,
+} from '@ng-icons/heroicons/outline';
 import { UtilsFrontFileUploaderModule } from '@jellyblog-nest/utils/front-file-uploader';
 import { CheckFileStoreComponent } from './edit-form/check-file-store/check-file-store.component';
 
@@ -38,8 +38,8 @@ const routes: AppRoute[] = [
         ]),
         ReactiveFormsModule,
         NgIconsModule.withIcons({
-            HeroPencil,
-            HeroUpload,
+            heroPencil,
+            heroCloudArrowUp,
         }),
         UtilsFrontFileUploaderModule,
         UtilsFrontModule,

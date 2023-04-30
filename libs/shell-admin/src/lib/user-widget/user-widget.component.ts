@@ -32,11 +32,7 @@ export class UserWidgetComponent {
   }
 
   async handleLoginClick() {
-    try {
-      await this.loginFormModal.show();
-    } catch (err) {
-      console.warn(err);
-    }
+    this.loginFormModal.show();
   }
 
   handleLogoutClick() {
