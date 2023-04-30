@@ -1,15 +1,15 @@
 {
-  "name": "filestore-front",
+  "name": "users-front",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "sourceRoot": "libs/filestore/front/src",
-  "prefix": "mg-filestore",
+  "sourceRoot": "libs/users/front/src",
+  "prefix": "app-users",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/filestore/front"],
+      "outputs": ["{workspaceRoot}/coverage/libs/users/front"],
       "options": {
-        "jestConfig": "libs/filestore/front/jest.config.ts",
+        "jestConfig": "libs/users/front/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -17,8 +17,8 @@
       "executor": "@nrwl/linter:eslint",
       "options": {
         "lintFilePatterns": [
-          "libs/filestore/front/src/**/*.ts",
-          "libs/filestore/front/src/**/*.html"
+          "libs/users/front/src/**/*.ts",
+          "libs/users/front/src/**/*.html"
         ]
       }
     }

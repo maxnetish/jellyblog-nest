@@ -28,7 +28,7 @@ import {
 import { NgIconsModule } from '@ng-icons/core';
 import { ListItemComponent } from './list/list-item/list-item.component';
 import { NgbCollapseModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { ReactiveComponentModule } from '@ngrx/component';
+import { LetModule, PushModule } from '@ngrx/component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UploadFormComponent } from './list/upload-form/upload-form.component';
 import { UtilsFrontFileUploaderModule } from '@jellyblog-nest/utils/front-file-uploader';
@@ -76,7 +76,7 @@ const routes: AppRoute[] = [
     NgbCollapseModule,
     UtilsFrontModule,
     NgbDropdownModule,
-    ReactiveComponentModule,
+    LetModule, PushModule,
     FormsModule,
     ReactiveFormsModule,
     UtilsFrontFileUploaderModule,

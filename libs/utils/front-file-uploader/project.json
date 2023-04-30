@@ -1,15 +1,15 @@
 {
-  "name": "filestore-front",
+  "name": "utils-front-file-uploader",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "sourceRoot": "libs/filestore/front/src",
-  "prefix": "mg-filestore",
+  "sourceRoot": "libs/utils/front-file-uploader/src",
+  "prefix": "mg",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/filestore/front"],
+      "outputs": ["{workspaceRoot}/coverage/libs/utils/front-file-uploader"],
       "options": {
-        "jestConfig": "libs/filestore/front/jest.config.ts",
+        "jestConfig": "libs/utils/front-file-uploader/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -17,8 +17,8 @@
       "executor": "@nrwl/linter:eslint",
       "options": {
         "lintFilePatterns": [
-          "libs/filestore/front/src/**/*.ts",
-          "libs/filestore/front/src/**/*.html"
+          "libs/utils/front-file-uploader/src/**/*.ts",
+          "libs/utils/front-file-uploader/src/**/*.html"
         ]
       }
     }

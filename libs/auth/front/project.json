@@ -1,15 +1,15 @@
 {
-  "name": "filestore-front",
+  "name": "auth-front",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "sourceRoot": "libs/filestore/front/src",
-  "prefix": "mg-filestore",
+  "sourceRoot": "libs/auth/front/src",
+  "prefix": "app-auth",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/filestore/front"],
+      "outputs": ["{workspaceRoot}/coverage/libs/auth/front"],
       "options": {
-        "jestConfig": "libs/filestore/front/jest.config.ts",
+        "jestConfig": "libs/auth/front/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -17,8 +17,8 @@
       "executor": "@nrwl/linter:eslint",
       "options": {
         "lintFilePatterns": [
-          "libs/filestore/front/src/**/*.ts",
-          "libs/filestore/front/src/**/*.html"
+          "libs/auth/front/src/**/*.ts",
+          "libs/auth/front/src/**/*.html"
         ]
       }
     }

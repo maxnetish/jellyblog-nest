@@ -19,13 +19,10 @@ import { shellAdminRoutes } from './shell-admin.routes';
   imports: [
     CommonModule,
     RouterModule.forRoot(shellAdminRoutes, {
-      preloadingStrategy: NoPreloading,
-      scrollPositionRestoration: 'enabled',
-      anchorScrolling: 'enabled',
-      // TODO: calc scroll offset: height of fixed elements
-      // scrollOffset:
-      relativeLinkResolution: 'legacy',
-    }),
+    preloadingStrategy: NoPreloading,
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled'
+}),
     StoreModule.forRoot({
       [GlobalToastReducer.globalToastFeatureKey]: GlobalToastReducer.reducer,
     }, {

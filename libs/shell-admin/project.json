@@ -1,0 +1,27 @@
+{
+  "name": "shell-admin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/shell-admin/src",
+  "prefix": "adm",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/shell-admin"],
+      "options": {
+        "jestConfig": "libs/shell-admin/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shell-admin/src/**/*.ts",
+          "libs/shell-admin/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
