@@ -45,7 +45,14 @@ export class AuthController {
 
   @Post('logout')
   logout(@Req() req: Request) {
-    req.logout();
+    return new Promise((resolve, reject) => {
+      req.logout((err) => {
+        if(err) {
+          reject(err);
+        }
+        resolve(true);
+      });
+    });
   }
 
   @RequireRole()

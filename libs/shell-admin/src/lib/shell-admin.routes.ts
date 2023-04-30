@@ -19,7 +19,7 @@ export const shellAdminRoutes: AppRoute[] = [
         return m.UsersFrontModule;
       } catch (e) {
         console.error(e);
-        return null;
+        throw e;
       }
     },
     canActivate: [AuthGuardNg],
@@ -49,7 +49,7 @@ export const shellAdminRoutes: AppRoute[] = [
         return m.FilestoreFrontModule;
       } catch (e) {
         console.error(e);
-        return null;
+        throw e;
       }
     },
     canActivate: [AuthGuardNg],
