@@ -21,7 +21,7 @@
       "cli": "nx",
       "description": "Stop hashing jest spec files and config files for build targets and dependent tasks",
       "factory": "./src/migrations/update-15-0-0/add-jest-inputs",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "add-jest-inputs"
     },
     {
@@ -29,7 +29,7 @@
       "cli": "nx",
       "description": "Update jest configs to support jest 29 changes (https://jestjs.io/docs/upgrading-to-jest29)",
       "factory": "./src/migrations/update-15-8-0/update-configs-jest-29",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "update-configs-jest-29"
     },
     {
@@ -37,7 +37,7 @@
       "cli": "nx",
       "description": "Update jest test files to support jest 29 changes (https://jestjs.io/docs/upgrading-to-jest29)",
       "factory": "./src/migrations/update-15-8-0/update-tests-jest-29",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "update-tests-jest-29"
     },
     {
@@ -45,7 +45,7 @@
       "version": "15.0.0-beta.0",
       "description": "Stop hashing eslint config files for build targets and dependent tasks",
       "factory": "./src/migrations/update-15-0-0/add-eslint-inputs",
-      "package": "@nrwl/linter",
+      "package": "@nx/linter",
       "name": "add-eslint-inputs"
     },
     {
@@ -53,7 +53,7 @@
       "version": "15.7.1-beta.0",
       "description": "Add node_modules to root eslint ignore",
       "factory": "./src/migrations/update-15-7-1/add-eslint-ignore",
-      "package": "@nrwl/linter",
+      "package": "@nx/linter",
       "name": "add-eslint-ignore"
     },
     {
@@ -61,23 +61,23 @@
       "version": "15.7.0-beta.1",
       "description": "Install the required angular-devkit packages as we do not directly depend on them anymore",
       "factory": "./src/migrations/update-15-7-0/install-required-packages",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "install-required-packages"
     },
     {
       "cli": "nx",
       "version": "15.0.0-beta.0",
-      "description": "Rename @nrwl/angular:webpack-server executor to @nrwl/angular:webpack-dev-server",
+      "description": "Rename @nx/angular:webpack-server executor to @nx/angular:webpack-dev-server",
       "factory": "./src/migrations/update-14-8-0/rename-webpack-server",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "rename-webpack-server-executor"
     },
     {
       "cli": "nx",
       "version": "15.0.0-beta.0",
-      "description": "Update the usages of @nrwl/angular/testing to import jasmine-marbles symbols from jasmine-marbles itself.",
+      "description": "Update the usages of @nx/angular/testing to import jasmine-marbles symbols from jasmine-marbles itself.",
       "factory": "./src/migrations/update-15-0-0/switch-to-jasmine-marbles",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "switch-to-jasmine-marbles"
     },
     {
@@ -85,7 +85,7 @@
       "version": "15.0.0-beta.1",
       "description": "Stop hashing karma spec files and config files for build targets and dependent tasks",
       "factory": "./src/migrations/update-15-0-0/add-karma-inputs",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "add-karma-inputs"
     },
     {
@@ -96,7 +96,7 @@
       },
       "description": "Update the @angular/cli package version to ~15.0.0.",
       "factory": "./src/migrations/update-15-2-0/update-angular-cli",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "update-angular-cli-version-15-0-0"
     },
     {
@@ -107,7 +107,7 @@
       },
       "description": "Remove browserslist config as it's handled by build-angular",
       "factory": "./src/migrations/update-15-2-0/remove-browserlist-config",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "remove-browserlist-config"
     },
     {
@@ -118,7 +118,7 @@
       },
       "description": "Update typescript target to ES2022",
       "factory": "./src/migrations/update-15-2-0/update-typescript-target",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "update-typescript-target"
     },
     {
@@ -129,7 +129,7 @@
       },
       "description": "Remove bundleDependencies from server targets",
       "factory": "./src/migrations/update-15-2-0/update-workspace-config",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "update-workspace-config"
     },
     {
@@ -140,7 +140,7 @@
       },
       "description": "Remove exported `@angular/platform-server` `renderModule` method. The `renderModule` method is now exported by the Angular CLI.",
       "factory": "./src/migrations/update-15-2-0/remove-platform-server-exports",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "update-platform-server-exports"
     },
     {
@@ -151,7 +151,7 @@
       },
       "description": "Remove no longer needed require calls in Karma builder main file.",
       "factory": "./src/migrations/update-15-2-0/update-karma-main-file",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "update-karma-main-file"
     },
     {
@@ -162,7 +162,7 @@
       },
       "description": "Update the @angular/cli package version to ~15.1.0.",
       "factory": "./src/migrations/update-15-5-0/update-angular-cli",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "update-angular-cli-version-15-1-0"
     },
     {
@@ -170,7 +170,7 @@
       "version": "15.8.0-beta.4",
       "description": "Update the @angular/cli package version to ~15.2.0.",
       "factory": "./src/migrations/update-15-8-0/update-angular-cli",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "update-angular-cli-version-15-2-0"
     },
     {
@@ -178,7 +178,7 @@
       "version": "15.9.0-beta.3",
       "description": "Update the tsconfig.spec.json to use target es2016 for jest-preset-angular v13",
       "factory": "./src/migrations/update-15-9-0/update-testing-tsconfig",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "update-tsconfig-spec-jest"
     },
     {
@@ -186,7 +186,7 @@
       "version": "15.9.0-beta.9",
       "description": "Update the file-server executor to use @nrwl/web:file-server",
       "factory": "./src/migrations/update-15-9-0/update-file-server-executor",
-      "package": "@nrwl/angular",
+      "package": "@nx/angular",
       "name": "update-file-server-executor"
     },
     {
@@ -194,7 +194,7 @@
       "version": "15.0.0-beta.0",
       "description": "Stop hashing cypress spec files and config files for build targets and dependent tasks",
       "factory": "./src/migrations/update-15-0-0/add-cypress-inputs",
-      "package": "@nrwl/cypress",
+      "package": "@nx/cypress",
       "name": "add-cypress-inputs"
     },
     {
@@ -202,7 +202,7 @@
       "version": "15.0.0-beta.4",
       "description": "Update to using cy.mount in the commands.ts file instead of importing mount for each component test file",
       "factory": "./src/migrations/update-15-0-0/update-cy-mount-usage",
-      "package": "@nrwl/cypress",
+      "package": "@nx/cypress",
       "name": "update-cy-mount-usage"
     },
     {
@@ -210,7 +210,7 @@
       "version": "15.1.0-beta.0",
       "description": "Update to Cypress v11. This migration will only update if the workspace is already on v10. https://www.cypress.io/blog/2022/11/04/upcoming-changes-to-component-testing/",
       "factory": "./src/migrations/update-15-1-0/cypress-11",
-      "package": "@nrwl/cypress",
+      "package": "@nx/cypress",
       "name": "update-to-cypress-11"
     },
     {
@@ -218,7 +218,7 @@
       "version": "15.5.0-beta.0",
       "description": "Update to Cypress v12. Cypress 12 contains a handful of breaking changes that might causes tests to start failing that nx cannot directly fix. Read more Cypress 12 changes: https://docs.cypress.io/guides/references/migration-guide#Migrating-to-Cypress-12-0.This migration will only run if you are already using Cypress v11.",
       "factory": "./src/migrations/update-15-5-0/update-to-cypress-12",
-      "package": "@nrwl/cypress",
+      "package": "@nx/cypress",
       "name": "update-to-cypress-12"
     },
     {

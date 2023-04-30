@@ -6,7 +6,7 @@
   "prefix": "mg",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/utils/front-file-uploader"],
       "options": {
         "jestConfig": "libs/utils/front-file-uploader/jest.config.ts",
@@ -14,7 +14,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": [
           "libs/utils/front-file-uploader/src/**/*.ts",
