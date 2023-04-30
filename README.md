@@ -1,5 +1,3 @@
-
-
 # JellyblogNest
 
 This project was generated using [Nx](https://nx.dev).
@@ -9,10 +7,12 @@ This project was generated using [Nx](https://nx.dev).
 🔎 **Smart, Extensible Build Framework**
 
 ## TODO
+
 Use https://github.com/reactjs/express-react-views as template engine for public parts
 
 ## Useful
-* `nx g @nrwl/workspace:library --skipBabelrc --testEnvironment=node` Create usual ts non-buildable lib
+
+- `nx g @nx/workspace:library --skipBabelrc --testEnvironment=node` Create usual ts non-buildable lib
 
 ## Adding capabilities to your workspace
 
@@ -84,8 +84,6 @@ Run `nx dep-graph` to see a diagram of the dependencies of your projects.
 ## Further help
 
 Visit the [Nx Documentation](https://nx.dev) to learn more.
-
-
 
 ## ☁ Nx Cloud
 
