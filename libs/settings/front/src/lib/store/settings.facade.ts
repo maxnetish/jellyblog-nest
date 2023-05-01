@@ -37,10 +37,12 @@ export class SettingsFacade {
     map(([accessKeyId, secretAccessKey, endpoint, region]) => {
       return {
         endpoint,
-        credentials: {
-          accessKeyId,
-          secretAccessKey,
-        },
+        credentials: (accessKeyId && secretAccessKey)
+          ? {
+            accessKeyId,
+            secretAccessKey,
+          }
+          : undefined,
         region,
       } as S3ClientConfig;
     }),
@@ -59,10 +61,10 @@ export class SettingsFacade {
   }
 
   saveSetting(setting: SettingDto) {
-   this.store.dispatch(SettingsActions.updateSetting({
-     name: setting.name,
-     value: setting.value,
-   }));
+    this.store.dispatch(SettingsActions.updateSetting({
+      name: setting.name,
+      value: setting.value,
+    }));
   }
 
   loadSettings() {

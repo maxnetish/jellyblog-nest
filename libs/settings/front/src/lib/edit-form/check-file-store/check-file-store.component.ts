@@ -87,7 +87,6 @@ export class CheckFileStoreComponent {
   }
 
   handleTestUploadEvents($event: UploadEvents.UploadEvent) {
-    console.log('Upload: ', $event);
     switch ($event.type) {
       case 'UploadBegin': {
         this.store.dispatch(GlobalActions.addGlobalToast({

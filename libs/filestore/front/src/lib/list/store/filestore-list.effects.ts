@@ -31,13 +31,16 @@ export class FilestoreListEffects {
         return combineLatest([
           this.store.select(fromFilestoreListSelectors.selectPrefix),
           this.store.select(fromFilestoreListSelectors.selectDelimiter),
-          this.settingsFacade.s3ClientConfig$,
+          this.settingsFacade.s3ClientConfig$.pipe(
+            // wait credentials
+            filter((s3config) => {
+              return !!s3config.credentials;
+            }),
+          ),
           this.settingsFacade.getSetting$(SettingName.S3_BUCKET),
         ]).pipe(
           take(1),
           map(([prefix, delimiter, s3ClientConfig, s3Bucket]) => {
-            // FIXME если разлогинится и залогиниться, здесь будет неполный s3 конфиг,
-            //  без кредов. Т.к. настройки приезжают после того как перешли на эту страницу.
             return {
               prefix,
               delimiter,
@@ -223,12 +226,12 @@ export class FilestoreListEffects {
         this.settingsFacade.s3ClientConfig$,
         this.settingsFacade.getSetting$(SettingName.S3_BUCKET),
       ),
-      switchMap(([{currentKey, newKey}, s3ClientConfig, s3Bucket])=> {
+      switchMap(([{currentKey, newKey}, s3ClientConfig, s3Bucket]) => {
         const command = new CopyObjectCommand({
           Bucket: s3Bucket || undefined,
           Key: newKey,
           // encode required because parameter passed in header
-          CopySource:  encodeURI(`${s3Bucket}/${currentKey}`),
+          CopySource: encodeURI(`${s3Bucket}/${currentKey}`),
         });
         const client = this.getS3Client(s3ClientConfig);
         return from(client.send(command)).pipe(
@@ -259,7 +262,7 @@ export class FilestoreListEffects {
           }),
         );
       }),
-      map(({currentKey, newKey, output})=> {
+      map(({currentKey, newKey, output}) => {
         return fromFilestroreListActions.renameObjectSuccess({
           currentKey,
           newKey,
