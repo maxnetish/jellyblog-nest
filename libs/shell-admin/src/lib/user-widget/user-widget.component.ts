@@ -31,10 +31,6 @@ export class UserWidgetComponent {
     );
   }
 
-  async handleLoginClick() {
-    this.loginFormModal.show();
-  }
-
   handleLogoutClick() {
     this.authService.logout()
       .subscribe(() => {
