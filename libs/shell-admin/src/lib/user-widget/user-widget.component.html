@@ -2,17 +2,15 @@
   *ngIf="loggedIn$ | async"
   ngbDropdown
   class="d-inline-block"
-  display="dynamic"
-  placement="bottom-right"
 >
   <button
-    class="btn btn-outline-primary"
+    class="btn btn-light btn-sm"
     id="userMenu"
     ngbDropdownToggle
   >
     {{username$ | async}}
   </button>
-  <div ngbDropdownMenu aria-labelledby="userMenu">
+  <div ngbDropdownMenu aria-labelledby="userMenu" class="dropdown-menu">
     <button ngbDropdownItem (click)="handleLogoutClick()">
       Разлогиниться
     </button>

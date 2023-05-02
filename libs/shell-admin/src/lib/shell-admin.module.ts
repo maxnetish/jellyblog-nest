@@ -9,12 +9,14 @@ import { AuthFrontModule } from '@jellyblog-nest/auth/front';
 import { HttpClientModule } from '@angular/common/http';
 import { GlobalToastComponent } from './global-toast/global-toast.component';
 import * as GlobalToastReducer from './global-toast/store/global-toast.reducer';
-import { NgbDropdownModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbDropdownModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserWidgetComponent } from './user-widget/user-widget.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
 import { shellAdminRoutes } from './shell-admin.routes';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { NgIconsModule } from '@ng-icons/core';
+import { heroBars3 } from '@ng-icons/heroicons/outline';
 
 @NgModule({
   imports: [
@@ -39,11 +41,15 @@ import { LoginPageComponent } from './login-page/login-page.component';
       }
     ),
     EffectsModule.forRoot([]),
+    NgIconsModule.withIcons({
+      heroBars3,
+    }),
     HttpClientModule,
     AuthFrontModule,
     SettingsFrontModule,
     NgbToastModule,
     NgbDropdownModule,
+    NgbCollapseModule,
   ],
   declarations: [
     LayoutComponent,

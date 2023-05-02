@@ -9,6 +9,7 @@ import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front'
   encapsulation: ViewEncapsulation.Emulated,
 })
 export class LayoutComponent implements OnInit {
+  isNavbarCollapsed = true;
 
   constructor(
     private readonly store: Store,
