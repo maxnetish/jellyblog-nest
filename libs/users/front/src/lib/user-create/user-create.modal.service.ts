@@ -15,7 +15,7 @@ export class UserCreateModalService {
     const modalRef = this.modalService.open(
       UserCreateComponent,
       {
-        backdrop: false,
+        backdrop: true,
         size: 'sm',
         modalDialogClass: 'shadow',
       },

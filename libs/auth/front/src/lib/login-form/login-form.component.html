@@ -2,12 +2,26 @@
   <div class="card">
     <div class="card-body">
       <div class="form-floating mb-3">
-        <input type="text" formControlName="username" id="username" class="form-control" placeholder="Cherry"/>
+        <input
+          type="text"
+          formControlName="username"
+          id="username"
+          class="form-control"
+          autocomplete="username"
+          placeholder="Cherry"
+        />
         <label for="username">Имя</label>
         <app-utils-validation-message formControlName="username"></app-utils-validation-message>
       </div>
       <div class="form-floating mb-3">
-        <input type="password" formControlName="password" id="password" class="form-control" placeholder="super secret"/>
+        <input
+          type="password"
+          formControlName="password"
+          id="password"
+          class="form-control"
+          placeholder="super secret"
+          autocomplete="current-password"
+        />
         <label for="password">Пароль</label>
         <app-utils-validation-message formControlName="password"></app-utils-validation-message>
       </div>

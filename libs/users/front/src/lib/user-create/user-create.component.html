@@ -1,36 +1,38 @@
 <form [formGroup]="$any(form)" (ngSubmit)="submitForm()">
   <app-utils-modal-content [activeModal]="modal" modalTitle="Создать пользователя">
-    <div class="form-group">
-      <label class="text-secondary" for="vjfvnfvd">Имя нового пользователя</label>
+    <div class="mb-3">
+      <label class="form-label small" for="vvefvdfv">Имя нового пользователя</label>
       <input
         type="text"
         formControlName="username"
-        id="vjfvnfvd"
+        id="vvefvdfv"
         class="form-control"
+        autocomplete="off"
       />
       <app-utils-validation-message formControlName="username"></app-utils-validation-message>
     </div>
-    <div class="form-group">
-      <label class="text-secondary">Его роль</label>
+    <div class="mb-3">
+      <label class="form-label small" for="cefrefhjgdf">И его пароль</label>
+      <input
+        type="text"
+        formControlName="password"
+        id="cefrefhjgdf"
+        class="form-control"
+        autocomplete="new-password"
+      />
+      <app-utils-validation-message formControlName="password"></app-utils-validation-message>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small" for="role">Его роль</label>
       <ng-select
         formControlName="role"
         [items]="availableRoles"
         bindLabel="code"
         bindValue="code"
         [clearable]="false"
+        id="role"
       ></ng-select>
       <app-utils-validation-message formControlName="role"></app-utils-validation-message>
-    </div>
-    <div class="form-group">
-      <label class="text-secondary" for="vefgegevvewgtb">И его пароль</label>
-      <input
-        type="text"
-        formControlName="password"
-        id="vefgegevvewgtb"
-        class="form-control"
-        autocomplete="new-password"
-      />
-      <app-utils-validation-message formControlName="password"></app-utils-validation-message>
     </div>
     <ng-container modalFooter>
       <div class="btn-group" role="group">
