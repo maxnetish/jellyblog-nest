@@ -20,7 +20,7 @@ import {
   heroEllipsisVertical,
   heroBars3,
   heroLockClosed,
-  heroXMark,
+  heroXMark, heroUserPlus,
 } from '@ng-icons/heroicons/outline';
 import { UserUpdateComponent } from './user-update/user-update.component';
 import { UserUpdateModalService } from './user-update/user-update.modal.service';
@@ -29,6 +29,7 @@ import { UserSetPasswordModalService } from './user-set-password/user-set-passwo
 import { UserRemoveComponent } from './user-remove/user-remove.component';
 import { UserRemoveModalService } from './user-remove/user-remove.modal.service';
 import { UtilsFrontFileUploaderModule } from '@jellyblog-nest/utils/front-file-uploader';
+import { heroUserPlusSolid } from '@ng-icons/heroicons/solid';
 
 const routes: AppRoute[] = [
   {
@@ -64,6 +65,7 @@ const routes: AppRoute[] = [
           heroBars3,
           heroLockClosed,
           heroXMark,
+          heroUserPlusSolid,
         }),
         UtilsFrontFileUploaderModule,
     ],
