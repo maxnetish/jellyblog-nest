@@ -1,16 +1,44 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { SettingDto } from '@jellyblog-nest/settings/model';
-import { IFormArray, IFormBuilder, IFormGroup } from '@rxweb/types';
-import { UntypedFormBuilder } from '@angular/forms';
-import { combineLatest, debounceTime, filter, Subject, take, takeUntil } from 'rxjs';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { combineLatest, debounceTime, filter, Subject, takeUntil } from 'rxjs';
 import { SettingsFacade } from './../store/settings.facade';
 import { Store } from '@ngrx/store';
+import { SettingName } from '@jellyblog-nest/utils/common';
 
-interface SettingsFormModel {
-  settings: SettingFormModel[];
+type SettingsForm = FormGroup<{
+  settings: FormArray<FormGroup<{
+    name: FormControl<SettingName | null>;
+    value: FormControl<string | null>;
+    description: FormControl<string | null>;
+    label: FormControl<string | null>;
+  }>>;
+}>;
+
+function createForm(): SettingsForm {
+  return new FormGroup({
+    settings: new FormArray<FormGroup>([]),
+  });
 }
 
-type SettingFormModel = SettingDto;
+function applyDto(form: SettingsForm, settingsDto: SettingDto[] = []) {
+
+  const settingsControl = form.controls.settings;
+  settingsControl.clear();
+
+  settingsDto.forEach((settingDto) => {
+    settingsControl.push(new FormGroup({
+      name: new FormControl<SettingName | null>(null),
+      description: new FormControl<string | null>(null),
+      label: new FormControl<string | null>(null),
+      value: new FormControl<string | null>(null)
+    }), {emitEvent: false});
+  })
+
+  settingsControl.patchValue(settingsDto);
+
+  return form;
+}
 
 @Component({
   selector: 'app-settings-edit-form',
@@ -22,9 +50,8 @@ type SettingFormModel = SettingDto;
 })
 export class EditFormComponent implements OnDestroy {
 
-  form: IFormGroup<SettingsFormModel>;
-  formSettingsArray: IFormArray<SettingFormModel>;
-  formBuilder: IFormBuilder;
+  form = createForm();
+  formSettingsArray = this.form.controls.settings;
 
   private readonly unsubscribe$ = new Subject();
 
@@ -37,34 +64,24 @@ export class EditFormComponent implements OnDestroy {
   constructor(
     private readonly store: Store,
     public readonly settingsFacade: SettingsFacade,
-    fb: UntypedFormBuilder,
   ) {
-    this.formBuilder = fb;
-
-    this.form = this.formBuilder.group<SettingsFormModel>({
-      settings: this.formBuilder.array<SettingFormModel>([]),
-    });
-
-    this.formSettingsArray = this.form.controls.settings as IFormArray<SettingFormModel>;
-
     this.settingsFacade.settings$.pipe(
       takeUntil(this.unsubscribe$),
     ).subscribe((settings) => {
-      this.formSettingsArray.clear();
-      settings.forEach((setting) => {
-        const oneSettingControl = this.formBuilder.group<SettingFormModel>({
-          name: [setting.name],
-          value: [setting.value],
-          label: [setting.label],
-          description: [setting.description],
-        });
-        this.formSettingsArray.push(oneSettingControl);
+      applyDto(this.form, settings);
+      settings.forEach((setting, settingIndex) => {
+        const oneSettingControl = this.formSettingsArray.at(settingIndex);
         oneSettingControl.valueChanges.pipe(
           takeUntil(this.unsubscribe$),
           debounceTime(2000),
           filter((settingDtoOrNull) => !!settingDtoOrNull),
         ).subscribe((settingDto) => {
-          this.updateSetting(settingDto);
+          this.updateSetting({
+            name: settingDto.name!,
+            value: settingDto.value!,
+            label: settingDto.label!,
+            description: settingDto.description!,
+          });
         });
       });
     });

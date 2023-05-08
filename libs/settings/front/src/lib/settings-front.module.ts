@@ -17,6 +17,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { UtilsFrontFileUploaderModule } from '@jellyblog-nest/utils/front-file-uploader';
 import { CheckFileStoreComponent } from './edit-form/check-file-store/check-file-store.component';
+import { LetModule } from '@ngrx/component';
 
 const routes: AppRoute[] = [
   {
@@ -26,24 +27,25 @@ const routes: AppRoute[] = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        StoreModule.forFeature(
-            fromSettings.settingsFeatureKey,
-            fromSettings.reducer,
-        ),
-        EffectsModule.forFeature([
-            SettingsEffects,
-        ]),
-        ReactiveFormsModule,
-        NgIconsModule.withIcons({
-            heroPencil,
-            heroCloudArrowUp,
-        }),
-        UtilsFrontFileUploaderModule,
-        UtilsFrontModule,
-    ],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    StoreModule.forFeature(
+      fromSettings.settingsFeatureKey,
+      fromSettings.reducer,
+    ),
+    EffectsModule.forFeature([
+      SettingsEffects,
+    ]),
+    ReactiveFormsModule,
+    NgIconsModule.withIcons({
+      heroPencil,
+      heroCloudArrowUp,
+    }),
+    UtilsFrontFileUploaderModule,
+    UtilsFrontModule,
+    LetModule,
+  ],
   providers: [
     SettingsFacade,
     SettingsService,

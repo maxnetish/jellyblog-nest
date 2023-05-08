@@ -5,9 +5,6 @@ import { AuthFacade } from './store/auth.facade';
 import { UserRole } from '@jellyblog-nest/utils/common';
 
 export const AuthGuardNg: CanActivateFn = (route, state) => {
-  // canActivate(
-  //   route: ActivatedRouteSnapshot,
-  // ) {
   const authFacade = inject(AuthFacade);
   const router = inject(Router);
   let requiredRoles = route.data?.role as (UserRole | UserRole[]);
@@ -20,7 +17,6 @@ export const AuthGuardNg: CanActivateFn = (route, state) => {
         afterLogin: state.url,
       },
     };
-  // debugger;
   if (requiredRoles && !Array.isArray(requiredRoles)) {
     requiredRoles = [requiredRoles];
   }
@@ -40,12 +36,4 @@ export const AuthGuardNg: CanActivateFn = (route, state) => {
     );
   }
   return true;
-  // }
-
-  // constructor(
-  //   private readonly authFacade: AuthFacade,
-  //   private readonly router: Router,
-  //   private readonly location: Location,
-  // ) {
-  // }
 }
