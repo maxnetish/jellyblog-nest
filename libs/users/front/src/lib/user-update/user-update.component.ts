@@ -1,17 +1,27 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { UserRole } from '@jellyblog-nest/utils/common';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
 import { BehaviorSubject, filter, firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { UpdateUserDto, UserInfoDto } from '@jellyblog-nest/auth/model';
 
-interface RoleChangeFormModel {
-  uuid: string;
-  role: UserRole;
+type RoleChangeForm = FormGroup<{
+  uuid: FormControl<string | null>;
+  role: FormControl<UserRole | null>;
+}>;
+
+function createForm(): RoleChangeForm {
+  return new FormGroup({
+    uuid: new FormControl<string | null>(null),
+    role: new FormControl<UserRole>(UserRole.READER),
+  },  {
+    validators: [
+      AppValidators.classValidatorToSyncValidator(UpdateUserDto),
+    ],
+  });
 }
 
 @Component({
@@ -25,8 +35,7 @@ export class UserUpdateComponent implements OnDestroy {
 
   private readonly unsubscribe$ = new Subject();
 
-  form: IFormGroup<RoleChangeFormModel>;
-  formBuilder: IFormBuilder;
+  form = createForm();
   availableRoles: {code: UserRole}[] = [
     {
       code: UserRole.ADMIN,
@@ -51,17 +60,7 @@ export class UserUpdateComponent implements OnDestroy {
     readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private readonly store: Store,
-    fb: UntypedFormBuilder,
   ) {
-    this.formBuilder = fb;
-    this.form = this.formBuilder.group<RoleChangeFormModel>({
-      role: [UserRole.READER],
-      uuid: [''],
-    }, {
-      validators: [
-        AppValidators.classValidatorToSyncValidator(UpdateUserDto),
-      ],
-    });
     this.userName$ = this.userDto$.pipe(
       map(userDto => userDto.username),
     );
@@ -99,8 +98,8 @@ export class UserUpdateComponent implements OnDestroy {
     this.loading$.next(true);
     try {
       await firstValueFrom(this.authService.updateUser({
-        role: value.role,
-        uuid: value.uuid,
+        role: value.role || UserRole.READER,
+        uuid: value.uuid || '',
       }));
       return true;
     } catch (err: any) {

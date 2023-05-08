@@ -1,14 +1,28 @@
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
 import { SetPasswordDto } from '@jellyblog-nest/auth/model';
 import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, UntypedFormBuilder } from '@angular/forms';
 import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { BehaviorSubject, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-type UserSetPasswordFormModel = SetPasswordDto;
+type UserSetPasswordForm = FormGroup<{
+  userId: FormControl<string | null>;
+  newPassword: FormControl<string | null>;
+}>;
+
+function createForm(): UserSetPasswordForm {
+  return new FormGroup({
+    userId: new FormControl<string | null>(null),
+    newPassword: new FormControl<string | null>(null),
+  }, {
+    validators: [
+      AppValidators.classValidatorToSyncValidator(SetPasswordDto),
+    ],
+  });
+}
 
 @Component({
   templateUrl: './user-set-password.component.html',
@@ -18,11 +32,10 @@ type UserSetPasswordFormModel = SetPasswordDto;
 })
 export class UserSetPasswordComponent implements OnDestroy {
 
-  private formBuilder: IFormBuilder;
   private userId$ = new BehaviorSubject('');
   private unsubscribe$ = new Subject();
 
-  form: IFormGroup<UserSetPasswordFormModel>;
+  form = createForm();
   userName$ = new BehaviorSubject('');
   loading$ = new BehaviorSubject(false);
 
@@ -35,22 +48,10 @@ export class UserSetPasswordComponent implements OnDestroy {
   }
 
   constructor(
-    fb: UntypedFormBuilder,
     private readonly authService: AuthService,
     private store: Store,
     readonly modal: NgbActiveModal,
   ) {
-    this.formBuilder = fb;
-
-    this.form = this.formBuilder.group<UserSetPasswordFormModel>({
-      userId: [''],
-      newPassword: [''],
-    }, {
-      validators: [
-        AppValidators.classValidatorToSyncValidator(SetPasswordDto),
-      ],
-    });
-
     this.userId$.pipe(
       takeUntil(this.unsubscribe$),
     ).subscribe(
@@ -79,7 +80,10 @@ export class UserSetPasswordComponent implements OnDestroy {
     }
     this.loading$.next(true);
     try {
-      await firstValueFrom(this.authService.setPassword(value));
+      await firstValueFrom(this.authService.setPassword({
+        userId: value.userId || '',
+        newPassword: value.newPassword || '',
+      }));
       this.loading$.next(false);
       this.modal.close(true);
     } catch (err: any) {

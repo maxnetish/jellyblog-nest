@@ -16,11 +16,11 @@ export class UserUpdateModalService {
     const modalRef = this.modalService.open(
       UserUpdateComponent,
       {
-        backdrop: false,
+        backdrop: true,
         size: 'sm',
         modalDialogClass: 'shadow',
       },
-      );
+    );
 
     const component = modalRef.componentInstance as UserUpdateComponent;
     component.userDto = user;
