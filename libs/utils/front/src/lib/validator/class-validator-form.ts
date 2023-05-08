@@ -1,9 +1,10 @@
 import {
-  UntypedFormArray, UntypedFormGroup,
+  FormArray,
+  FormGroup, UntypedFormArray, UntypedFormGroup,
   ValidationErrors,
   ValidatorFn,
 } from '@angular/forms';
-import { ClassConstructor, ClassTransformOptions, plainToClass } from 'class-transformer';
+import { ClassConstructor, ClassTransformOptions, plainToInstance } from 'class-transformer';
 import { validateSync, ValidationError, ValidatorOptions } from 'class-validator';
 
 function validationConstraintsToValidationErrors(constraints: ValidationError['constraints']): ValidationErrors | null{
@@ -24,10 +25,10 @@ export function classValidatorToSyncValidator<T extends Record<string, any>>(
   transformOptions?: ClassTransformOptions,
 ): ValidatorFn {
   return (control) => {
-    const instance = plainToClass(classType, control.value, transformOptions);
+    const instance = plainToInstance(classType, control.value, transformOptions);
     const validationResults = validateSync(instance, validatorOptions);
 
-    if(control instanceof UntypedFormGroup || control instanceof UntypedFormArray) {
+    if(control instanceof FormGroup || control instanceof FormArray || control instanceof  UntypedFormGroup || control instanceof UntypedFormArray) {
       Object.entries(control.controls).forEach(([key, childControl])=>{
         const validationResultForControl = validationResults.find(vr => vr.property === key);
         if(validationResultForControl) {

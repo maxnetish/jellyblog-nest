@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { UntypedFormBuilder } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { UserRole } from '@jellyblog-nest/utils/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '@jellyblog-nest/auth/front';
@@ -9,10 +8,22 @@ import { Store } from '@ngrx/store';
 import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { CreateUserDto } from '@jellyblog-nest/auth/model';
 
-interface CreateUserFormModel {
-  username: string;
-  role: UserRole;
-  password: string;
+type CreateUserForm = FormGroup<{
+  username: FormControl<string | null>;
+  role: FormControl<UserRole | null>;
+  password: FormControl<string | null>;
+}>;
+
+function createForm(): CreateUserForm {
+  return new FormGroup({
+    username: new FormControl<string | null>(null),
+    role: new FormControl<UserRole>(UserRole.READER),
+    password: new FormControl<string | null>(null),
+  }, {
+    validators: [
+      AppValidators.classValidatorToSyncValidator(CreateUserDto),
+    ],
+  });
 }
 
 @Component({
@@ -22,10 +33,9 @@ interface CreateUserFormModel {
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserCreateComponent implements OnInit {
+export class UserCreateComponent {
 
-  form: IFormGroup<CreateUserFormModel>;
-  formBuilder: IFormBuilder;
+  form = createForm();
   availableRoles: { code: UserRole }[] = [
     {
       code: UserRole.ADMIN,
@@ -48,9 +58,9 @@ export class UserCreateComponent implements OnInit {
     this.loading$.next(true);
     try {
       await firstValueFrom(this.authService.createUser({
-        username: value.username,
-        password: value.password,
-        role: value.role,
+        username: value.username || '',
+        password: value.password || '',
+        role: value.role || UserRole.READER,
       }));
       return true;
     } catch (err: any) {
@@ -67,21 +77,7 @@ export class UserCreateComponent implements OnInit {
     readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private store: Store,
-    fb: UntypedFormBuilder,
   ) {
-    this.formBuilder = fb;
-    this.form = this.formBuilder.group<CreateUserFormModel>({
-      password: [''],
-      role: [UserRole.READER],
-      username: [''],
-    }, {
-      validators: [
-        AppValidators.classValidatorToSyncValidator(CreateUserDto),
-      ],
-    });
-  }
-
-  ngOnInit(): void {
   }
 
   async submitForm() {
