@@ -22,7 +22,7 @@ export class GlobalToastComponent {
     [GlobalToastSeverity.SUCCESS]: 'Успешно',
   };
   delayBySeverity: {[key in GlobalToastSeverity]: number} = {
-    [GlobalToastSeverity.ERROR]: 10000,
+    [GlobalToastSeverity.ERROR]: 1000000,
     [GlobalToastSeverity.INFO]: 5000,
     [GlobalToastSeverity.SUCCESS]: 5000,
   };

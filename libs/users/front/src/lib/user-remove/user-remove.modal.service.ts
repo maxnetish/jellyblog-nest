@@ -14,7 +14,7 @@ export class UserRemoveModalService {
     const modalRef = this.modalService.open(
       UserRemoveComponent,
       {
-        backdrop: false,
+        backdrop: true,
         size: 'sm',
         modalDialogClass: 'shadow',
       },

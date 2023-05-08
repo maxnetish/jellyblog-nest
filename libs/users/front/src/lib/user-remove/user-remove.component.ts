@@ -1,14 +1,25 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
 import { BaseEntityId } from '@jellyblog-nest/utils/common';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
 
-type UserRemoveFormModel = BaseEntityId;
+type UserRemoveForm = FormGroup<{
+  uuid: FormControl<string | null>;
+}>;
+
+function createForm(): UserRemoveForm {
+  return new FormGroup({
+    uuid: new FormControl<string | null>(null),
+  }, {
+    validators: [
+      AppValidators.classValidatorToSyncValidator(BaseEntityId),
+    ],
+  });
+}
 
 @Component({
   selector: 'app-users-user-remove',
@@ -19,10 +30,9 @@ type UserRemoveFormModel = BaseEntityId;
 })
 export class UserRemoveComponent implements OnDestroy {
 
-  private readonly formBuilder: IFormBuilder;
   private readonly unsubscribe$ = new Subject();
 
-  form: IFormGroup<UserRemoveFormModel>;
+  form = createForm();
   userName$ = new BehaviorSubject('');
   loading$ = new BehaviorSubject(false);
   userId$ = new BehaviorSubject('');
@@ -39,16 +49,7 @@ export class UserRemoveComponent implements OnDestroy {
     readonly modal: NgbActiveModal,
     private readonly authService: AuthService,
     private readonly store: Store,
-    fb: UntypedFormBuilder,
   ) {
-    this.formBuilder = fb;
-    this.form = this.formBuilder.group<UserRemoveFormModel>({
-      uuid: '',
-    }, {
-      validators: [
-        AppValidators.classValidatorToSyncValidator(BaseEntityId),
-      ],
-    });
     this.userId$.pipe(
       takeUntil(this.unsubscribe$),
     ).subscribe((userId) => {
@@ -69,7 +70,9 @@ export class UserRemoveComponent implements OnDestroy {
     }
     this.loading$.next(true);
     try {
-      await firstValueFrom(this.authService.removeUser(value));
+      await firstValueFrom(this.authService.removeUser({
+        uuid: value.uuid || '',
+      }));
       this.loading$.next(false);
       this.modal.close(true);
     } catch (err: any) {

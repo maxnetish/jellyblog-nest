@@ -1,10 +1,10 @@
-<form [formGroup]="$any(form)" (ngSubmit)="submitForm()">
+<form [formGroup]="form" (ngSubmit)="submitForm()">
   <app-utils-modal-content
     [activeModal]="modal"
     modalTitle="Удалить пользователя"
   >
     <div class="mb-3">
-      <label class="text-secondary">Имя пользователя</label>
+      <label class="form-label small text-secondary">Имя пользователя</label>
       <div class="form-control-plaintext">{{userName$ | async}}</div>
       <app-utils-validation-message formControlName="uuid"></app-utils-validation-message>
     </div>

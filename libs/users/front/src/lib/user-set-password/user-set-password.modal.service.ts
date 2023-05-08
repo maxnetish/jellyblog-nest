@@ -15,7 +15,7 @@ export class UserSetPasswordModalService {
     const modalRef = this.modalService.open(
       UserSetPasswordComponent,
       {
-        backdrop: false,
+        backdrop: true,
         size: 'sm',
         modalDialogClass: 'shadow',
       },
