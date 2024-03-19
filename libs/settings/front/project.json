@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/settings/front"],
       "options": {
-        "jestConfig": "libs/settings/front/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/settings/front/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/settings/front/src/**/*.ts",
-          "libs/settings/front/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

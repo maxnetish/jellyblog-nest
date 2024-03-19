@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Setting } from '@jellyblog-nest/entities';
-import { Equal, FindConditions, Not, Repository } from 'typeorm';
+import { Equal, FindOptionsWhere, Not, Repository } from 'typeorm';
 import { SettingName } from '@jellyblog-nest/utils/common';
 import { settingsDefault } from '@jellyblog-nest/utils/back';
 import { SettingDto, SettingUpdateDto } from '@jellyblog-nest/settings/model';
@@ -18,7 +18,7 @@ export class SettingsService {
                settingName,
                withSecure,
              }: { settingName?: SettingName, withSecure?: boolean } = {}): Promise<SettingDto[]> {
-    const where: FindConditions<Setting> = {};
+    const where: FindOptionsWhere<Setting> = {};
 
     if (settingName) {
       where.name = Equal(settingName);

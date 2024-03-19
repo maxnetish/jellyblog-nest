@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, FindConditions, Like, Repository } from 'typeorm';
+import { Brackets, FindOptionsWhere, Like, Repository } from 'typeorm';
 import { Post, Tag } from '@jellyblog-nest/entities';
 import { FindPostRequest, FindTagRequest, PostShortDto, TagDto } from '@jellyblog-nest/post/model';
 import { Page } from '@jellyblog-nest/utils/common';
@@ -15,7 +15,7 @@ export class PostService {
 
   async findTags(request: FindTagRequest): Promise<Page<TagDto>> {
     const {content, page, size, order} = request;
-    const where: FindConditions<Tag> = {};
+    const where: FindOptionsWhere<Tag> = {};
 
     if (content) {
       where.content = Like(`%${content}%`);
@@ -126,7 +126,7 @@ export class PostService {
   }
 
   async getPostByAnyId(uuidOrHumanId: string): Promise<Post | undefined> {
-    const where: FindConditions<Post>[] = [
+    const where: FindOptionsWhere<Post>[] = [
       {
         uuid: uuidOrHumanId,
       },
@@ -142,12 +142,12 @@ export class PostService {
   }
 
   async getPostById(uuid: string): Promise<Post | undefined> {
-    return this.postRepository.findOne(
-      uuid,
-      {
-        relations: ['tags'],
+    return this.postRepository.findOne({
+      where: {
+        uuid,
       },
-    );
+      relations: ['tags'],
+    });
   }
 
   // async createOrUpdatePost(request: PostUpdateRequest): Promise<string> {

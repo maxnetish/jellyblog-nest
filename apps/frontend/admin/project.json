@@ -65,16 +65,16 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "frontend-admin:build",
         "proxyConfig": "apps/frontend/admin/proxy.conf.json",
-        "port": 4200
+        "port": 4200,
+        "buildTarget": "frontend-admin:build"
       },
       "configurations": {
         "production": {
-          "browserTarget": "frontend-admin:build:production"
+          "buildTarget": "frontend-admin:build:production"
         },
         "development": {
-          "browserTarget": "frontend-admin:build:development"
+          "buildTarget": "frontend-admin:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -82,24 +82,17 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "frontend-admin:build"
+        "buildTarget": "frontend-admin:build"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "apps/frontend/admin/src/**/*.ts",
-          "apps/frontend/admin/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/frontend/admin"],
       "options": {
-        "jestConfig": "apps/frontend/admin/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/frontend/admin/jest.config.ts"
       }
     }
   },

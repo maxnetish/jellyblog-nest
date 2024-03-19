@@ -143,7 +143,7 @@
       "version": "13.3.0-beta.0",
       "description": "Update eslint-rules jest.config.js in order to support ESLint v8 exports mapping, remove category field",
       "factory": "./src/migrations/update-13-3-0/eslint-8-updates",
-      "package": "@nx/linter",
+      "package": "@nx/eslint",
       "name": "eslint-8-updates"
     },
     {

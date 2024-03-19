@@ -4,15 +4,15 @@ import {
   CreateUserDto,
   CredentialsDto,
   FindUserRequest,
+  SetPasswordDto,
   UpdateUserDto,
   UserInfoDto,
 } from '@jellyblog-nest/auth/model';
 import crypto from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@jellyblog-nest/entities';
-import { FindConditions, In, Like, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { BaseEntityId, Page, UserRole } from '@jellyblog-nest/utils/common';
-import { SetPasswordDto } from '@jellyblog-nest/auth/model';
 
 @Injectable()
 export class AuthService {
@@ -48,7 +48,6 @@ export class AuthService {
       throw new HttpException('username cannot be empty', HttpStatus.BAD_REQUEST);
     }
     return await this.userRepository.findOne(
-      {username},
       {
         select: [
           'username',
@@ -57,6 +56,9 @@ export class AuthService {
           'createdAt',
           'updatedAt',
         ],
+        where: {
+          username,
+        },
       },
     );
   }
@@ -69,7 +71,11 @@ export class AuthService {
     if (!password) {
       throw new HttpException('password cannot be empty', HttpStatus.BAD_REQUEST);
     }
-    const found = await this.userRepository.findOne({username});
+    const found = await this.userRepository.findOne({
+      where: {
+        username,
+      },
+    });
     if (!found) {
       return null;
     }
@@ -130,8 +136,13 @@ export class AuthService {
     if (!uuid) {
       throw new Error('uuid cannot be empty');
     }
-    const found = await this.userRepository.findOneOrFail(uuid, {
-      select: ['uuid', 'username', 'role'],
+    const found = await this.userRepository.findOneOrFail({
+      where: {
+        uuid,
+      },
+      select: [
+        'uuid', 'username', 'role'
+      ],
     });
     return {
       username: found.username,
@@ -177,7 +188,7 @@ export class AuthService {
 
   async find(findUserRequest: FindUserRequest): Promise<Page<UserInfoDto>> {
     const {page, size, order, role, name} = findUserRequest;
-    const where: FindConditions<User> = {};
+    const where: FindOptionsWhere<User> = {};
 
     if (role && role.length) {
       where.role = In(role);
@@ -187,12 +198,12 @@ export class AuthService {
     }
 
     const {list, total} = await this.userRepository.findAndCount({
-        select: ['uuid', 'role', 'username'],
-        where,
-        skip: (page - 1) * size,
-        take: size,
-        order,
-      })
+      select: ['uuid', 'role', 'username'],
+      where,
+      skip: (page - 1) * size,
+      take: size,
+      order,
+    })
       .then(([foundUsers, total]) => {
         return {
           list: foundUsers.map((user) => {
@@ -216,7 +227,9 @@ export class AuthService {
 
   private async countOfAdmins() {
     return this.userRepository.count({
-      role: UserRole.ADMIN,
+      where: {
+        role: UserRole.ADMIN,
+      },
     });
   }
 

@@ -1,7 +1,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import session from 'express-session';
-import { getRepository } from 'typeorm';
+import { DataSource, getRepository } from 'typeorm';
 
 import { AppModule } from './app/app.module';
 import { Session } from '@jellyblog-nest/entities';
