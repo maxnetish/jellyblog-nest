@@ -1,7 +1,6 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import session from 'express-session';
-import { DataSource, getRepository } from 'typeorm';
 
 import { AppModule } from './app/app.module';
 import { Session } from '@jellyblog-nest/entities';
@@ -9,12 +8,22 @@ import { TypeormStore } from 'connect-typeorm';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import passport from 'passport';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DataSource } from 'typeorm';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const globalPrefix = 'api';
 
   app.set('trust proxy', 1);
+
+  // We have to up connection before init express session
+  const dataSource = new DataSource({
+    type: 'sqlite',
+    database: './jellyblog.sqlite',
+    entities: [Session],
+    synchronize: true,
+  })
+  await dataSource.initialize();
 
   app.use(
     session({
@@ -33,7 +42,7 @@ async function bootstrap() {
       saveUninitialized: false,
       // TODO read from env
       secret: 'Top secret',
-      store: new TypeormStore().connect(getRepository(Session)),
+      store: new TypeormStore().connect(dataSource.getRepository(Session)),
     }),
   );
 
