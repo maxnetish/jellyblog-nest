@@ -149,7 +149,6 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
                 text: `Fetch details failed: ${err}`,
                 severity: GlobalToastSeverity.ERROR,
               }));
-              console.log(err);
               this.patchState({
                 detailsLoadingStatus: LoadingStatus.FAILED,
               });
