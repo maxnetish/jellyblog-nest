@@ -13,6 +13,7 @@ export interface State {
   listObjectsCommandOutputs: ListObjectsCommandOutput[],
   loadingStatus: LoadingStatus,
   sort: SortOption<FileInfo>,
+  uploaderCollapsed: boolean,
 }
 
 export const initialState: State = {
@@ -21,6 +22,7 @@ export const initialState: State = {
   listObjectsCommandOutputs: [],
   loadingStatus: LoadingStatus.INITIAL,
   sort: availableSortOptions[0],
+  uploaderCollapsed: true,
 };
 
 export const reducer = createReducer(
@@ -112,6 +114,16 @@ export const reducer = createReducer(
               : output.Contents,
           };
         }),
+      };
+    },
+  ),
+
+  on(
+    fromFilestoreListActions.toggleUploaderCollapsed,
+    (state) => {
+      return {
+        ...state,
+        uploaderCollapsed: !state.uploaderCollapsed,
       };
     },
   ),

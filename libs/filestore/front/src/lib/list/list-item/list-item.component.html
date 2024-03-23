@@ -1,150 +1,142 @@
 <ng-container *ngIf="store.shortFileInfo$ | ngrxPush as shortFileInfo">
-  <ng-container *ngrxLet="store.expanded$; let expanded">
-    <ng-container *ngrxLet="store.s3PublicEndpoint$; let s3PublicEndPoint">
-      <ng-container *ngrxLet="store.renameActive$; let renameActive">
-        <div class="details-header">
-          <div class="details-header_name d-flex align-items-baseline">
-            <a class="" href="javascript:void 0" (click)="store.toggleExpanded()">
-              <div class="details-header_name_button-content">
-                <ng-icon
-                  name="heroChevronRight"
-                  class="collapse-marker-icon"
-                  [class.expanded]="expanded"
-                  [class.collapsed]="!expanded"
-                  [class.hidden]="renameActive"
-                ></ng-icon>
-                <div class="details-header_name_button-label text-left" *ngIf="!renameActive">
-                  {{shortFileInfo.name}}
-                </div>
+  <ng-container
+    *ngrxLet="{expanded: store.expanded$, s3PublicEndPoint: store.s3PublicEndpoint$, renameActive: store.renameActive$} as vm"
+  >
+    <div class="details-header">
+      <div class="details-header_name d-flex gap-2">
+        <app-utils-collapse-title
+          *ngIf="!vm.renameActive"
+          [collapsed]="!vm.expanded"
+          (toggle)="store.toggleExpanded()"
+        >
+          {{ shortFileInfo.name }}
+        </app-utils-collapse-title>
+        <ng-container *ngIf="vm.renameActive">
+          <form class="flex-grow-1" [formGroup]="$any(renameForm)"
+                (ngSubmit)="submitRenameKey(shortFileInfo, renameForm)">
+            <div class="input-group">
+              <input type="text" class="form-control" formControlName="key"/>
+              <div class="input-group-append">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="store.renameToggle()"
+                  title="Отмена"
+                >
+                  <ng-icon name="heroXMark"></ng-icon>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-info"
+                  (click)="renameKeyInsertOriginalName()"
+                  title="Вставить originalname"
+                >
+                  <ng-icon name="heroClipboard"></ng-icon>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-info"
+                  (click)="renameKeyInsertNewUid()"
+                  title="Сгенерировать новый UID"
+                >
+                  <ng-icon name="heroGlobeAlt"></ng-icon>
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  title="Применить"
+                >
+                  <ng-icon name="heroCheck"></ng-icon>
+                </button>
               </div>
-            </a>
-            <ng-container *ngIf="renameActive">
-              <form class="flex-grow-1" [formGroup]="$any(renameForm)" (ngSubmit)="submitRenameKey(shortFileInfo, renameForm)">
-                <div class="input-group">
-                  <input type="text" class="form-control" formControlName="key"/>
-                  <div class="input-group-append">
-                    <button
-                      type="button"
-                      class="btn btn-outline-secondary"
-                      (click)="store.renameToggle()"
-                      title="Отмена"
-                    >
-                      <ng-icon name="heroXMark"></ng-icon>
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-info"
-                      (click)="renameKeyInsertOriginalName()"
-                      title="Вставить originalname"
-                    >
-                      <ng-icon name="heroClipboard"></ng-icon>
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-info"
-                      (click)="renameKeyInsertNewUid()"
-                      title="Сгенерировать новый UID"
-                    >
-                      <ng-icon name="heroGlobeAlt"></ng-icon>
-                    </button>
-                    <button
-                      type="submit"
-                      class="btn btn-primary"
-                      title="Применить"
-                    >
-                      <ng-icon name="heroCheck"></ng-icon>
-                    </button>
-                  </div>
-                </div>
-                <app-utils-validation-message formControlName="key"></app-utils-validation-message>
-              </form>
-            </ng-container>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary ml-2"
-              *ngIf="expanded && !renameActive"
-              title="Переименовать"
-              (click)="store.renameToggle()"
-            >
-              <ng-icon name="heroPencil"></ng-icon>
-            </button>
-          </div>
-          <div class="details-header_size">
-            {{shortFileInfo.Size | fileSizeForHuman}}
-          </div>
-          <time class="details-header_time">
-            {{shortFileInfo.LastModified | nativeDate : dateOptions }}
-          </time>
-        </div>
+            </div>
+            <app-utils-validation-message formControlName="key"></app-utils-validation-message>
+          </form>
+        </ng-container>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary ml-2"
+          *ngIf="vm.expanded && !vm.renameActive"
+          title="Переименовать"
+          (click)="store.renameToggle()"
+        >
+          <ng-icon name="heroPencil"></ng-icon>
+        </button>
+      </div>
+      <div class="details-header_size">
+        {{ shortFileInfo.Size | fileSizeForHuman }}
+      </div>
+      <time class="details-header_time">
+        {{ shortFileInfo.LastModified | nativeDate : dateOptions }}
+      </time>
+    </div>
 
-        <div class="details-body" [ngbCollapse]="!expanded">
-          <div class="list-group list-group-flush">
-            <div class="list-group-item">
-              <div class="small text-secondary">Content type</div>
-              <div class="text-body">{{store.detailsContentType$ | ngrxPush}}</div>
-            </div>
-            <div class="list-group-item"
-                 *ngFor="let metadataItem of store.detailsMetadata$ | ngrxPush; trackBy: trackMetadata">
-              <div class="small text-secondary">{{metadataItem.name}}</div>
-              <div class="text-body">{{metadataItem.value}}</div>
-            </div>
-            <div class="list-group-item" *ngIf="store.contentTypeImage$ | ngrxPush">
-              <div class="small text-secondary">Preview</div>
-              <a
-                [href]="shortFileInfo.Key | s3FileUrl : s3PublicEndPoint"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img
-                  class="img-preview"
-                  [src]="shortFileInfo.Key | s3FileUrl : s3PublicEndPoint"
-                  [alt]="shortFileInfo.Key"
-                />
-              </a>
-            </div>
-            <ng-container *ngrxLet="store.fileDownloadName$; let fileDownloadName">
-              <div class="list-group-item">
-                <div class="small text-secondary">Url</div>
-                <a
-                  class="text-break"
-                  #simpledAnchor
-                  [href]="shortFileInfo.Key | s3FileUrl : s3PublicEndPoint"
-                >
-                  {{simpledAnchor.href}}
-                </a>
-              </div>
-              <div class="list-group-item">
-                <div class="small text-secondary">Url (force download)</div>
-                <a
-                  class="text-break"
-                  #downloadAnchor
-                  [href]="shortFileInfo.Key | s3FileUrl : s3PublicEndPoint | appendResponseContentDisposition : fileDownloadName : 'attachment'"
-                >
-                  <ng-icon name="heroCloudArrowDown" size=""></ng-icon>
-                  {{downloadAnchor.href}}
-                </a>
-              </div>
-              <div class="list-group-item">
-                <div class="small text-secondary">Url (force inline)</div>
-                <a
-                  class="text-break"
-                  #inlineAnchor
-                  [href]="shortFileInfo.Key | s3FileUrl : s3PublicEndPoint | appendResponseContentDisposition : fileDownloadName : 'inline'"
-                >
-                  <ng-icon name="heroArrowTopRightOnSquare" size=""></ng-icon>
-                  {{inlineAnchor.href}}
-                </a>
-              </div>
-            </ng-container>
-            <div class="list-group-item">
-              <button type="button" class="btn btn-sm btn-outline-danger"
-                      (click)="listFacade.handleDeleteObject(shortFileInfo.Key)">
-                Удалить
-              </button>
-            </div>
-          </div>
+    <div class="details-body" [ngbCollapse]="!vm.expanded">
+      <div class="list-group list-group-flush">
+        <div class="list-group-item bg-transparent">
+          <div class="small text-secondary">Content type</div>
+          <div class="text-body">{{ store.detailsContentType$ | ngrxPush }}</div>
         </div>
-      </ng-container>
-    </ng-container>
+        <div class="list-group-item bg-transparent"
+             *ngFor="let metadataItem of store.detailsMetadata$ | ngrxPush; trackBy: trackMetadata">
+          <div class="small text-secondary">{{ metadataItem.name }}</div>
+          <div class="text-body">{{ metadataItem.value }}</div>
+        </div>
+        <div class="list-group-item bg-transparent" *ngIf="store.contentTypeImage$ | ngrxPush">
+          <div class="small text-secondary">Preview</div>
+          <a
+            [href]="shortFileInfo.Key | s3FileUrl : vm.s3PublicEndPoint"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              class="img-preview"
+              [src]="shortFileInfo.Key | s3FileUrl : vm.s3PublicEndPoint"
+              [alt]="shortFileInfo.Key"
+            />
+          </a>
+        </div>
+        <ng-container *ngrxLet="store.fileDownloadName$; let fileDownloadName">
+          <div class="list-group-item bg-transparent">
+            <div class="small text-secondary">Url</div>
+            <a
+              class="text-break"
+              #simpledAnchor
+              [href]="shortFileInfo.Key | s3FileUrl : vm.s3PublicEndPoint"
+            >
+              {{ simpledAnchor.href }}
+            </a>
+          </div>
+          <div class="list-group-item bg-transparent">
+            <div class="small text-secondary">Url (force download)</div>
+            <a
+              class="text-break"
+              #downloadAnchor
+              [href]="shortFileInfo.Key | s3FileUrl : vm.s3PublicEndPoint | appendResponseContentDisposition : fileDownloadName : 'attachment'"
+            >
+              <ng-icon name="heroCloudArrowDown" size=""></ng-icon>
+              {{ downloadAnchor.href }}
+            </a>
+          </div>
+          <div class="list-group-item bg-transparent">
+            <div class="small text-secondary">Url (force inline)</div>
+            <a
+              class="text-break"
+              #inlineAnchor
+              [href]="shortFileInfo.Key | s3FileUrl : vm.s3PublicEndPoint | appendResponseContentDisposition : fileDownloadName : 'inline'"
+            >
+              <ng-icon name="heroArrowTopRightOnSquare" size=""></ng-icon>
+              {{ inlineAnchor.href }}
+            </a>
+          </div>
+        </ng-container>
+        <div class="list-group-item bg-transparent">
+          <button type="button" class="btn btn-sm btn-outline-danger"
+                  (click)="listFacade.handleDeleteObject(shortFileInfo.Key)">
+            Удалить
+          </button>
+        </div>
+      </div>
+    </div>
   </ng-container>
 </ng-container>

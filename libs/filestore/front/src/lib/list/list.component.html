@@ -1,71 +1,89 @@
-<h1>Файлы в хранилище</h1>
+<div class="container-xxl">
 
-<div class="mb-4 d-flex">
-  <div class="browse-path flex-grow-1">
-    <ng-container
-      *ngFor="let folderInfo of storeFacade.parentFoldersHierarchy$ | async; last as isLast; trackBy: trackFolderInfo">
+  <h1>Файлы в хранилище</h1>
+
+  <div class="mb-4 d-flex">
+    <div class="browse-path flex-grow-1 d-flex gap-1 align-items-baseline">
+      <ng-container
+        *ngFor="let folderInfo of storeFacade.parentFoldersHierarchy$ | async; last as isLast; trackBy: trackFolderInfo">
+        <button
+          class="btn btn-outline-primary btn-sm mr-2 text-nowrap"
+          [class.active]="isLast"
+          (click)="handleFolderClick(folderInfo)"
+          type="button"
+        >
+          {{ folderInfo.name }}
+        </button>
+        <span class="mr-2">/</span>
+      </ng-container>
+    </div>
+    <div class="browse-sort flex-shrink-0" ngbDropdown>
       <button
-        class="btn btn-outline-primary btn-sm mr-2 text-nowrap"
-        [class.active]="isLast"
-        (click)="handleFolderClick(folderInfo)"
-        type="button"
+        class="btn btn-outline-primary btn-sm"
+        id="dropdownSortOptions"
+        ngbDropdownToggle
       >
-        {{folderInfo.name}}
+        <ng-icon [name]="(storeFacade.sortIcon$ | ngrxPush) || ''"></ng-icon>
+        {{ storeFacade.sortLabel$ | ngrxPush }}
       </button>
-      <span class="mr-2">/</span>
-    </ng-container>
-  </div>
-  <div class="browse-sort flex-shrink-0" ngbDropdown>
-    <button
-      class="btn btn-outline-primary btn-sm"
-      id="dropdownSortOptions"
-      ngbDropdownToggle
-    >
-      <ng-icon [name]="(storeFacade.sortIcon$ | ngrxPush) || ''"></ng-icon>
-      {{storeFacade.sortLabel$ | ngrxPush}}
-    </button>
-    <div ngbDropdownMenu aria-labelledby="dropdownSortOptions">
-      <button
-        ngbDropdownItem
-        *ngFor="let sortOption of availableSortOptions"
-        (click)="storeFacade.handleChangeSort(sortOption)"
-      >
-        {{sortOption.label}}
-      </button>
+      <div ngbDropdownMenu aria-labelledby="dropdownSortOptions">
+        <button
+          ngbDropdownItem
+          *ngFor="let sortOption of availableSortOptions"
+          (click)="storeFacade.handleChangeSort(sortOption)"
+        >
+          {{ sortOption.label }}
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="mb-4 w-50 shadow p-4 rounded">
-  <mg-filestore-upload-form></mg-filestore-upload-form>
-</div>
 
-<div class="list">
-  <div class="folder-item folder-item_parent mb-2" *ngIf="storeFacade.parentFolder$ | async as parentFolderInfo">
-    <button
-      class="btn btn-outline-primary btn-sm"
-      (click)="handleFolderClick(parentFolderInfo)"
-      type="button"
-    >
-      <ng-icon name="heroArrowSmallUp"></ng-icon>
-      {{parentFolderInfo.name}}
-    </button>
-  </div>
-  <div class="folder-item mb-2" *ngFor="let oneFolder of storeFacade.folders$ | async; trackBy: trackFolderInfo">
-    <button
-      class="btn btn-outline-primary btn-sm"
-      (click)="handleFolderClick(oneFolder)"
-    >
-      <ng-icon name="heroFolder"></ng-icon>
-      {{oneFolder.name}}
-    </button>
-  </div>
-  <ng-container
-    *ngFor="let oneFileInfo of storeFacade.files$ | async; trackBy: trackFileInfo"
-  >
-    <mg-filestore-list-item
-      class="list-item"
-      [fileInfo]="oneFileInfo"
-    ></mg-filestore-list-item>
+  <ng-container *ngrxLet="storeFacade.uploaderCollapsed$ as uploaderCollapsed">
+    <div class="col-12 col-xxl-6 col-md-8 mb-4 shadow p-1 rounded">
+      <app-utils-collapse-title
+        [collapsed]="uploaderCollapsed"
+        (toggle)="storeFacade.toggleUploaderCollapsed()"
+      >
+        Upload files
+      </app-utils-collapse-title>
+
+      <div [ngbCollapse]="uploaderCollapsed">
+        <div class="p-2">
+          <mg-filestore-upload-form></mg-filestore-upload-form>
+        </div>
+      </div>
+    </div>
   </ng-container>
+
+  <div class="list d-flex flex-column gap-1">
+    <div class="folder-item folder-item_parent" *ngIf="storeFacade.parentFolder$ | async as parentFolderInfo">
+      <button
+        class="btn btn-outline-primary btn-sm"
+        (click)="handleFolderClick(parentFolderInfo)"
+        type="button"
+      >
+        <ng-icon name="heroArrowSmallUp"></ng-icon>
+        {{ parentFolderInfo.name }}
+      </button>
+    </div>
+    <div class="folder-item" *ngFor="let oneFolder of storeFacade.folders$ | async; trackBy: trackFolderInfo">
+      <button
+        class="btn btn-outline-primary btn-sm"
+        (click)="handleFolderClick(oneFolder)"
+      >
+        <ng-icon name="heroFolder"></ng-icon>
+        {{ oneFolder.name }}
+      </button>
+    </div>
+    <ng-container
+      *ngFor="let oneFileInfo of storeFacade.files$ | async; trackBy: trackFileInfo"
+    >
+      <mg-filestore-list-item
+        class="list-item"
+        [fileInfo]="oneFileInfo"
+      ></mg-filestore-list-item>
+    </ng-container>
+  </div>
+
 </div>

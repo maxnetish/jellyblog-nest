@@ -29,3 +29,8 @@ export const selectSort = createSelector(
   selectFilestoreListState,
   state => state.sort,
 );
+
+export const selectUploaderCollapsed = createSelector(
+  selectFilestoreListState,
+  state => state.uploaderCollapsed,
+);

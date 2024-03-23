@@ -18,6 +18,7 @@ import { HumanFileSizePipe } from './human-file-size.pipe';
 import { ConfirmComponent } from './components/confirm/confirm.component';
 import { ConfirmModalService } from './components/confirm/confirm-modal.service';
 import { NativeDatePipe } from './native-date.pipe';
+import { CollapseTitleComponent } from './components/collapse-title/collapse-title.component';
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { NativeDatePipe } from './native-date.pipe';
     HumanFileSizePipe,
     ConfirmComponent,
     NativeDatePipe,
+    CollapseTitleComponent,
   ],
   exports: [
     ValidationMessageComponent,
@@ -45,10 +47,10 @@ import { NativeDatePipe } from './native-date.pipe';
     HumanFileSizePipe,
     ConfirmComponent,
     NativeDatePipe,
+    CollapseTitleComponent,
   ],
 })
-export class UtilsFrontModule {
-}
+export class UtilsFrontModule {}
 
 export {
   GlobalActions,
@@ -65,4 +67,5 @@ export {
   ConfirmComponent,
   ConfirmModalService,
   NativeDatePipe,
+  CollapseTitleComponent,
 };

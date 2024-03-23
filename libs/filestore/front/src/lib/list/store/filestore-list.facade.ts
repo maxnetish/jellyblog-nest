@@ -163,6 +163,8 @@ export class FilestorelistFacade {
     }),
   );
 
+  uploaderCollapsed$ = this.store.select(fromFilestoreListSelectors.selectUploaderCollapsed);
+
   readonly prefix$ = this.store.select(fromFilestoreListSelectors.selectPrefix);
 
   private static removeEndingDelimiter(path: string | null | undefined, delimiter: string) {
@@ -196,6 +198,10 @@ export class FilestorelistFacade {
         currentKey,
       }));
     }
+  }
+
+  toggleUploaderCollapsed() {
+    this.store.dispatch(fromFilestoreListActions.toggleUploaderCollapsed());
   }
 
 }

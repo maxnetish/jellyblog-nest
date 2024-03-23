@@ -9,7 +9,7 @@ import { FileInfo } from './store/file-info';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilestoreListComponent implements OnInit, OnDestroy {
 
@@ -18,10 +18,11 @@ export class FilestoreListComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly storeFacade: FilestorelistFacade,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
-   this.storeFacade.handleBeginBrowse();
+    this.storeFacade.handleBeginBrowse();
   }
 
   ngOnDestroy(): void {

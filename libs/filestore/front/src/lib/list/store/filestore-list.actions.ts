@@ -61,3 +61,7 @@ export const renameObjectFail = createAction(
   '[FilestoreList] Rename Object Fail',
   props<{err: any}>(),
 );
+
+export const toggleUploaderCollapsed = createAction(
+  '[FilestoreList] toggle uploader collapsed',
+);

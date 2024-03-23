@@ -6,6 +6,8 @@ import { filter, map } from 'rxjs/operators';
 import { HeadObjectCommand, HeadObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
 import { SettingsFacade } from '@jellyblog-nest/settings/front';
 import { FileInfo } from '../store/file-info';
+import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
+import { Store } from '@ngrx/store';
 
 export interface ListItemState {
   shortFileInfo: FileInfo | null;
@@ -32,6 +34,7 @@ const initialState: ListItemState = {
 export class FilestoreListItemStore extends ComponentStore<ListItemState> {
   constructor(
     private readonly settingsFacade: SettingsFacade,
+    private readonly globalStore: Store,
   ) {
     super(initialState);
   }
@@ -141,7 +144,12 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
                 detailsLoadingStatus: LoadingStatus.SUCCESS,
               });
             },
-            () => {
+            (err) => {
+              this.globalStore.dispatch(GlobalActions.addGlobalToast({
+                text: `Fetch details failed: ${err}`,
+                severity: GlobalToastSeverity.ERROR,
+              }));
+              console.log(err);
               this.patchState({
                 detailsLoadingStatus: LoadingStatus.FAILED,
               });

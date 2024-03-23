@@ -3,5 +3,8 @@
 }
 
 .list-item {
-  border-bottom: solid 1px var(--gray);
+
+  &:hover {
+    background-color: var(--bs-light);
+  }
 }

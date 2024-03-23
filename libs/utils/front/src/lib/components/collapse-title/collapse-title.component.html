@@ -1,0 +1,18 @@
+<button
+  type="button"
+  class="btn btn-link collapse-button text-decoration-none p-0 text-start text-break"
+  (click)="toggle.emit()"
+  [attr.aria-expanded]="!collapsed"
+>
+  <div class="collapse-button-intern d-flex align-items-baseline gap-1">
+    <ng-icon
+      name="heroChevronRight"
+      class="collapse-marker-icon"
+      [class.expanded]="!collapsed"
+      [class.collapsed]="collapsed"
+    ></ng-icon>
+    <div>
+      <ng-content></ng-content>
+    </div>
+  </div>
+</button>

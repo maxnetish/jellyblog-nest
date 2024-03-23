@@ -12,24 +12,24 @@
 <div class="container-xxl">
 
   <form [formGroup]="form">
-  <ng-container formArrayName="settings">
-    <ng-container *ngFor="let oneSetting of formSettingsArray.controls; index as ind">
-      <div class="mb-3 form-floating" *ngrxLet="oneSetting.value as oneSettingValue" [formGroupName]="ind">
-        <input
-          type="text"
-          formControlName="value"
-          class="form-control"
-          [id]="oneSettingValue!.name"
-          [class.app-dirty]="oneSetting.dirty"
-          placeholder="oneSettingValue!.name"
-        />
-        <label class="text-secondary" [for]="oneSettingValue!.name">{{oneSettingValue!.label}}</label>
-        <div class="small text-secondary lh-sm">
-          {{oneSettingValue!.description}}
+    <ng-container formArrayName="settings">
+      <ng-container *ngFor="let oneSetting of formSettingsArray.controls; index as ind">
+        <div class="mb-3 form-floating" *ngrxLet="oneSetting.value as oneSettingValue" [formGroupName]="ind">
+          <input
+            type="text"
+            formControlName="value"
+            class="form-control"
+            [id]="oneSettingValue!.name"
+            [class.app-dirty]="oneSetting.dirty"
+            placeholder="oneSettingValue!.name"
+          />
+          <label class="text-secondary" [for]="oneSettingValue!.name">{{ oneSettingValue!.label }}</label>
+          <div class="small text-secondary lh-sm">
+            {{ oneSettingValue!.description }}
+          </div>
         </div>
-      </div>
+      </ng-container>
     </ng-container>
-  </ng-container>
-</form>
+  </form>
 
 </div>

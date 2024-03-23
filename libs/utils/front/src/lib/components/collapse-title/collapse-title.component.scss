@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.collapse-marker-icon {
+  transform-origin: 40% 80%;
+  transition: ease transform 250ms;
+  position: relative;
+  top: -2px;
+
+  &.expanded {
+    transform: rotate(90deg);
+  }
+}
+
+.collapse-button {
+
+}
+
+.collapse-button-intern {
+
+}
