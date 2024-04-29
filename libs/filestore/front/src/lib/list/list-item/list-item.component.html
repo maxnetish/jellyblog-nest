@@ -2,66 +2,65 @@
   <ng-container
     *ngrxLet="{expanded: store.expanded$, s3PublicEndPoint: store.s3PublicEndpoint$, renameActive: store.renameActive$} as vm"
   >
-    <div class="details-header">
-      <div class="details-header_name d-flex gap-2">
+    <div class="details-header align-items-baseline">
+      <div class="details-header_name d-flex align-items-baseline gap-2 flex-shrink-0">
         <app-utils-collapse-title
           *ngIf="!vm.renameActive"
           [collapsed]="!vm.expanded"
           (toggle)="store.toggleExpanded()"
+          class="flex-grow-1"
         >
           {{ shortFileInfo.name }}
         </app-utils-collapse-title>
-        <ng-container *ngIf="vm.renameActive">
-          <form class="flex-grow-1" [formGroup]="$any(renameForm)"
-                (ngSubmit)="submitRenameKey(shortFileInfo, renameForm)">
-            <div class="input-group">
-              <input type="text" class="form-control" formControlName="key"/>
-              <div class="input-group-append">
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary"
-                  (click)="store.renameToggle()"
-                  title="Отмена"
-                >
-                  <ng-icon name="heroXMark"></ng-icon>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-info"
-                  (click)="renameKeyInsertOriginalName()"
-                  title="Вставить originalname"
-                >
-                  <ng-icon name="heroClipboard"></ng-icon>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-info"
-                  (click)="renameKeyInsertNewUid()"
-                  title="Сгенерировать новый UID"
-                >
-                  <ng-icon name="heroGlobeAlt"></ng-icon>
-                </button>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  title="Применить"
-                >
-                  <ng-icon name="heroCheck"></ng-icon>
-                </button>
-              </div>
-            </div>
-            <app-utils-validation-message formControlName="key"></app-utils-validation-message>
-          </form>
-        </ng-container>
         <button
           type="button"
-          class="btn btn-sm btn-outline-secondary ml-2"
-          *ngIf="vm.expanded && !vm.renameActive"
+          class="btn btn-sm btn-outline-secondary"
+          *ngIf="!vm.renameActive"
           title="Переименовать"
           (click)="store.renameToggle()"
         >
           <ng-icon name="heroPencil"></ng-icon>
         </button>
+        <ng-container *ngIf="vm.renameActive">
+          <form class="flex-grow-1" [formGroup]="$any(renameForm)"
+                (ngSubmit)="submitRenameKey(shortFileInfo, renameForm)">
+            <div class="input-group">
+              <input type="text" class="form-control" formControlName="key"/>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="store.renameToggle()"
+                title="Отмена"
+              >
+                <ng-icon name="heroXMark"></ng-icon>
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                (click)="renameKeyInsertOriginalName()"
+                title="Вставить originalname"
+              >
+                <ng-icon name="heroClipboard"></ng-icon>
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                (click)="renameKeyInsertNewUid()"
+                title="Сгенерировать новый UID"
+              >
+                <ng-icon name="heroGlobeAlt"></ng-icon>
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                title="Применить"
+              >
+                <ng-icon name="heroCheck"></ng-icon>
+              </button>
+            </div>
+            <app-utils-validation-message formControlName="key"></app-utils-validation-message>
+          </form>
+        </ng-container>
       </div>
       <div class="details-header_size">
         {{ shortFileInfo.Size | fileSizeForHuman }}

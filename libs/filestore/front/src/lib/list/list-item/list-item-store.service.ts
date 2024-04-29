@@ -15,7 +15,7 @@ export interface ListItemState {
   detailsLoadingStatus: LoadingStatus;
   details: HeadObjectCommandOutput | null;
   renameActive: boolean;
-};
+}
 
 export interface FileMetadataItem {
   name: string;
