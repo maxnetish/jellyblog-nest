@@ -11,7 +11,7 @@
     "start:admin": "nx run frontend-admin:serve",
     "start-all": "nx run-many --target=serve --all",
     "build-all": "nx run-many --target=build --all",
-    "build-all:prod": "nx run-many --target=build --configuration=production --projects=frontend-admin,backend --with-deps"
+    "build-all:prod": "nx run-many --target=build --configuration=production --projects=frontend-admin,backend"
   },
   "private": true,
   "devDependencies": {

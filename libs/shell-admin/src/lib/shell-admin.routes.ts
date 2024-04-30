@@ -1,7 +1,6 @@
 import { AppRoute } from '@jellyblog-nest/utils/front';
 import { AuthGuardNg } from '@jellyblog-nest/auth/front';
 import { UserRole } from '@jellyblog-nest/utils/common';
-import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
 import { InsufficientRightsComponent } from './insufficient-rights/insufficient-rights.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -36,7 +35,15 @@ export const shellAdminRoutes: AppRoute[] = [
   },
   {
     path: 'settings',
-    loadChildren: () => SettingsFrontModule,
+    loadChildren: async () => {
+      try {
+        const m = await import('@jellyblog-nest/settings/front');
+        return m.SettingsFrontModule;
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    },
     canActivate: [AuthGuardNg],
     data: {
       role: UserRole.ADMIN,
