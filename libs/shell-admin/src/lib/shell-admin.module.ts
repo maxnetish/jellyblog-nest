@@ -16,6 +16,7 @@ import { shellAdminRoutes } from './shell-admin.routes';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { NgIconsModule } from '@ng-icons/core';
 import { heroBars3 } from '@ng-icons/heroicons/outline';
+import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import { heroBars3 } from '@ng-icons/heroicons/outline';
     NgbToastModule,
     NgbDropdownModule,
     NgbCollapseModule,
+    SettingsFrontModule,
   ],
   declarations: [
     LayoutComponent,
