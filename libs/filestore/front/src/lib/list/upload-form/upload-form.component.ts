@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { UploadFormStore } from './upload-form.store';
-import { UntypedFormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { IFormControl } from '@rxweb/types';
 import { map } from 'rxjs/operators';
 import { UploadEvents } from '@jellyblog-nest/utils/front-file-uploader';
 
@@ -20,8 +19,8 @@ export class UploadFormComponent implements OnInit, OnDestroy {
 
   private readonly unsubscribe$ = new Subject();
 
-  readonly prefixFormControl = new UntypedFormControl('') as IFormControl<string>;
-  readonly revealFilenameControl = new UntypedFormControl(false) as IFormControl<boolean>;
+  readonly prefixFormControl = new FormControl('');
+  readonly revealFilenameControl = new FormControl(false);
 
   constructor(
     public readonly componentStore: UploadFormStore,
