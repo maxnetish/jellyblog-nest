@@ -35,6 +35,14 @@ export class AuthController {
   @ApiBody({
     type: CredentialsDto,
     required: true,
+    examples: {
+      Credentials: {
+        value: {
+          username: 'admin',
+          password: 'password',
+        },
+      },
+    },
   })
   @ApiResponse({
     type: UserInfoDto,
