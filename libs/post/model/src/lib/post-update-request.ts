@@ -1,5 +1,6 @@
 import { Post } from '@jellyblog-nest/entities';
 import {
+  IsArray,
   IsDefined,
   IsEnum,
   IsNotEmpty,
@@ -11,10 +12,9 @@ import {
   MinLength,
 } from 'class-validator';
 import { PostContentType, PostPermission } from '@jellyblog-nest/utils/common';
+import { TagDto } from './tag-dto';
 
-// export type PostUpdateRequest = Post | Omit<Post, 'uuid'>
-
-export class PostUpdateRequest implements Partial<Post>{
+export class PostUpdateRequest {
   @IsString()
   @IsUUID()
   @IsOptional()
@@ -43,6 +43,8 @@ export class PostUpdateRequest implements Partial<Post>{
   @MaxLength(65536)
   content = 'Content';
 
-  // TODO make dto for many-to-many relation
-  tags = [];
+  @IsArray({
+    each: true,
+  })
+  tags: Partial<TagDto>[] = [];
 }

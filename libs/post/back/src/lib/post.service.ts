@@ -1,51 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, FindOptionsWhere, Like, Repository } from 'typeorm';
-import { Post, Tag } from '@jellyblog-nest/entities';
-import { FindPostRequest, FindTagRequest, PostShortDto, TagDto } from '@jellyblog-nest/post/model';
+import { Brackets, FindOptionsWhere, Repository } from 'typeorm';
+import { Post } from '@jellyblog-nest/entities';
+import { FindPostRequest, PostShortDto, PostUpdateRequest, TagDto } from '@jellyblog-nest/post/model';
 import { Page } from '@jellyblog-nest/utils/common';
 
 @Injectable()
 export class PostService {
   constructor(
-    @InjectRepository(Tag) private readonly tagRepository: Repository<Tag>,
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
   ) {
-  }
-
-  async findTags(request: FindTagRequest): Promise<Page<TagDto>> {
-    const {content, page, size, order} = request;
-    const where: FindOptionsWhere<Tag> = {};
-
-    if (content) {
-      where.content = Like(`%${content}%`);
-    }
-
-    const {list, total} = await this.tagRepository.findAndCount({
-      select: ['uuid', 'content'],
-      where,
-      skip: (page - 1) * size,
-      take: size,
-      order,
-    })
-      .then(([foundTags, total]) => {
-        return {
-          list: foundTags.map((t) => {
-            return {
-              uuid: t.uuid,
-              content: t.content,
-            };
-          }),
-          total,
-        };
-      });
-
-    return {
-      list,
-      total,
-      page,
-      size,
-    };
   }
 
   async findPosts(request: FindPostRequest, author: string): Promise<Page<PostShortDto>> {

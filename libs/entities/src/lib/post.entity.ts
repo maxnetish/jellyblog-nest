@@ -30,7 +30,7 @@ export class Post extends BaseEntity {
   @Column()
   content!: string;
 
-  @ManyToMany(() => Tag, {cascade: true})
+  @ManyToMany(() => Tag, (tag) => tag.posts, {cascade: true})
   @JoinTable()
   tags: Tag[];
 
