@@ -11,4 +11,6 @@ export class PostController {
   ) {
   }
 
+  getById(id: number) {}
+
 }

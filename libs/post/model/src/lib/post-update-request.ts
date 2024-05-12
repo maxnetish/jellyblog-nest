@@ -1,4 +1,3 @@
-import { Post } from '@jellyblog-nest/entities';
 import {
   IsArray,
   IsDefined,
@@ -6,19 +5,12 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
-  MAX,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 import { PostContentType, PostPermission } from '@jellyblog-nest/utils/common';
 import { TagDto } from './tag-dto';
 
 export class PostUpdateRequest {
-  @IsString()
-  @IsUUID()
-  @IsOptional()
-  uuid?: string;
 
   @IsEnum(PostPermission)
   @IsDefined()

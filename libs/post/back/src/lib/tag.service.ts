@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from '@jellyblog-nest/entities';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
-import { FindTagRequest, TagDto, UpdateTagRequest } from '@jellyblog-nest/post/model';
+import { FindTagRequest, TagDto, TagUpdateRequest } from '@jellyblog-nest/post/model';
 import { Page } from '@jellyblog-nest/utils/common';
 
 @Injectable()
@@ -47,7 +47,7 @@ export class TagService {
     };
   }
 
-  async createOrUpdateTag({request, uuid}: { request: UpdateTagRequest, uuid?: string }): Promise<TagDto> {
+  async createOrUpdateTag({request, uuid}: { request: TagUpdateRequest, uuid?: string }): Promise<TagDto> {
     const tagEntity = this.tagRepository.create({
       content: request.content,
       uuid,

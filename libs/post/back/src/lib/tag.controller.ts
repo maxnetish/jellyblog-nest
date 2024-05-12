@@ -3,7 +3,7 @@ import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TagService } from './tag.service';
 import { RequireRole } from '@jellyblog-nest/auth/back';
 import { Page, SortOrder, UserRole } from '@jellyblog-nest/utils/common';
-import { FindTagRequest, TagDto, UpdateTagRequest } from '@jellyblog-nest/post/model';
+import { FindTagRequest, TagDto, TagUpdateRequest } from '@jellyblog-nest/post/model';
 import { plainToClass } from 'class-transformer';
 
 @ApiTags('Tag')
@@ -17,7 +17,7 @@ export class TagController {
   @Post()
   @RequireRole(UserRole.ADMIN)
   @ApiBody({
-    type: UpdateTagRequest,
+    type: TagUpdateRequest,
     required: true,
     examples: {
       'Tag example': {
@@ -30,14 +30,14 @@ export class TagController {
   @ApiResponse({
     type: TagDto,
   })
-  createTag(@Body() request: UpdateTagRequest) {
+  createTag(@Body() request: TagUpdateRequest) {
     return this.tagService.createOrUpdateTag({request});
   }
 
   @Put()
   @RequireRole(UserRole.ADMIN)
   @ApiBody({
-    type: UpdateTagRequest,
+    type: TagUpdateRequest,
     required: true,
     examples: {
       'Tag example': {
@@ -54,7 +54,7 @@ export class TagController {
   @ApiResponse({
     type: TagDto,
   })
-  updateTag(@Body() request: UpdateTagRequest, @Query('uuid') uuid: string) {
+  updateTag(@Body() request: TagUpdateRequest, @Query('uuid') uuid: string) {
     return this.tagService.createOrUpdateTag({request, uuid});
   }
 
