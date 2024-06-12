@@ -6,7 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { InsufficientRightsComponent } from './insufficient-rights/insufficient-rights.component';
 import { AuthFrontModule } from '@jellyblog-nest/auth/front';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GlobalToastComponent } from './global-toast/global-toast.component';
 import * as GlobalToastReducer from './global-toast/store/global-toast.reducer';
 import { NgbCollapseModule, NgbDropdownModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
@@ -18,49 +18,40 @@ import { NgIconsModule } from '@ng-icons/core';
 import { heroBars3 } from '@ng-icons/heroicons/outline';
 import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
 
-@NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forRoot(shellAdminRoutes, {
-      preloadingStrategy: NoPreloading,
-      scrollPositionRestoration: 'enabled',
-      anchorScrolling: 'enabled',
-    }),
-    StoreModule.forRoot(
-      {
-        [GlobalToastReducer.globalToastFeatureKey]: GlobalToastReducer.reducer,
-      },
-      {
-        runtimeChecks: {
-          strictActionImmutability: true,
-          strictStateImmutability: true,
-          strictActionTypeUniqueness: true,
-          strictStateSerializability: true,
-          strictActionWithinNgZone: true,
-        },
-      }
-    ),
-    EffectsModule.forRoot([]),
-    NgIconsModule.withIcons({
-      heroBars3,
-    }),
-    HttpClientModule,
-    AuthFrontModule,
-    NgbToastModule,
-    NgbDropdownModule,
-    NgbCollapseModule,
-    SettingsFrontModule,
-  ],
-  declarations: [
-    LayoutComponent,
-    InsufficientRightsComponent,
-    GlobalToastComponent,
-    UserWidgetComponent,
-    NotFoundComponent,
-    LoginPageComponent,
-  ],
-  exports: [LayoutComponent],
-})
+@NgModule({ declarations: [
+        LayoutComponent,
+        InsufficientRightsComponent,
+        GlobalToastComponent,
+        UserWidgetComponent,
+        NotFoundComponent,
+        LoginPageComponent,
+    ],
+    exports: [LayoutComponent], imports: [CommonModule,
+        RouterModule.forRoot(shellAdminRoutes, {
+            preloadingStrategy: NoPreloading,
+            scrollPositionRestoration: 'enabled',
+            anchorScrolling: 'enabled',
+        }),
+        StoreModule.forRoot({
+            [GlobalToastReducer.globalToastFeatureKey]: GlobalToastReducer.reducer,
+        }, {
+            runtimeChecks: {
+                strictActionImmutability: true,
+                strictStateImmutability: true,
+                strictActionTypeUniqueness: true,
+                strictStateSerializability: true,
+                strictActionWithinNgZone: true,
+            },
+        }),
+        EffectsModule.forRoot([]),
+        NgIconsModule.withIcons({
+            heroBars3,
+        }),
+        AuthFrontModule,
+        NgbToastModule,
+        NgbDropdownModule,
+        NgbCollapseModule,
+        SettingsFrontModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class ShellAdminModule {}
 
 export { LayoutComponent };

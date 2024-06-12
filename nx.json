@@ -57,5 +57,6 @@
   },
   "parallel": 3,
   "useInferencePlugins": false,
-  "defaultBase": "master"
+  "defaultBase": "master",
+  "nxCloudAccessToken": "YTdhMmE0ZTYtNTMwZS00ODM3LTg2ZGUtMWUwY2Y2MmI5MzU3fHJlYWQtd3JpdGU="
 }
