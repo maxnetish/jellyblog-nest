@@ -4,3 +4,4 @@ export { PostShortDto } from './post-short-dto';
 export { FindPostRequest } from './find-post-request';
 export { PostUpdateRequest } from './post-update-request';
 export { TagUpdateRequest } from './tag-update-request';
+export { PostDto } from './post-dto';

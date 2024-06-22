@@ -12,7 +12,7 @@ export class Post extends BaseEntity {
   @Column({type: 'varchar'})
   allowRead: PostPermission = PostPermission.FOR_ALL;
 
-  @Column({type: 'datetime'})
+  @Column({type: 'datetime', nullable: true})
   pubDate!: Date;
 
   @Column()

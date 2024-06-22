@@ -3,11 +3,11 @@ import { IsNotEmpty, IsString, IsUUID, MaxLength, MinLength } from 'class-valida
 export class TagDto {
   @IsString()
   @IsUUID()
-  uuid = '';
+  uuid!: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(128)
   @MinLength(2)
-  content = '';
+  content!: string;
 }

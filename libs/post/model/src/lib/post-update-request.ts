@@ -1,42 +1,44 @@
 import {
-  IsArray,
+  ArrayNotEmpty,
   IsDefined,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
-  MaxLength,
+  MaxLength, ValidateNested,
 } from 'class-validator';
 import { PostContentType, PostPermission } from '@jellyblog-nest/utils/common';
 import { TagDto } from './tag-dto';
+import { Type } from 'class-transformer';
 
 export class PostUpdateRequest {
 
   @IsEnum(PostPermission)
   @IsDefined()
-  allowRead = PostPermission.FOR_ALL;
+  allowRead!: PostPermission;
 
   @IsEnum(PostContentType)
   @IsDefined()
-  contentType = PostContentType.HTML;
+  contentType!: PostContentType;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(128)
-  title = 'Title';
+  title!: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(256)
-  brief = null;
+  brief?: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(65536)
-  content = 'Content';
+  content!: string;
 
-  @IsArray({
+  @ValidateNested({
     each: true,
   })
-  tags: Partial<TagDto>[] = [];
+  @Type(() => TagDto)
+  tags!: TagDto[];
 }

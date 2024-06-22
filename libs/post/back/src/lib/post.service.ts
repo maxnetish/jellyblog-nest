@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, FindOptionsWhere, Repository } from 'typeorm';
 import { Post } from '@jellyblog-nest/entities';
-import { FindPostRequest, PostShortDto, PostUpdateRequest } from '@jellyblog-nest/post/model';
+import { FindPostRequest, PostDto, PostShortDto, PostUpdateRequest } from '@jellyblog-nest/post/model';
 import { Page, PostPermission, PostStatus } from '@jellyblog-nest/utils/common';
 import { UserInfoDto } from '@jellyblog-nest/auth/model';
-import { PostDto } from '../../../model/src/lib/post-dto';
+import { createOrUpdatePost } from './service/create-or-update';
 
 @Injectable()
 export class PostService {
@@ -152,49 +152,8 @@ export class PostService {
 
   }
 
-  async createOrUpdatePost({request, user, uuid}: { request: PostUpdateRequest, user: UserInfoDto, uuid?: string }): Promise<PostDto> {
-
-    if (uuid) {
-      const existingPost = await this.postRepository.findOneByOrFail({uuid});
-
-      // Check that post update by author
-      if (existingPost.author !== user.username) {
-        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
-      }
-    }
-
-    // include only attributes updated by user
-
-    const postEntity = this.postRepository.create({
-      uuid,
-      tags: request.tags || [],
-      allowRead: request.allowRead,
-      title: request.title,
-      brief: request.brief,
-      content: request.content,
-      contentType: request.contentType,
-    });
-
-    const resultEntity = await this.postRepository.save(postEntity);
-
-    return {
-      uuid: resultEntity.uuid,
-      createdAt: resultEntity.createdAt,
-      title: resultEntity.title,
-      status: resultEntity.status,
-      author: resultEntity.author,
-      hru: resultEntity.hru,
-      allowRead: resultEntity.allowRead,
-      updatedAt: resultEntity.updatedAt,
-      tags: resultEntity.tags,
-      pubDate: resultEntity.pubDate,
-      brief: resultEntity.brief,
-      content: resultEntity.content,
-      contentType: resultEntity.contentType,
-      attachments: resultEntity.attachments,
-      titleImg: resultEntity.titleImg,
-    };
-
+  async createOrUpdatePost({request, user, uuid}: { request: PostUpdateRequest, user: UserInfoDto, uuid?: string }) {
+    return createOrUpdatePost({request, user, uuid, postRepository: this.postRepository});
   }
 
 }
