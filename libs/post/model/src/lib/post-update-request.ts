@@ -1,5 +1,5 @@
 import {
-  ArrayNotEmpty,
+  IsArray,
   IsDefined,
   IsEnum,
   IsNotEmpty,
@@ -41,4 +41,24 @@ export class PostUpdateRequest {
   })
   @Type(() => TagDto)
   tags!: TagDto[];
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(256)
+  titleImg?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({
+    each: true,
+  })
+  @MaxLength(256, {
+    each: true,
+  })
+  attachments!: string[];
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(256)
+  hru?: string;
 }

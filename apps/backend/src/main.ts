@@ -10,7 +10,7 @@ import * as process from 'node:process';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const globalPrefix = process.env.API_PREFIX || 'api';
-  const port = process.env.PORT || 3333;
+  const port = Number(process.env.PORT) || 3333;
 
   app.set('trust proxy', 1);
 

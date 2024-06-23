@@ -1,9 +1,10 @@
-import { IsNotEmpty, IsString, IsUUID, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID, MaxLength, MinLength } from 'class-validator';
 
 export class TagDto {
+  @IsOptional()
   @IsString()
   @IsUUID()
-  uuid!: string;
+  uuid?: string;
 
   @IsString()
   @IsNotEmpty()

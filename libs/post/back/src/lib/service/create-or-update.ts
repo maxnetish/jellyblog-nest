@@ -13,7 +13,7 @@ export async function createOrUpdatePost({request, user, uuid, postRepository}: 
 }): Promise<PostDto> {
 
   if (uuid) {
-    const existingPost = await this.postRepository.findOneByOrFail({uuid});
+    const existingPost = await postRepository.findOneByOrFail({uuid});
 
     // Check that post update by author
     if (existingPost.author !== user.username) {
@@ -32,6 +32,9 @@ export async function createOrUpdatePost({request, user, uuid, postRepository}: 
     content: request.content,
     contentType: request.contentType,
     author: user.username,
+    hru: request.hru,
+    titleImg: request.titleImg,
+    attachments: request.attachments,
   });
 
   const resultEntity = await postRepository.save(postEntity);
