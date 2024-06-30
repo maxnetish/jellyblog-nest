@@ -44,31 +44,31 @@ const routes: AppRoute[] = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        StoreModule.forFeature(
-            fromUsersList.USERSLIST_FEATURE_KEY,
-            fromUsersList.reducer,
-        ),
-        EffectsModule.forFeature([UsersListEffects]),
-        ReactiveFormsModule,
-        NgSelectModule,
-        UtilsFrontModule,
-        NgbPaginationModule,
-        NgbDropdownModule,
-        NgIconsModule.withIcons({
-          heroUserMinus,
-          heroUser,
-          heroUsers,
-          heroEllipsisVertical,
-          heroBars3,
-          heroLockClosed,
-          heroXMark,
-          heroUserPlusSolid,
-        }),
-        UtilsFrontFileUploaderModule,
-    ],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    StoreModule.forFeature(
+      fromUsersList.USERSLIST_FEATURE_KEY,
+      fromUsersList.reducer,
+    ),
+    EffectsModule.forFeature([UsersListEffects]),
+    ReactiveFormsModule,
+    NgSelectModule,
+    UtilsFrontModule,
+    NgbPaginationModule,
+    NgbDropdownModule,
+    NgIconsModule.withIcons({
+      heroUserMinus,
+      heroUser,
+      heroUsers,
+      heroEllipsisVertical,
+      heroBars3,
+      heroLockClosed,
+      heroXMark,
+      heroUserPlusSolid,
+    }),
+    UtilsFrontFileUploaderModule,
+  ],
   declarations: [
     UserListComponent,
     UserCreateComponent,

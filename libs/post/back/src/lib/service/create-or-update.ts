@@ -21,8 +21,6 @@ export async function createOrUpdatePost({request, user, uuid, postRepository}: 
     }
   }
 
-  // include only attributes updated by user
-
   const postEntity = postRepository.create({
     uuid,
     tags: request.tags || [],

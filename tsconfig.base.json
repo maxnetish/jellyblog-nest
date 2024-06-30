@@ -33,7 +33,8 @@
       "@jellyblog-nest/utils/front": ["libs/utils/front/src/index.ts"],
       "@jellyblog-nest/utils/front-file-uploader": [
         "libs/utils/front-file-uploader/src/index.ts"
-      ]
+      ],
+      "@jellyblog-nest/post/front": ["libs/post/front/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -26,12 +26,22 @@ export const shellAdminRoutes: AppRoute[] = [
     canActivate: [AuthGuardNg],
     data: {
       role: UserRole.ADMIN,
-      // redirectOptionsIfNoRole: {
-      //   queryParams: {
-      //     afterLogin: '/users',
-      //   },
-      //   queryParamsHandling: 'merge',
-      // },
+    },
+  },
+  {
+    path: 'post',
+    loadChildren: async () => {
+      try {
+        const m = await import('@jellyblog-nest/post/front');
+        return m.PostFrontModule;
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    },
+    canActivate: [AuthGuardNg],
+    data: {
+      role: UserRole.ADMIN,
     },
   },
   {
