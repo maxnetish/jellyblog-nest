@@ -19,6 +19,7 @@ import { ConfirmComponent } from './components/confirm/confirm.component';
 import { ConfirmModalService } from './components/confirm/confirm-modal.service';
 import { NativeDatePipe } from './native-date.pipe';
 import { CollapseTitleComponent } from './components/collapse-title/collapse-title.component';
+import { sortableToQueryParam } from './sortable-to-query-param';
 
 @NgModule({
   imports: [
@@ -68,4 +69,5 @@ export {
   ConfirmModalService,
   NativeDatePipe,
   CollapseTitleComponent,
+  sortableToQueryParam,
 };

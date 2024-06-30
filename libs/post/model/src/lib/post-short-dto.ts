@@ -1,4 +1,5 @@
 import { BaseEntityId, PostPermission, PostStatus } from '@jellyblog-nest/utils/common';
+import { TagDto } from './tag-dto';
 
 export class PostShortDto extends BaseEntityId{
    createdAt: Date | string | number = '';
@@ -7,4 +8,5 @@ export class PostShortDto extends BaseEntityId{
    author = '';
    title = '';
    hru: string | null = null;
+   tags: TagDto[] = [];
 }

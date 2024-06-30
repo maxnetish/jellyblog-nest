@@ -1,15 +1,15 @@
 import { PostShortDto } from './post-short-dto';
 import { Pageable, PostPermission, PostStatus } from '@jellyblog-nest/utils/common';
-import { IsDate, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsDate, IsEnum, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 
 export class FindPostRequest extends Pageable<PostShortDto> {
   @IsDate()
   @IsOptional()
-  createdAtFrom?: Date;
+  createdAtFrom?: Date | null;
 
   @IsDate()
   @IsOptional()
-  createdAtTo?: Date;
+  createdAtTo?: Date | null;
 
   @IsEnum(PostStatus, {each: true})
   @IsOptional()
@@ -22,5 +22,9 @@ export class FindPostRequest extends Pageable<PostShortDto> {
   @IsString()
   @MaxLength(128)
   @IsOptional()
-  text?: string;
+  text?: string | null;
+
+  @IsUUID(undefined,{each: true})
+  @IsOptional()
+  tag?: string[];
 }
