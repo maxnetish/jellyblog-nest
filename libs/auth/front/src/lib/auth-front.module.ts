@@ -11,7 +11,7 @@ import { AuthGuardNg } from './auth.guard';
 import { AuthService } from './auth.service';
 import { LoginFormModalService } from './login-form/login-form-modal.service';
 import * as AuthActions from './store/auth.actions';
-import { UtilsFrontModule } from '@jellyblog-nest/utils/front';
+import { ValidationMessageComponent } from '@jellyblog-nest/utils/front';
 
 @NgModule({
   imports: [
@@ -19,7 +19,7 @@ import { UtilsFrontModule } from '@jellyblog-nest/utils/front';
     StoreModule.forFeature(fromAuth.AUTH_FEATURE_KEY, fromAuth.reducer),
     EffectsModule.forFeature([AuthEffects]),
     ReactiveFormsModule,
-    UtilsFrontModule,
+    ValidationMessageComponent,
   ],
   providers: [AuthFacade, AuthService],
   declarations: [

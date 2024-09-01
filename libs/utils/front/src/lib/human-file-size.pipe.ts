@@ -28,6 +28,7 @@ export function getHumanFileSize(bytes?: number | string | null): string {
 
 @Pipe({
   name: 'fileSizeForHuman',
+  standalone: true,
 })
 export class HumanFileSizePipe implements PipeTransform {
 

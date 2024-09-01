@@ -8,7 +8,7 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { HeadObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 import { SettingsFacade } from './../../store/settings.facade';
 import {
-  FileInfo,
+  FileInfo, fileInfoFromHeadObjectCommandOutput,
   UploadEvents,
 } from '@jellyblog-nest/utils/front-file-uploader';
 import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
@@ -69,7 +69,7 @@ export class CheckFileStoreComponent {
   private async addFileInfo(fileId: string) {
     const response = await this.getFileInfoFromStorage(fileId);
     if (response) {
-      const fileInfo = FileInfo.fromHeadObjectCommandOutput(response, fileId);
+      const fileInfo = fileInfoFromHeadObjectCommandOutput(response, fileId);
       this.testUploadResult.push(fileInfo);
       this.changeDetectorRef.markForCheck();
     }

@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'nativeDate',
+  standalone: true,
 })
 export class NativeDatePipe implements PipeTransform {
   transform(value?: Date | number | string | null, options?: Intl.DateTimeFormatOptions): string {

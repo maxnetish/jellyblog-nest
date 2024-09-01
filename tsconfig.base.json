@@ -22,6 +22,7 @@
       "@jellyblog-nest/entities": ["libs/entities/src/index.ts"],
       "@jellyblog-nest/filestore/front": ["libs/filestore/front/src/index.ts"],
       "@jellyblog-nest/post/back": ["libs/post/back/src/index.ts"],
+      "@jellyblog-nest/post/front": ["libs/post/front/src/index.ts"],
       "@jellyblog-nest/post/model": ["libs/post/model/src/index.ts"],
       "@jellyblog-nest/settings/back": ["libs/settings/back/src/index.ts"],
       "@jellyblog-nest/settings/front": ["libs/settings/front/src/index.ts"],
@@ -33,8 +34,7 @@
       "@jellyblog-nest/utils/front": ["libs/utils/front/src/index.ts"],
       "@jellyblog-nest/utils/front-file-uploader": [
         "libs/utils/front-file-uploader/src/index.ts"
-      ],
-      "@jellyblog-nest/post/front": ["libs/post/front/src/index.ts"]
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

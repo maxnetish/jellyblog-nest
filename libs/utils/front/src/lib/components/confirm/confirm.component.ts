@@ -1,5 +1,6 @@
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalContentComponent } from '../modal-content/modal-content.component';
 
 @Component({
   selector: 'app-utils-confirm',
@@ -7,17 +8,17 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./confirm.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ModalContentComponent,
+  ],
 })
 export class ConfirmComponent {
 
-  @Input() title = 'Подтверждение';
-  @Input() message = 'Продолжить?';
-  @Input() cancelText = 'Нет';
-  @Input() confirmText = 'Да';
+  readonly title = signal('Подтверждение');
+  readonly message = signal('Продолжить?');
+  readonly cancelText = signal('Нет');
+  readonly confirmText = signal('Да');
 
-  constructor(
-    public readonly modal: NgbActiveModal,
-  ) {
-  }
-
+  protected readonly modal = inject(NgbActiveModal);
 }

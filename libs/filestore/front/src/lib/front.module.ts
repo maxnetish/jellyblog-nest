@@ -1,7 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FilestoreListComponent } from './list/list.component';
-import { AppRoute, UtilsFrontModule } from '@jellyblog-nest/utils/front';
+import {
+  AppendResponseContentDispositionPipe,
+  AppRoute,
+  CollapseTitleComponent, HumanFileSizePipe, NativeDatePipe,
+  S3FileUrlPipe,
+} from '@jellyblog-nest/utils/front';
 import { RouterModule } from '@angular/router';
 import * as fromFilestoreListReducer from './list/store/filestore-list.reducer';
 import { StoreModule } from '@ngrx/store';
@@ -74,12 +79,12 @@ const routes: AppRoute[] = [
       heroClipboard,
     }),
     NgbCollapseModule,
-    UtilsFrontModule,
     NgbDropdownModule,
     LetDirective, PushPipe,
     FormsModule,
     ReactiveFormsModule,
     UtilsFrontFileUploaderModule,
+    CollapseTitleComponent, S3FileUrlPipe, AppendResponseContentDispositionPipe, HumanFileSizePipe, NativeDatePipe,
   ],
   declarations: [
     FilestoreListComponent,

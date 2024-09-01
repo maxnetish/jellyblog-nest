@@ -3,10 +3,9 @@
 }
 
 .collapse-marker-icon {
-  transform-origin: 40% 80%;
   transition: ease transform 250ms;
   position: relative;
-  top: -2px;
+  top: 2px;
 
   &.expanded {
     transform: rotate(90deg);

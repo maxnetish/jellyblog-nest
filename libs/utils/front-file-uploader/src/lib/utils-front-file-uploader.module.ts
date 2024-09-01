@@ -4,13 +4,11 @@ import {
   FileUploaderComponent,
 } from './file-uploader/file-uploader.component';
 import * as UploadEvents from './file-uploader/file-uploader-events';
-import { FileInfo } from './file-uploader/file-info';
+import { FileInfo, fileInfoFromFile, fileInfoFromHeadObjectCommandOutput } from './file-uploader/file-info';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [
-    FileUploaderComponent,
-  ],
+  imports: [CommonModule, FileUploaderComponent],
+  declarations: [],
   exports: [
     FileUploaderComponent,
   ],
@@ -22,4 +20,6 @@ export {
   FileUploaderComponent,
   UploadEvents,
   FileInfo,
+  fileInfoFromFile,
+  fileInfoFromHeadObjectCommandOutput
 };

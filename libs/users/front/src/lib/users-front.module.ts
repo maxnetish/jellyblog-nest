@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserListComponent } from './list/list.component';
 import { RouterModule } from '@angular/router';
-import { AppRoute, UtilsFrontModule } from '@jellyblog-nest/utils/front';
+import {
+  AppRoute,
+  ModalContentComponent,
+  UtilsFrontModule,
+  ValidationMessageComponent,
+} from '@jellyblog-nest/utils/front';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import * as fromUsersList from './list/store/users-list.reducer';
@@ -68,6 +73,8 @@ const routes: AppRoute[] = [
       heroUserPlusSolid,
     }),
     UtilsFrontFileUploaderModule,
+    ModalContentComponent,
+    ValidationMessageComponent,
   ],
   declarations: [
     UserListComponent,

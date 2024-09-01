@@ -36,7 +36,7 @@ export function classValidatorToSyncValidator<T extends Record<string, any>>(
         } else {
           childControl.setErrors(null);
         }
-      })
+      });
     }
 
     return null;

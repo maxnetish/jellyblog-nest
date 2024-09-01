@@ -2,11 +2,10 @@ import {
   Component,
   ViewEncapsulation,
   ChangeDetectionStrategy,
-  Input,
   ViewChild,
-  ElementRef, Output, EventEmitter, OnInit, OnDestroy,
+  ElementRef, OnInit, OnDestroy, input, output, signal,
 } from '@angular/core';
-import { BehaviorSubject, concatMap, from, Subject, takeUntil, tap } from 'rxjs';
+import { concatMap, from, Subject, takeUntil, tap } from 'rxjs';
 import {
   PutObjectCommand,
   S3Client,
@@ -14,7 +13,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { v4 } from 'uuid';
 import { UploadEvent } from './file-uploader-events';
-import { FileInfo } from './file-info';
+import { fileInfoFromFile } from './file-info';
 
 @Component({
   selector: 'mg-file-uploader',
@@ -22,65 +21,80 @@ import { FileInfo } from './file-info';
   styleUrls: ['./file-uploader.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class FileUploaderComponent implements OnInit, OnDestroy {
 
-  @Input() set multiple(val: boolean) {
-    this.multiple$.next(val);
-  }
-
-  @Input() set accept(val: string) {
-    this.accept$.next(val);
-  }
-
-  @Input() set hideButton(val: boolean) {
-    this.showButton$.next(!val);
-  }
-
-  @Input() s3Config?: S3ClientConfig | null = {};
-  @Input() s3Bucket?: string | null;
   /**
-   * See https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/modules/putobjectrequest.html#tagging
+   * multiple attribute of file input element
    */
-  @Input() s3Tagging?: string | null;
+  readonly multiple = input(false);
+
+  /**
+   * accept attribute of file input element
+   */
+  readonly accept = input('');
+
+  /**
+   * S3 config options
+   */
+  readonly s3Config = input<S3ClientConfig>({});
+
+  /**
+   * s3 bucket name
+   */
+  readonly s3Bucket = input<string | null>(null);
+
+  /**
+   * @see https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/modules/putobjectrequest.html#tagging
+   */
+  readonly s3Tagging = input<string | null>(null);
+
   /**
    * Any additional metadata (original file name will include in)
    * See https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/modules/putobjectrequest.html#metadata
    */
-  @Input() s3Meta?: Record<string, string>;
-  @Input() buttonClass = 'btn btn-primary';
-  @Input() buttonText?: string;
+  readonly s3Meta = input<Record<string, string>>({});
+
+  /**
+   * Button css class
+   *
+   * @default btn btn-primary
+   */
+  readonly buttonClass = input<string>('btn btn-primary');
+
+  readonly buttonText = input<string>();
+
   /**
    * "Folder" to upload file(s). File key will prepends with prefix.
    * "cool/images/" -> file will be at "cool/images/[key]".
-   * Shouls ends with path delimiter ("/")
+   * Should ends with path delimiter ("/")
    */
-  @Input() prefix?: string;
+  readonly prefix = input<string>();
+
   /**
    * If true - we use original file name as file key.
-   * Else (default) - key will be new uuid.
+   * Else key will be new uuid.
+   *
+   * @default false
    */
-  @Input() revealOriginalFileName?: boolean;
+  readonly revealOriginalFileName = input(false);
 
-  @Output() uploadEvents = new EventEmitter<UploadEvent>();
+  readonly uploadEvents = output<UploadEvent>();
 
   @ViewChild('fileInputRef') fileInputRef?: ElementRef<HTMLInputElement>;
-
-  multiple$ = new BehaviorSubject(false);
-  accept$ = new BehaviorSubject('');
-  showButton$ = new BehaviorSubject(true);
 
   /**
    * You shouldn't subscribe.
    */
-  private _pendingItems$ = new Subject<File>();
-  private unsubscribe$ = new Subject();
-  private _pendingsCount = 0;
+  private readonly pendingItem$ = new Subject<File>();
+  private readonly unsubscribe$ = new Subject();
+  private readonly pendingsCount = signal(0);
 
-  private async _uploadOneFile(file: File) {
+  private async uploadOneFile(file: File) {
 
-    const prefix = this.prefix || '';
-    const s3Filename = this.revealOriginalFileName
+    const prefix = this.prefix() || '';
+    const s3Filename = this.revealOriginalFileName()
       ? file.name
       : v4();
     const key = `${prefix}${s3Filename}`;
@@ -88,36 +102,36 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
     const putCommand = new PutObjectCommand({
       Key: key,
       Body: file,
-      Bucket: this.s3Bucket || undefined,
+      Bucket: this.s3Bucket() || undefined,
       ContentType: file.type,
       Metadata: {
-        ...(this.s3Meta || {}),
+        ...(this.s3Meta() || {}),
         originalname: encodeURI(file.name),
       },
-      Tagging: this.s3Tagging || undefined,
+      Tagging: this.s3Tagging() || undefined,
     });
 
     this.uploadEvents.emit({
       type: 'UploadBegin',
-      fileInfo: FileInfo.fromFile(file, putCommand.input.Key),
+      fileInfo: fileInfoFromFile(file, putCommand.input.Key),
     });
 
     try {
       const client = new S3Client({
-        ...this.s3Config,
+        ...this.s3Config(),
       });
       const result = await client.send(putCommand);
       client.destroy();
       this.uploadEvents.emit({
         type: 'UploadSuccess',
-        fileInfo: FileInfo.fromFile(file, putCommand.input.Key),
+        fileInfo: fileInfoFromFile(file, putCommand.input.Key),
         resultInfo: result,
       });
       return true;
     } catch (err) {
       this.uploadEvents.emit({
         type: 'UploadError',
-        fileInfo: FileInfo.fromFile(file, putCommand.input.Key),
+        fileInfo: fileInfoFromFile(file, putCommand.input.Key),
         errorInfo: err,
       });
       return false;
@@ -125,41 +139,41 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
   }
 
   private handleUploadCompleteOrError() {
-    this._pendingsCount--;
-    if (this._pendingsCount === 0) {
+    this.pendingsCount.update((val) => val - 1);
+    if (this.pendingsCount() === 0) {
       this.uploadEvents.emit({
         type: 'UploadQueueExhaust',
       });
     }
   }
 
-  handleButtonClick($event: MouseEvent) {
+  protected handleButtonClick($event: MouseEvent) {
     if (this.fileInputRef && this.fileInputRef.nativeElement) {
       this.fileInputRef.nativeElement.click();
     }
   }
 
-  handleFileInputChange(fileInput: HTMLInputElement) {
+  protected handleFileInputChange(fileInput: HTMLInputElement) {
     const files = Array.prototype.slice.call(fileInput.files || []) as File[];
     return this.addFilesToUpload(files);
   }
 
-  addFilesToUpload(files: File[]) {
-    files.forEach(oneFile => this._pendingItems$.next(oneFile));
+  private addFilesToUpload(files: File[]) {
+    files.forEach(oneFile => this.pendingItem$.next(oneFile));
   }
 
   ngOnInit(): void {
-    this._pendingItems$.pipe(
+    this.pendingItem$.pipe(
       tap((oneFile) => {
-        this._pendingsCount++;
+        this.pendingsCount.update((val) => val + 1);
         this.uploadEvents.emit({
           type: 'UploadItemAdded',
           file: oneFile,
-          pendingFilesCount: this._pendingsCount,
+          pendingFilesCount: this.pendingsCount(),
         });
       }),
       concatMap((oneFile) => {
-        return from(this._uploadOneFile(oneFile));
+        return from(this.uploadOneFile(oneFile));
       }),
       takeUntil(this.unsubscribe$),
     ).subscribe({

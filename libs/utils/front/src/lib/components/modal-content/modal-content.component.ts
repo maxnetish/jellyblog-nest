@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input, input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -7,14 +7,16 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./modal-content.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class ModalContentComponent {
-  @Input() activeModal?: NgbActiveModal;
-  @Input() modalTitle?: string;
+  activeModal = input<NgbActiveModal>();
+  modalTitle = input<string>();
 
   dismissModal(reason: string) {
-    if (this.activeModal) {
-      this.activeModal.dismiss(reason);
+    const activeModal = this.activeModal();
+    if (activeModal) {
+      activeModal.dismiss(reason);
     }
   }
 }
