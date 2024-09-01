@@ -21,6 +21,7 @@ export function buildS3FileUrl(
 
 @Pipe({
   name: 's3FileUrl',
+  standalone: true,
 })
 export class S3FileUrlPipe implements PipeTransform {
 

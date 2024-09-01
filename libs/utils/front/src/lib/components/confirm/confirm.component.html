@@ -1,15 +1,15 @@
 <app-utils-modal-content
-  [modalTitle]="title"
+  [modalTitle]="title()"
   [activeModal]="modal"
 >
-  <div>{{message}}</div>
+  <div>{{ message() }}</div>
   <div modalFooter>
     <div class="btn-group">
       <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">
-        {{cancelText}}
+        {{ cancelText() }}
       </button>
       <button type="button" class="btn btn-outline-danger" (click)="modal.close('confirm')">
-        {{confirmText}}
+        {{ confirmText() }}
       </button>
     </div>
   </div>

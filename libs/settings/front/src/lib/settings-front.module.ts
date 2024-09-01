@@ -7,7 +7,11 @@ import { SettingsEffects } from './store/settings.effects';
 import { SettingsFacade } from './store/settings.facade';
 import { SettingsService } from './settings.service';
 import { EditFormComponent } from './edit-form/edit-form.component';
-import { AppRoute, UtilsFrontModule } from '@jellyblog-nest/utils/front';
+import {
+  AppendResponseContentDispositionPipe,
+  AppRoute,
+  S3FileUrlPipe,
+} from '@jellyblog-nest/utils/front';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgIconsModule } from '@ng-icons/core';
@@ -43,9 +47,10 @@ const routes: AppRoute[] = [
       heroCloudArrowUp,
     }),
     UtilsFrontFileUploaderModule,
-    UtilsFrontModule,
     LetDirective,
     PushPipe,
+    S3FileUrlPipe,
+    AppendResponseContentDispositionPipe,
   ],
   providers: [
     SettingsFacade,

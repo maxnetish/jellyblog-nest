@@ -9,6 +9,7 @@ import {
 import { BehaviorSubject, map, merge, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ControlValueAccessor, FormGroupDirective, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { validationMessageDict } from './validation-message-dict';
+import { PushPipe } from '@ngrx/component';
 
 @Component({
   selector: 'app-utils-validation-message',
@@ -22,7 +23,11 @@ import { validationMessageDict } from './validation-message-dict';
       useExisting: forwardRef(() => ValidationMessageComponent),
       provide: NG_VALUE_ACCESSOR,
     },
-  ]
+  ],
+  standalone: true,
+  imports: [
+    PushPipe,
+  ],
 })
 export class ValidationMessageComponent implements OnDestroy, ControlValueAccessor {
 

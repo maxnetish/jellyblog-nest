@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ConfirmComponent } from '@jellyblog-nest/utils/front';
+import { ConfirmComponent } from './confirm.component';
 import { map, race } from 'rxjs';
 
 export interface ConfirmOptions {
@@ -14,10 +14,8 @@ export interface ConfirmOptions {
   providedIn: 'root',
 })
 export class ConfirmModalService {
-  constructor(
-    private readonly ngbModalService: NgbModal,
-  ) {
-  }
+
+  private readonly ngbModalService = inject(NgbModal);
 
   show(
     {
@@ -35,10 +33,10 @@ export class ConfirmModalService {
       },
     );
     const componentInstance = modalRef.componentInstance as ConfirmComponent;
-    componentInstance.title = title;
-    componentInstance.message = message;
-    componentInstance.confirmText = confirmText;
-    componentInstance.cancelText = cancelText;
+    componentInstance.title.set(title);
+    componentInstance.message.set(message);
+    componentInstance.confirmText.set(confirmText);
+    componentInstance.cancelText.set(cancelText);
 
     return race(
       modalRef.closed,

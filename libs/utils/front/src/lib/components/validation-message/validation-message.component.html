@@ -1,3 +1,5 @@
-<div class="validation-message" *ngFor="let message of validationMessages$ | async">
-  {{message}}
-</div>
+@for (message of validationMessages$ | ngrxPush; track $index) {
+  <div class="validation-message">
+    {{ message }}
+  </div>
+}

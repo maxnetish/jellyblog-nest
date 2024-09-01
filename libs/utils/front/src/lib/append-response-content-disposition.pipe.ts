@@ -20,6 +20,7 @@ export function appendResponseContentDisposition(baseUrl?: string | null, fileNa
  */
 @Pipe({
   name: 'appendResponseContentDisposition',
+  standalone: true,
 })
 export class AppendResponseContentDispositionPipe implements PipeTransform {
 

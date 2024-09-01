@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'toStrictBoolean',
+  standalone: true,
 })
 export class ToStrictBooleanPipe implements PipeTransform {
 
