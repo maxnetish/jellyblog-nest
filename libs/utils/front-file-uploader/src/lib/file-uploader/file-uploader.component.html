@@ -1,10 +1,9 @@
 <button
   type="button"
-  [class]="buttonClass"
+  [class]="buttonClass()"
   (click)="handleButtonClick($event)"
-  *ngIf="showButton$ | async"
 >
-  {{buttonText}}
+  {{ buttonText() }}
   <ng-content select="[buttonContent]"></ng-content>
 </button>
 
@@ -12,7 +11,7 @@
   class="hidden-input"
   type="file"
   #fileInputRef
-  [multiple]="multiple$ | async"
-  [accept]="accept$ | async"
+  [attr.multiple]="multiple()"
+  [attr.accept]="accept()"
   (change)="handleFileInputChange(fileInputRef)"
 />

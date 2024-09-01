@@ -17,7 +17,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { UtilsFrontFileUploaderModule } from '@jellyblog-nest/utils/front-file-uploader';
 import { CheckFileStoreComponent } from './edit-form/check-file-store/check-file-store.component';
-import { LetDirective } from '@ngrx/component';
+import { LetDirective, PushPipe } from '@ngrx/component';
 
 const routes: AppRoute[] = [
   {
@@ -45,6 +45,7 @@ const routes: AppRoute[] = [
     UtilsFrontFileUploaderModule,
     UtilsFrontModule,
     LetDirective,
+    PushPipe,
   ],
   providers: [
     SettingsFacade,

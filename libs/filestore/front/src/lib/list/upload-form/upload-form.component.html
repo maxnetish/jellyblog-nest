@@ -1,13 +1,13 @@
 <div class="mb-3">
   <mg-file-uploader
-    [s3Bucket]="componentStore.s3Bucket$ | ngrxPush"
-    [s3Config]="componentStore.s3Config$ | ngrxPush"
+    [s3Bucket]="(componentStore.s3Bucket$ | ngrxPush) || null"
+    [s3Config]="(componentStore.s3Config$ | ngrxPush) || {}"
     (uploadEvents)="handleUploaderEvents($event)"
     [multiple]="true"
     [prefix]="componentStore.prefix$ | ngrxPush"
-    [revealOriginalFileName]="componentStore.revealOriginalFileName$ | ngrxPush"
+    [revealOriginalFileName]="(componentStore.revealOriginalFileName$ | ngrxPush) || false"
   >
-    <ng-container buttonContent="">
+    <ng-container buttonContent>
       <ng-icon name="heroCloudArrowUp"></ng-icon>
       Выбрать файлы для загрузки
     </ng-container>
@@ -17,7 +17,8 @@
 <form>
   <div class="form-group mb-3">
     <label for="custom-prefix" class="text-secondary">
-      Добавить префикс (чтобы файл загрузился в &laquo;папку&raquo; внутри корзины &mdash; бакета). Если не будет разделителяв конце, сольётся с именем.
+      Добавить префикс (чтобы файл загрузился в &laquo;папку&raquo; внутри корзины &mdash; бакета). Если не будет
+      разделителяв конце, сольётся с именем.
     </label>
     <input
       type="text"
