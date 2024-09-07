@@ -25,9 +25,8 @@ import {
   heroEllipsisVertical,
   heroBars3,
   heroLockClosed,
-  heroXMark, heroUserPlus,
+  heroXMark,
 } from '@ng-icons/heroicons/outline';
-import { UserUpdateComponent } from './user-update/user-update.component';
 import { UserUpdateModalService } from './user-update/user-update.modal.service';
 import { UserSetPasswordComponent } from './user-set-password/user-set-password.component';
 import { UserSetPasswordModalService } from './user-set-password/user-set-password.modal.service';
@@ -79,7 +78,6 @@ const routes: AppRoute[] = [
   declarations: [
     UserListComponent,
     UserCreateComponent,
-    UserUpdateComponent,
     UserSetPasswordComponent,
     UserRemoveComponent,
   ],

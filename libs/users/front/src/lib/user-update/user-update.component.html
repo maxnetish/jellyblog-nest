@@ -5,7 +5,7 @@
   >
     <div class="mb-3">
       <label class="form-label small text-secondary">Имя пользователя</label>
-      <div class="form-control-plaintext">{{userName$ | async}}</div>
+      <div class="form-control-plaintext">{{userName()}}</div>
     </div>
     <div class="mb-3">
       <label class="form-label small text-secondary">Его новая роль</label>
@@ -20,8 +20,8 @@
     </div>
     <ng-container modalFooter>
       <div class="btn-group" role="group">
-        <button (click)="cancelClick()" type="button" class="btn btn-secondary">Отмена</button>
-        <button type="submit" class="btn btn-primary" [disabled]="loading$ | async">OK</button>
+        <button (click)="modal.dismiss('cancel')" type="button" class="btn btn-secondary">Отмена</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading()">OK</button>
       </div>
     </ng-container>
   </app-utils-modal-content>

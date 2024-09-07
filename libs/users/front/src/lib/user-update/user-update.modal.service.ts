@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserUpdateComponent } from './user-update.component';
 import { map, race } from 'rxjs';
@@ -7,10 +7,7 @@ import { UserInfoDto } from '@jellyblog-nest/auth/model';
 @Injectable()
 export class UserUpdateModalService {
 
-  constructor(
-    private readonly modalService: NgbModal,
-  ) {
-  }
+  private readonly modalService = inject(NgbModal);
 
   show(user: UserInfoDto) {
     const modalRef = this.modalService.open(
@@ -23,7 +20,7 @@ export class UserUpdateModalService {
     );
 
     const component = modalRef.componentInstance as UserUpdateComponent;
-    component.userDto = user;
+    component.userDto.set(user);
 
     return race(
       modalRef.closed,

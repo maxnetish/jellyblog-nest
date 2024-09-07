@@ -1,19 +1,28 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed, effect,
+  inject,
+  signal,
+  ViewEncapsulation,
+} from '@angular/core';
 import { UserRole } from '@jellyblog-nest/utils/common';
-import { BehaviorSubject, filter, firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
-import { FormControl, FormGroup } from '@angular/forms';
-import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  AppValidators,
+  GlobalActions,
+  GlobalToastSeverity,
+  ModalContentComponent,
+  ValidationMessageComponent,
+} from '@jellyblog-nest/utils/front';
 import { UpdateUserDto, UserInfoDto } from '@jellyblog-nest/auth/model';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
-type RoleChangeForm = FormGroup<{
-  uuid: FormControl<string | null>;
-  role: FormControl<UserRole | null>;
-}>;
-
-function createForm(): RoleChangeForm {
+function createForm() {
   return new FormGroup({
     uuid: new FormControl<string | null>(null),
     role: new FormControl<UserRole>(UserRole.READER),
@@ -29,54 +38,55 @@ function createForm(): RoleChangeForm {
   templateUrl: './user-update.component.html',
   styleUrls: ['./user-update.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    ModalContentComponent,
+    NgSelectComponent,
+    ValidationMessageComponent,
+  ],
 })
-export class UserUpdateComponent implements OnDestroy {
+export class UserUpdateComponent {
 
-  private readonly unsubscribe$ = new Subject();
+  protected readonly form = createForm();
 
-  form = createForm();
-  availableRoles: {code: UserRole}[] = [
+  protected readonly availableRoles: {code: UserRole}[] = [
     {
       code: UserRole.ADMIN,
     },
     {
-    code: UserRole.READER,
+      code: UserRole.READER,
     },
   ];
-  loading$ = new BehaviorSubject(false);
-  userDto$ = new BehaviorSubject<UserInfoDto>({
+
+  protected readonly loading = signal(false);
+
+  protected readonly modal = inject(NgbActiveModal);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly store = inject(Store);
+
+  readonly userDto = signal<UserInfoDto>({
     role: UserRole.READER,
     username: '',
     uuid: '',
   });
-  userName$: Observable<string>;
 
-  @Input() set userDto(val: UserInfoDto) {
-    this.userDto$.next(val);
-  }
+  protected readonly userName = computed(() => {
+    const userDtoUnwrapped = this.userDto();
+    return userDtoUnwrapped?.username;
+  });
 
-  constructor(
-    readonly modal: NgbActiveModal,
-    private readonly authService: AuthService,
-    private readonly store: Store,
-  ) {
-    this.userName$ = this.userDto$.pipe(
-      map(userDto => userDto.username),
-    );
-    this.userDto$.pipe(
-      takeUntil(this.unsubscribe$),
-      filter(userDto => !!userDto),
-    ).subscribe((user)=>{
-      this.form.patchValue({
-        uuid: user.uuid,
-        role: user.role,
+  constructor() {
+    effect(() => {
+      const userDtoUnwrapped = this.userDto();
+      this.form.setValue({
+        uuid: userDtoUnwrapped.uuid,
+        role: userDtoUnwrapped.role,
       });
-    })
-  }
-
-  cancelClick() {
-    this.modal.dismiss('cancel');
+    });
   }
 
   async submitForm() {
@@ -95,7 +105,7 @@ export class UserUpdateComponent implements OnDestroy {
     if (!value) {
       return false;
     }
-    this.loading$.next(true);
+    this.loading.set(true);
     try {
       await firstValueFrom(this.authService.updateUser({
         role: value.role || UserRole.READER,
@@ -107,13 +117,9 @@ export class UserUpdateComponent implements OnDestroy {
         severity: GlobalToastSeverity.ERROR,
         text: err.message,
       }));
-      this.loading$.next(false);
+      this.loading.set(false);
       return false;
     }
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribe$.next(null);
-    this.unsubscribe$.complete();
-  }
 }
