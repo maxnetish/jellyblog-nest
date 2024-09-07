@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserCreateComponent } from './user-create.component';
 import { map, race } from 'rxjs';
@@ -6,10 +6,7 @@ import { map, race } from 'rxjs';
 @Injectable()
 export class UserCreateModalService {
 
-  constructor(
-    private readonly modalService: NgbModal,
-  ) {
-  }
+  private readonly modalService = inject(NgbModal);
 
   show() {
     const modalRef = this.modalService.open(

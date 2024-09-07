@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserSetPasswordComponent } from './user-set-password.component';
 import { map, race } from 'rxjs';
@@ -6,10 +6,7 @@ import { map, race } from 'rxjs';
 @Injectable()
 export class UserSetPasswordModalService {
 
-  constructor(
-    private readonly modalService: NgbModal,
-  ) {
-  }
+  private readonly modalService = inject(NgbModal);
 
   show({userId, userName}: { userId: string, userName: string }) {
     const modalRef = this.modalService.open(
@@ -22,8 +19,8 @@ export class UserSetPasswordModalService {
     );
 
     const instance = modalRef.componentInstance as UserSetPasswordComponent;
-    instance.userId = userId;
-    instance.userName = userName;
+    instance.userId.set(userId);
+    instance.userName.set(userName);
 
     return race(
       modalRef.closed,

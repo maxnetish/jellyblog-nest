@@ -1,20 +1,21 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, signal, ViewEncapsulation } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UserRole } from '@jellyblog-nest/utils/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '@jellyblog-nest/auth/front';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
+import {
+  AppValidators,
+  GlobalActions,
+  GlobalToastSeverity,
+  ModalContentComponent,
+  ValidationMessageComponent,
+} from '@jellyblog-nest/utils/front';
 import { CreateUserDto } from '@jellyblog-nest/auth/model';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
-type CreateUserForm = FormGroup<{
-  username: FormControl<string | null>;
-  role: FormControl<UserRole | null>;
-  password: FormControl<string | null>;
-}>;
-
-function createForm(): CreateUserForm {
+function createForm() {
   return new FormGroup({
     username: new FormControl<string | null>(null),
     role: new FormControl<UserRole>(UserRole.READER),
@@ -32,11 +33,19 @@ function createForm(): CreateUserForm {
   styleUrls: ['./user-create.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    ModalContentComponent,
+    ValidationMessageComponent,
+    NgSelectComponent,
+  ],
 })
 export class UserCreateComponent {
 
-  form = createForm();
-  availableRoles: { code: UserRole }[] = [
+  protected readonly form = createForm();
+
+  protected readonly availableRoles: { code: UserRole }[] = [
     {
       code: UserRole.ADMIN,
     },
@@ -44,18 +53,25 @@ export class UserCreateComponent {
       code: UserRole.READER,
     },
   ];
-  loading$ = new BehaviorSubject(false);
+
+  protected readonly loading = signal(false);
+
+  protected readonly modal = inject(NgbActiveModal);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly store = inject(Store);
 
   private async createUser() {
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return false;
     }
-    const { value } = this.form;
+    const {value} = this.form;
     if (!value) {
       return false;
     }
-    this.loading$.next(true);
+    this.loading.set(true);
     try {
       await firstValueFrom(this.authService.createUser({
         username: value.username || '',
@@ -68,16 +84,9 @@ export class UserCreateComponent {
         severity: GlobalToastSeverity.ERROR,
         text: err.message,
       }));
-      this.loading$.next(false);
+      this.loading.set(false);
       return false;
     }
-  }
-
-  constructor(
-    readonly modal: NgbActiveModal,
-    private readonly authService: AuthService,
-    private store: Store,
-  ) {
   }
 
   async submitForm() {
@@ -87,7 +96,4 @@ export class UserCreateComponent {
     }
   }
 
-  cancelClick() {
-    this.modal.dismiss('cancel');
-  }
 }

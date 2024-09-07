@@ -1,16 +1,14 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserRemoveComponent } from './user-remove.component';
 import { map, race } from 'rxjs';
 
 @Injectable()
 export class UserRemoveModalService {
-  constructor(
-    private readonly modalService: NgbModal,
-  ) {
-  }
 
-  show({userId, userName}: {userId: string, userName: string}) {
+  private readonly modalService = inject(NgbModal);
+
+  show({userId, userName}: { userId: string, userName: string }) {
     const modalRef = this.modalService.open(
       UserRemoveComponent,
       {
@@ -21,8 +19,8 @@ export class UserRemoveModalService {
     );
 
     const instance = modalRef.componentInstance as UserRemoveComponent;
-    instance.userId = userId;
-    instance.userName = userName;
+    instance.userId.set(userId);
+    instance.userName.set(userName);
 
     return race(
       modalRef.closed,

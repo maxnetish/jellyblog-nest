@@ -1,19 +1,27 @@
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
+import {
+  Component,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  signal,
+  effect,
+  inject,
+} from '@angular/core';
 import { SetPasswordDto } from '@jellyblog-nest/auth/model';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { FormControl, FormGroup, UntypedFormBuilder } from '@angular/forms';
-import { AppValidators, GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
-import { BehaviorSubject, firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  AppValidators,
+  GlobalActions,
+  GlobalToastSeverity,
+  ModalContentComponent,
+  ValidationMessageComponent,
+} from '@jellyblog-nest/utils/front';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { AsyncPipe } from '@angular/common';
 
-type UserSetPasswordForm = FormGroup<{
-  userId: FormControl<string | null>;
-  newPassword: FormControl<string | null>;
-}>;
-
-function createForm(): UserSetPasswordForm {
+function createForm() {
   return new FormGroup({
     userId: new FormControl<string | null>(null),
     newPassword: new FormControl<string | null>(null),
@@ -29,44 +37,35 @@ function createForm(): UserSetPasswordForm {
   styleUrls: ['./user-set-password.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    ModalContentComponent,
+    AsyncPipe,
+    ValidationMessageComponent,
+  ],
 })
-export class UserSetPasswordComponent implements OnDestroy {
+export class UserSetPasswordComponent {
 
-  private userId$ = new BehaviorSubject('');
-  private unsubscribe$ = new Subject();
+  protected readonly form = createForm();
 
-  form = createForm();
-  userName$ = new BehaviorSubject('');
-  loading$ = new BehaviorSubject(false);
+  protected readonly loading = signal(false);
 
-  @Input() set userId(val: string) {
-    this.userId$.next(val);
-  }
+  readonly userId = signal('');
 
-  @Input() set userName(val: string) {
-    this.userName$.next(val);
-  }
+  readonly userName = signal('');
 
-  constructor(
-    private readonly authService: AuthService,
-    private store: Store,
-    readonly modal: NgbActiveModal,
-  ) {
-    this.userId$.pipe(
-      takeUntil(this.unsubscribe$),
-    ).subscribe(
-      (userId) => {
-        this.form.patchValue({
-          userId,
-        });
-      },
-    );
+  private readonly authService = inject(AuthService);
 
-  }
+  private readonly store = inject(Store);
 
-  ngOnDestroy(): void {
-    this.unsubscribe$.next(null);
-    this.unsubscribe$.complete();
+  protected readonly modal = inject(NgbActiveModal);
+
+  constructor() {
+    effect(() => {
+      const userIdUnwrapped = this.userId();
+      this.form.controls.userId.setValue(userIdUnwrapped);
+    });
   }
 
   async submitForm() {
@@ -78,24 +77,20 @@ export class UserSetPasswordComponent implements OnDestroy {
     if (!value) {
       return;
     }
-    this.loading$.next(true);
+    this.loading.set(true);
     try {
       await firstValueFrom(this.authService.setPassword({
         userId: value.userId || '',
         newPassword: value.newPassword || '',
       }));
-      this.loading$.next(false);
+      this.loading.set(false);
       this.modal.close(true);
     } catch (err: any) {
-      this.loading$.next(false);
+      this.loading.set(false);
       this.store.dispatch(GlobalActions.addGlobalToast({
         severity: GlobalToastSeverity.ERROR,
         text: err.message,
       }));
     }
-  }
-
-  cancelClick() {
-    this.modal.dismiss('cancel');
   }
 }

@@ -1,48 +1,58 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as ListStoreActions from './store/users-list.actions';
 import * as ListStoreSelectors from './store/users-list.selectors';
-import { Observable, of, switchMap, take, tap } from 'rxjs';
 import { UserInfoDto } from '@jellyblog-nest/auth/model';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  NgbDropdown,
+  NgbDropdownItem,
+  NgbDropdownMenu,
+  NgbDropdownToggle,
+  NgbPagination,
+} from '@ng-bootstrap/ng-bootstrap';
+import { heroBars3, heroLockClosed, heroUserMinus, heroUsers } from '@ng-icons/heroicons/outline';
+import { heroUserPlusSolid } from '@ng-icons/heroicons/solid';
 
 @Component({
   selector: 'app-users-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIconComponent,
+    NgbPagination,
+    NgbDropdown,
+    NgbDropdownToggle,
+    NgbDropdownMenu,
+    NgbDropdownItem,
+  ],
+  providers: [
+    provideIcons({
+      heroBars3,
+      heroUsers,
+      heroLockClosed,
+      heroUserMinus,
+      heroUserPlusSolid,
+    }),
+  ],
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent {
 
-  users$: Observable<UserInfoDto[]>;
-  total$: Observable<number>;
-  page$: Observable<number>;
-  pageSize$: Observable<number>;
+  private readonly store = inject(Store);
 
-  trackUsers(_: unknown, item: UserInfoDto) {
-    return item.uuid;
-  }
+  protected readonly users = this.store.selectSignal(ListStoreSelectors.getUsersList);
 
-  constructor(
-    private readonly store: Store,
-  ) {
-    this.users$ = of(null).pipe(
-      take(1),
-      tap(() => {
-        this.store.dispatch(ListStoreActions.init());
-      }),
-      switchMap(() => {
-        return this.store.select(ListStoreSelectors.getUsersList);
-      }),
-    );
-    this.total$ = this.store.select(ListStoreSelectors.getTotal);
-    this.page$ = this.store.select(ListStoreSelectors.getPage);
-    this.pageSize$ = this.store.select(ListStoreSelectors.getPageSize);
-  }
+  protected readonly total = this.store.selectSignal(ListStoreSelectors.getTotal);
 
-  ngOnInit(): void {
-    // this.store.dispatch(ListStoreActions.init());
+  protected readonly page = this.store.selectSignal(ListStoreSelectors.getPage);
 
+  protected readonly pageSize = this.store.selectSignal(ListStoreSelectors.getPageSize);
 
+  constructor() {
+    this.store.dispatch(ListStoreActions.init());
   }
 
   handleAddUserButtonClick() {

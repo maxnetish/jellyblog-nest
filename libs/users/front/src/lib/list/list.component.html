@@ -13,9 +13,9 @@
     </div>
     <div>
       <ngb-pagination
-        [collectionSize]="(total$ | async)!"
-        [page]="(page$ | async)!"
-        [pageSize]="(pageSize$ | async)!"
+        [collectionSize]="total() || 0"
+        [page]="page() || 0"
+        [pageSize]="pageSize() || 0"
         [maxSize]="5"
         [rotate]="true"
         [boundaryLinks]="true"
@@ -42,45 +42,47 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let user of users$ | async; trackBy: trackUsers">
-      <td>
-        <div class="d-flex align-items-baseline">
-          <div ngbDropdown>
-            <button
-              class="btn btn-link align-baseline mr-2"
-              ngbDropdownToggle
-            >
-              <ng-icon name="heroBars3"></ng-icon>
-            </button>
-            <div ngbDropdownMenu>
+    @for (user of users(); track user.uuid) {
+      <tr>
+        <td>
+          <div class="d-flex align-items-baseline">
+            <div ngbDropdown>
               <button
-                ngbDropdownItem
-                type="button"
-                (click)="handleChangeRoleClick(user)"
+                class="btn btn-link align-baseline mr-2"
+                ngbDropdownToggle
               >
-                <ng-icon name="heroUsers"></ng-icon>
-                Роль
+                <ng-icon name="heroBars3"></ng-icon>
               </button>
-              <button
-                ngbDropdownItem
-                type="button"
-                (click)="handleSetPasswordClick(user)"
-              >
-                <ng-icon name="heroLockClosed"></ng-icon>
-                Установить пароль
-              </button>
-              <button ngbDropdownItem type="button" class="text-danger" (click)="handleRemoveClick(user)">
-                <ng-icon name="heroUserMinus"></ng-icon>
-                Удалить
-              </button>
+              <div ngbDropdownMenu>
+                <button
+                  ngbDropdownItem
+                  type="button"
+                  (click)="handleChangeRoleClick(user)"
+                >
+                  <ng-icon name="heroUsers"></ng-icon>
+                  Роль
+                </button>
+                <button
+                  ngbDropdownItem
+                  type="button"
+                  (click)="handleSetPasswordClick(user)"
+                >
+                  <ng-icon name="heroLockClosed"></ng-icon>
+                  Установить пароль
+                </button>
+                <button ngbDropdownItem type="button" class="text-danger" (click)="handleRemoveClick(user)">
+                  <ng-icon name="heroUserMinus"></ng-icon>
+                  Удалить
+                </button>
+              </div>
             </div>
+            <span>{{user.uuid}}</span>
           </div>
-          <span>{{user.uuid}}</span>
-        </div>
-      </td>
-      <td>{{user.username}}</td>
-      <td>{{user.role}}</td>
-    </tr>
+        </td>
+        <td>{{user.username}}</td>
+        <td>{{user.role}}</td>
+      </tr>
+    }
     </tbody>
   </table>
 
