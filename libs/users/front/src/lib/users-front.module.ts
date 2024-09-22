@@ -37,6 +37,7 @@ const routes: AppRoute[] = [
   declarations: [
   ],
   providers: [
+    // Services using in store effects, so keep here
     UserCreateModalService,
     UserUpdateModalService,
     UserSetPasswordModalService,

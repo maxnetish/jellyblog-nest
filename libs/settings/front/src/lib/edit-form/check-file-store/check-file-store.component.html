@@ -1,43 +1,54 @@
 <mg-file-uploader
-  [s3Config]="(s3Config$ | async) || {}"
+  [s3Config]="settingsFacade.s3ClientConfig() || {}"
   (uploadEvents)="handleTestUploadEvents($event)"
-  [s3Bucket]="(s3Bucket$ | async) || null"
+  [s3Bucket]="settingsFacade.s3Bucket() || null"
   [multiple]="true"
   class="mb-2"
-  prefix="prefix-as/folder/"
   [revealOriginalFileName]="true"
 >
-  <ng-container buttonContent="">
+  <ng-container buttonContent>
     <ng-icon name="heroCloudArrowUp"></ng-icon>
     Выбрать файл для загрузки
   </ng-container>
 </mg-file-uploader>
-<ng-container *ngIf="testUploadResult.length">
+
+<div class="text-secondary">Будем пробовать загрузить в <strong>{{ settingsFacade.s3Bucket() }}</strong></div>
+
+@if (testUploadresultLength()) {
+
   <label class="text-secondary">Линки - аттачменты</label>
-  <div *ngFor="let fileInfo of testUploadResult">
-    <a
-      [href]="fileInfo.key | s3FileUrl : (s3PublicEndpoint$ | async) | appendResponseContentDisposition : fileInfo.name : 'attachment'"
-      [download]="fileInfo.name"
-    >
-      {{fileInfo.name}} - ({{fileInfo.length | number : '1.0-0'}} Б) - {{fileInfo.type}}
-    </a>
-  </div>
+  @for (fileInfo of testUploadResult(); track fileInfo.key) {
+    <div>
+      <a
+        [href]="fileInfo.key | s3FileUrl : settingsFacade.s3PublicEndpoint() | appendResponseContentDisposition : fileInfo.name : 'attachment'"
+        [download]="fileInfo.name"
+      >
+        {{fileInfo.name}} - ({{fileInfo.length | fileSizeForHuman}}) - {{fileInfo.type}}
+      </a>
+    </div>
+  }
+
   <label class="text-secondary">Линки - инлайн</label>
-  <div *ngFor="let fileInfo of testUploadResult">
-    <a
-      [href]="fileInfo.key | s3FileUrl : (s3PublicEndpoint$ | async) | appendResponseContentDisposition : fileInfo.name : 'inline'"
-      [download]="fileInfo.name"
-    >
-      {{fileInfo.name}} - ({{fileInfo.length | number : '1.0-0'}} Б) - {{fileInfo.type}}
-    </a>
-  </div>
+  @for (fileInfo of testUploadResult(); track fileInfo.key) {
+    <div>
+      <a
+        [href]="fileInfo.key | s3FileUrl : settingsFacade.s3PublicEndpoint() | appendResponseContentDisposition : fileInfo.name : 'inline'"
+        [download]="fileInfo.name"
+      >
+        {{fileInfo.name}} - ({{fileInfo.length | fileSizeForHuman}}) - {{fileInfo.type}}
+      </a>
+    </div>
+  }
+
   <label class="text-secondary">Линки по умолчанию</label>
-  <div *ngFor="let fileInfo of testUploadResult">
-    <a
-      [href]="fileInfo.key | s3FileUrl : (s3PublicEndpoint$ | async)"
-      [download]="fileInfo.name"
-    >
-      {{fileInfo.name}} - ({{fileInfo.length | number : '1.0-0'}} Б) - {{fileInfo.type}}
-    </a>
-  </div>
-</ng-container>
+  @for (fileInfo of testUploadResult(); track fileInfo.key) {
+    <div>
+      <a
+        [href]="fileInfo.key | s3FileUrl : settingsFacade.s3PublicEndpoint()"
+        [download]="fileInfo.name"
+      >
+        {{fileInfo.name}} - ({{fileInfo.length | fileSizeForHuman}}) - {{fileInfo.type}}
+      </a>
+    </div>
+  }
+}

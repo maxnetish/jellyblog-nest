@@ -1,19 +1,23 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
+  Component, computed, inject, signal,
   ViewEncapsulation,
 } from '@angular/core';
-import { firstValueFrom, Observable } from 'rxjs';
-import { HeadObjectCommand, S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
+import { HeadObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { SettingsFacade } from './../../store/settings.facade';
 import {
-  FileInfo, fileInfoFromHeadObjectCommandOutput,
+  FileInfo, fileInfoFromHeadObjectCommandOutput, FileUploaderComponent,
   UploadEvents,
 } from '@jellyblog-nest/utils/front-file-uploader';
-import { GlobalActions, GlobalToastSeverity } from '@jellyblog-nest/utils/front';
+import {
+  AppendResponseContentDispositionPipe,
+  GlobalActions,
+  GlobalToastSeverity, HumanFileSizePipe,
+  S3FileUrlPipe,
+} from '@jellyblog-nest/utils/front';
 import { Store } from '@ngrx/store';
-import { SettingName } from '@jellyblog-nest/utils/common';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-settings-check-file-store',
@@ -21,24 +25,38 @@ import { SettingName } from '@jellyblog-nest/utils/common';
   styleUrls: ['./check-file-store.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    FileUploaderComponent,
+    S3FileUrlPipe,
+    AppendResponseContentDispositionPipe,
+    NgIconComponent,
+    HumanFileSizePipe,
+  ],
+  providers: [
+    provideIcons({
+      heroCloudArrowUp,
+    }),
+  ],
 })
 export class CheckFileStoreComponent {
 
-  s3Config$: Observable<S3ClientConfig>;
-  s3Bucket$: Observable<string | null | undefined>;
-  s3Region$: Observable<string | null | undefined>;
-  s3PublicEndpoint$: Observable<string | null | undefined>;
-  testUploadResult: FileInfo[] = [];
+  private readonly store = inject(Store);
+  protected readonly settingsFacade = inject(SettingsFacade);
+  protected readonly testUploadResult = signal<FileInfo[]>([]);
+  protected readonly testUploadresultLength = computed(() => {
+    return this.testUploadResult().length;
+  });
 
   private async getFileInfoFromStorage(fileId: string) {
     this.store.dispatch(GlobalActions.addGlobalToast({
-      text: `Fetch file info of ${fileId} from storarge`,
+      text: `Fetch file info of ${fileId} from storage`,
       severity: GlobalToastSeverity.INFO,
     }));
 
     try {
-      const s3Config = await firstValueFrom(this.s3Config$);
-      const s3Bucket = await firstValueFrom(this.s3Bucket$);
+      const s3Config = this.settingsFacade.s3ClientConfig();
+      const s3Bucket = this.settingsFacade.s3Bucket();
 
       const client = new S3Client({
         ...s3Config,
@@ -70,20 +88,13 @@ export class CheckFileStoreComponent {
     const response = await this.getFileInfoFromStorage(fileId);
     if (response) {
       const fileInfo = fileInfoFromHeadObjectCommandOutput(response, fileId);
-      this.testUploadResult.push(fileInfo);
-      this.changeDetectorRef.markForCheck();
+      this.testUploadResult.update((val) => {
+        return [
+          ...val,
+          fileInfo
+        ];
+      });
     }
-  }
-
-  constructor(
-    public readonly settingsFacade: SettingsFacade,
-    private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly store: Store,
-  ) {
-    this.s3Config$ = this.settingsFacade.s3ClientConfig$;
-    this.s3Bucket$ = this.settingsFacade.getSetting$(SettingName.S3_BUCKET);
-    this.s3Region$ = this.settingsFacade.getSetting$(SettingName.S3_REGION);
-    this.s3PublicEndpoint$ = this.settingsFacade.getSetting$(SettingName.S3_PUBLIC_ENDPOINT);
   }
 
   handleTestUploadEvents($event: UploadEvents.UploadEvent) {
@@ -108,7 +119,6 @@ export class CheckFileStoreComponent {
           severity: GlobalToastSeverity.SUCCESS,
         }));
         this.addFileInfo($event.fileInfo.key);
-        // this.testUploadResult.push($event.fileInfo);
         break;
       }
     }

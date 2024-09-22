@@ -1,113 +1,85 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { SettingDto } from '@jellyblog-nest/settings/model';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { combineLatest, debounceTime, filter, Subject, takeUntil } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  effect,
+  inject,
+  signal,
+  ViewEncapsulation,
+} from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, filter, Subscription } from 'rxjs';
 import { SettingsFacade } from './../store/settings.facade';
-import { Store } from '@ngrx/store';
-import { SettingName } from '@jellyblog-nest/utils/common';
-
-type SettingsForm = FormGroup<{
-  settings: FormArray<FormGroup<{
-    name: FormControl<SettingName | null>;
-    value: FormControl<string | null>;
-    description: FormControl<string | null>;
-    label: FormControl<string | null>;
-  }>>;
-}>;
-
-function createForm(): SettingsForm {
-  return new FormGroup({
-    settings: new FormArray<FormGroup>([]),
-  });
-}
-
-function applyDto(form: SettingsForm, settingsDto: SettingDto[] = []) {
-
-  const settingsControl = form.controls.settings;
-  settingsControl.clear();
-
-  settingsDto.forEach((settingDto) => {
-    settingsControl.push(new FormGroup({
-      name: new FormControl<SettingName | null>(null),
-      description: new FormControl<string | null>(null),
-      label: new FormControl<string | null>(null),
-      value: new FormControl<string | null>(null)
-    }), {emitEvent: false});
-  })
-
-  settingsControl.patchValue(settingsDto);
-
-  return form;
-}
+import { CollapseTitleComponent } from '@jellyblog-nest/utils/front';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { CheckFileStoreComponent } from './check-file-store/check-file-store.component';
+import { LetDirective } from '@ngrx/component';
+import { applyDto, createForm } from './edit-form.form';
 
 @Component({
   selector: 'app-settings-edit-form',
   templateUrl: './edit-form.component.html',
   styleUrls: ['./edit-form.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
-  // We cannot use OnPush. Form controls will not update bound elements after change dirty status
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CollapseTitleComponent,
+    NgbCollapse,
+    CheckFileStoreComponent,
+    ReactiveFormsModule,
+    LetDirective,
+  ],
 })
-export class EditFormComponent implements OnDestroy {
+export class EditFormComponent {
 
-  form = createForm();
-  formSettingsArray = this.form.controls.settings;
+  protected readonly settingsFacade = inject(SettingsFacade);
 
-  private readonly unsubscribe$ = new Subject();
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  private updateSetting(updateSettingDto: SettingDto | null) {
-    if (updateSettingDto) {
-      this.settingsFacade.saveSetting(updateSettingDto);
-    }
+  protected readonly checkFileStoreCollapsed = signal(true);
+
+  protected readonly form = createForm();
+
+  protected get formSettingsArray() {
+    return this.form.controls.settings;
+  }
+
+  private trackSettingControlsSubscriptions = new Subscription();
+  private trackSettingControlsChanges() {
+    this.trackSettingControlsSubscriptions.unsubscribe();
+    this.trackSettingControlsSubscriptions = new Subscription();
+    this.formSettingsArray.controls.forEach((oneSettingControl) => {
+      this.trackSettingControlsSubscriptions.add(oneSettingControl.valueChanges.pipe(
+        debounceTime(2000),
+        filter((settingFormValue) => !!settingFormValue),
+      ).subscribe((settingFormValue) => {
+        const {value, meta} = settingFormValue;
+        if (meta) {
+          this.settingsFacade.saveSetting({
+            name: meta.name,
+            label: meta.label,
+            description: meta.description,
+            value: value || undefined,
+          });
+        }
+      }));
+    });
   }
 
   constructor(
-    private readonly store: Store,
-    public readonly settingsFacade: SettingsFacade,
   ) {
-    this.settingsFacade.settings$.pipe(
-      takeUntil(this.unsubscribe$),
-    ).subscribe((settings) => {
+    // update form after store changes
+    effect(() => {
+      const settings = this.settingsFacade.settingsSignal();
       applyDto(this.form, settings);
-      settings.forEach((setting, settingIndex) => {
-        const oneSettingControl = this.formSettingsArray.at(settingIndex);
-        oneSettingControl.valueChanges.pipe(
-          takeUntil(this.unsubscribe$),
-          debounceTime(2000),
-          filter((settingDtoOrNull) => !!settingDtoOrNull),
-        ).subscribe((settingDto) => {
-          this.updateSetting({
-            name: settingDto.name!,
-            value: settingDto.value!,
-            label: settingDto.label!,
-            description: settingDto.description!,
-          });
-        });
-      });
-    });
-
-    // mark as pristine after save complete
-    combineLatest([
-      this.settingsFacade.settings$,
-      this.formSettingsArray.valueChanges,
-    ]).pipe(
-      takeUntil(this.unsubscribe$),
-    ).subscribe(([persistedSettings, formSettingsValue]) => {
-      formSettingsValue.forEach((formSetting) => {
-        const persistedSetting = persistedSettings.find(item => item.name === formSetting.name);
-        if (persistedSetting && (persistedSetting.value === formSetting.value)) {
-          const formControl = this.formSettingsArray.controls.find((control) => control.value && (control.value.name === formSetting.name));
-          if (formControl) {
-            formControl.markAsPristine();
-          }
-        }
-      })
+      this.trackSettingControlsChanges();
+      // else template wont updates
+      this.changeDetectorRef.markForCheck();
     });
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribe$.next(null);
-    this.unsubscribe$.complete();
+  protected checkFileStoreCollapseToggle() {
+    this.checkFileStoreCollapsed.update((val) => !val);
   }
-
 }

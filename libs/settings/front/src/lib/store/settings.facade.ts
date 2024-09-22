@@ -6,6 +6,7 @@ import { LoadingStatus, SettingName } from '@jellyblog-nest/utils/common';
 import { combineLatest, filter, map, switchMap } from 'rxjs';
 import { SettingDto } from '@jellyblog-nest/settings/model';
 import { S3ClientConfig } from '@aws-sdk/client-s3';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,7 @@ export class SettingsFacade {
       return this.store.select(SettingsSelectors.selectSettings);
     }),
   );
+  settingsSignal = toSignal(this.settings$);
 
   s3ClientConfig$ = combineLatest([
     this.getSetting$(SettingName.S3_ACCESS_KEY),
@@ -48,6 +50,8 @@ export class SettingsFacade {
     }),
   );
 
+  s3ClientConfig = toSignal(this.s3ClientConfig$);
+
   getSetting$(settingName: SettingName) {
     return this.settings$.pipe(
       map((settings) => {
@@ -59,6 +63,9 @@ export class SettingsFacade {
       }),
     );
   }
+  s3Bucket = toSignal(this.getSetting$(SettingName.S3_BUCKET));
+  s3Region = toSignal(this.getSetting$(SettingName.S3_REGION));
+  s3PublicEndpoint = toSignal(this.getSetting$(SettingName.S3_PUBLIC_ENDPOINT));
 
   saveSetting(setting: SettingDto) {
     this.store.dispatch(SettingsActions.updateSetting({
