@@ -86,10 +86,10 @@ const routes: AppRoute[] = [
     UtilsFrontFileUploaderModule,
     CollapseTitleComponent, S3FileUrlPipe, AppendResponseContentDispositionPipe, HumanFileSizePipe, NativeDatePipe,
     ListItemComponent,
+    UploadFormComponent,
   ],
   declarations: [
     FilestoreListComponent,
-    UploadFormComponent,
   ],
   providers: [
     FilestorelistFacade,
