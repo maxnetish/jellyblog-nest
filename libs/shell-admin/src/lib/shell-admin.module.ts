@@ -5,7 +5,7 @@ import { NoPreloading, RouterModule } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { InsufficientRightsComponent } from './insufficient-rights/insufficient-rights.component';
-import { AuthFrontModule } from '@jellyblog-nest/auth/front';
+import { AuthFrontModule, LoginFormComponent } from '@jellyblog-nest/auth/front';
 import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { GlobalToastComponent } from './global-toast/global-toast.component';
 import * as GlobalToastReducer from './global-toast/store/global-toast.reducer';
@@ -55,6 +55,7 @@ import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
     NgbDropdownModule,
     NgbCollapseModule,
     SettingsFrontModule,
+    LoginFormComponent,
   ],
   providers: [provideHttpClient(withInterceptorsFromDi(), withFetch())],
 })

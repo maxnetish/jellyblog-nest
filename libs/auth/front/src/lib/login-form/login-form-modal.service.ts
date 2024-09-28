@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginFormComponent } from './login-form.component';
-import { UserInfoDto } from '@jellyblog-nest/auth/model';
-import { map, mapTo, Observable, race, take } from 'rxjs';
+import { map, Observable, race } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -25,15 +24,11 @@ export class LoginFormModalService {
 
     const loginForm = modalRef.componentInstance as LoginFormComponent;
 
-    loginForm.cancel.pipe(
-      take(1),
-    ).subscribe(() => {
+    loginForm.cancel.subscribe(() => {
       modalRef.dismiss('cancel');
     });
 
-    loginForm.successSubmit.pipe(
-      take(1),
-    ).subscribe(() => {
+    loginForm.successSubmit.subscribe(() => {
       modalRef.close('success');
     });
 
