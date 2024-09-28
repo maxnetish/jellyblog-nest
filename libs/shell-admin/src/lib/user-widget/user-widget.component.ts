@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { AuthActions, AuthFacade } from '@jellyblog-nest/auth/front';
-import { map, Observable } from 'rxjs';
-import { LoginFormModalService } from '@jellyblog-nest/auth/front';
+import { map } from 'rxjs';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
+import { AsyncPipe } from '@angular/common';
+import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'adm-user-widget',
@@ -11,27 +12,29 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./user-widget.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    AsyncPipe,
+    NgbDropdown,
+    NgbDropdownToggle,
+    NgbDropdownMenu,
+    NgbDropdownItem,
+  ],
 })
 export class UserWidgetComponent {
 
-  loggedIn$: Observable<boolean>;
-  username$: Observable<string | undefined>;
+  private readonly authFacade = inject(AuthFacade);
+  private readonly authService = inject(AuthService);
+  private readonly store = inject(Store);
 
-  constructor(
-    private readonly authFacade: AuthFacade,
-    private readonly loginFormModal: LoginFormModalService,
-    private readonly authService: AuthService,
-    private store: Store,
-  ) {
-    this.loggedIn$ = this.authFacade.user$.pipe(
-      map(user => !!user),
-    );
-    this.username$ = this.authFacade.user$.pipe(
-      map(user => user?.username),
-    );
-  }
+  protected readonly loggedIn$ = this.authFacade.user$.pipe(
+    map(user => !!user),
+  );
+  protected readonly username$ = this.authFacade.user$.pipe(
+    map(user => user?.username),
+  );
 
-  handleLogoutClick() {
+  protected handleLogoutClick() {
     this.authService.logout()
       .subscribe(() => {
         this.store.dispatch(AuthActions.gotUserInfo({ user: null }));

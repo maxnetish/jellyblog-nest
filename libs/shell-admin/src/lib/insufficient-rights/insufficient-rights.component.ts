@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthFacade } from '@jellyblog-nest/auth/front';
 import { filter, Subject, takeUntil } from 'rxjs';
@@ -9,17 +9,14 @@ import { filter, Subject, takeUntil } from 'rxjs';
   styleUrls: ['./insufficient-rights.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class InsufficientRightsComponent implements OnInit, OnDestroy {
 
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly authFacade = inject(AuthFacade);
   private unsubscribe$ = new Subject();
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly authFacade: AuthFacade,
-  ) {
-  }
 
   ngOnInit(): void {
     this.authFacade.user$.pipe(
