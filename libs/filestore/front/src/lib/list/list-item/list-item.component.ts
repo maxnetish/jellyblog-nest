@@ -29,7 +29,7 @@ import {
   heroCheck,
   heroClipboard,
   heroCloudArrowDown,
-  heroGlobeAlt,
+  heroGlobeAlt, heroPencil,
   heroXMark,
 } from '@ng-icons/heroicons/outline';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
@@ -65,6 +65,7 @@ function replaceOnlyLastKeySegment(inputKey: string, replace: string): string {
       heroCheck,
       heroCloudArrowDown,
       heroArrowTopRightOnSquare,
+      heroPencil,
     }),
   ],
   standalone: true,

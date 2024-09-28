@@ -1,8 +1,20 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FilestorelistFacade, FolderInfo } from './store/filestore-list.facade';
-import { Subject } from 'rxjs';
 import { availableSortOptions } from './store/filestore-sort-options';
-import { FileInfo } from './store/file-info';
+import { AsyncPipe } from '@angular/common';
+import {
+  NgbCollapse,
+  NgbDropdown,
+  NgbDropdownItem,
+  NgbDropdownMenu,
+  NgbDropdownToggle,
+} from '@ng-bootstrap/ng-bootstrap';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroArrowSmallUp, heroBarsArrowDown, heroBarsArrowUp, heroFolder } from '@ng-icons/heroicons/outline';
+import { LetDirective, PushPipe } from '@ngrx/component';
+import { CollapseTitleComponent } from '@jellyblog-nest/utils/front';
+import { UploadFormComponent } from './upload-form/upload-form.component';
+import { ListItemComponent } from './list-item/list-item.component';
 
 @Component({
   selector: 'mg-filestore-list',
@@ -10,35 +22,40 @@ import { FileInfo } from './store/file-info';
   styleUrls: ['./list.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    AsyncPipe,
+    NgbDropdown,
+    NgIconComponent,
+    PushPipe,
+    NgbDropdownMenu,
+    NgbDropdownItem,
+    CollapseTitleComponent,
+    NgbCollapse,
+    UploadFormComponent,
+    LetDirective,
+    ListItemComponent,
+    NgbDropdownToggle,
+  ],
+  providers: [
+    provideIcons({
+      heroBarsArrowDown,
+      heroBarsArrowUp,
+      heroArrowSmallUp,
+      heroFolder,
+    }),
+  ],
 })
-export class FilestoreListComponent implements OnInit, OnDestroy {
+export class FilestoreListComponent implements OnInit {
 
-  private unsubscribe$ = new Subject();
-  availableSortOptions = availableSortOptions;
-
-  constructor(
-    public readonly storeFacade: FilestorelistFacade,
-  ) {
-  }
+  protected readonly storeFacade = inject(FilestorelistFacade);
+  protected readonly availableSortOptions = availableSortOptions;
 
   ngOnInit(): void {
     this.storeFacade.handleBeginBrowse();
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribe$.next(null);
-    this.unsubscribe$.complete();
-  }
-
-  handleFolderClick(oneFolder: FolderInfo) {
+  protected handleFolderClick(oneFolder: FolderInfo) {
     this.storeFacade.handleChangeFolder(oneFolder.prefix || '');
-  }
-
-  trackFolderInfo(index: number, item: FolderInfo) {
-    return item.prefix;
-  }
-
-  trackFileInfo(index: number, item: FileInfo) {
-    return item.Key;
   }
 }
