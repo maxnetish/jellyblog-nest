@@ -1,29 +1,34 @@
-<ng-container *ngIf="store.shortFileInfo$ | ngrxPush as shortFileInfo">
+@if (store.shortFileInfo$ | ngrxPush; as shortFileInfo) {
   <ng-container
     *ngrxLet="{expanded: store.expanded$, s3PublicEndPoint: store.s3PublicEndpoint$, renameActive: store.renameActive$} as vm"
   >
     <div class="details-header align-items-baseline">
       <div class="details-header_name d-flex align-items-baseline gap-2 flex-shrink-0">
-        <app-utils-collapse-title
-          *ngIf="!vm.renameActive"
-          [collapsed]="!vm.expanded"
-          (toggle)="store.toggleExpanded()"
-          class="flex-grow-1"
-        >
-          {{ shortFileInfo.name }}
-        </app-utils-collapse-title>
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-secondary"
-          *ngIf="!vm.renameActive"
-          title="Переименовать"
-          (click)="store.renameToggle()"
-        >
-          <ng-icon name="heroPencil"></ng-icon>
-        </button>
-        <ng-container *ngIf="vm.renameActive">
-          <form class="flex-grow-1" [formGroup]="$any(renameForm)"
-                (ngSubmit)="submitRenameKey(shortFileInfo, renameForm)">
+        @if (!vm.renameActive) {
+          <app-utils-collapse-title
+            [collapsed]="!vm.expanded"
+            (toggle)="store.toggleExpanded()"
+            class="flex-grow-1"
+          >
+            {{ shortFileInfo.name }}
+          </app-utils-collapse-title>
+        }
+        @if (!vm.renameActive) {
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            title="Переименовать"
+            (click)="store.renameToggle()"
+          >
+            <ng-icon name="heroPencil"></ng-icon>
+          </button>
+        }
+        @if (vm.renameActive) {
+          <form
+            class="flex-grow-1"
+            [formGroup]="renameForm"
+            (ngSubmit)="submitRenameKey(shortFileInfo, renameForm)"
+          >
             <div class="input-group">
               <input type="text" class="form-control" formControlName="key"/>
               <button
@@ -60,7 +65,7 @@
             </div>
             <app-utils-validation-message formControlName="key"></app-utils-validation-message>
           </form>
-        </ng-container>
+        }
       </div>
       <div class="details-header_size">
         {{ shortFileInfo.Size | fileSizeForHuman }}
@@ -76,25 +81,30 @@
           <div class="small text-secondary">Content type</div>
           <div class="text-body">{{ store.detailsContentType$ | ngrxPush }}</div>
         </div>
-        <div class="list-group-item bg-transparent"
-             *ngFor="let metadataItem of store.detailsMetadata$ | ngrxPush; trackBy: trackMetadata">
-          <div class="small text-secondary">{{ metadataItem.name }}</div>
-          <div class="text-body">{{ metadataItem.value }}</div>
-        </div>
-        <div class="list-group-item bg-transparent" *ngIf="store.contentTypeImage$ | ngrxPush">
-          <div class="small text-secondary">Preview</div>
-          <a
-            [href]="shortFileInfo.Key | s3FileUrl : vm.s3PublicEndPoint"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              class="img-preview"
-              [src]="shortFileInfo.Key | s3FileUrl : vm.s3PublicEndPoint"
-              [alt]="shortFileInfo.Key"
-            />
-          </a>
-        </div>
+        @for (metadataItem of store.detailsMetadata$ | ngrxPush; track metadataItem.name) {
+          <div class="list-group-item bg-transparent">
+            <div class="small text-secondary">{{ metadataItem.name }}</div>
+            <div class="text-body">{{ metadataItem.value }}</div>
+          </div>
+        }
+        @if (store.contentTypeImage$ | ngrxPush) {
+          <div class="list-group-item bg-transparent">
+            <div class="small text-secondary">Preview</div>
+            <a
+              [href]="shortFileInfo.Key | s3FileUrl : vm.s3PublicEndPoint"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                class="img-preview"
+                [ngSrc]="shortFileInfo.Key | s3FileUrl : vm.s3PublicEndPoint"
+                [alt]="shortFileInfo.Key"
+                height="200"
+                width="200"
+              />
+            </a>
+          </div>
+        }
         <ng-container *ngrxLet="store.fileDownloadName$; let fileDownloadName">
           <div class="list-group-item bg-transparent">
             <div class="small text-secondary">Url</div>
@@ -130,12 +140,15 @@
           </div>
         </ng-container>
         <div class="list-group-item bg-transparent">
-          <button type="button" class="btn btn-sm btn-outline-danger"
-                  (click)="listFacade.handleDeleteObject(shortFileInfo.Key)">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            (click)="listFacade.handleDeleteObject(shortFileInfo.Key)"
+          >
             Удалить
           </button>
         </div>
       </div>
     </div>
   </ng-container>
-</ng-container>
+}

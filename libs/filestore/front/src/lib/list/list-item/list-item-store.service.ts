@@ -159,10 +159,10 @@ export class FilestoreListItemStore extends ComponentStore<ListItemState> {
     );
   });
 
-  readonly setFileInfo = this.updater((state, fileInfo: FileInfo) => {
+  readonly setFileInfo = this.updater((state, fileInfo?: FileInfo) => {
     return {
       ...state,
-      shortFileInfo: fileInfo,
+      shortFileInfo: fileInfo || null,
       detailsLoadingStatus: LoadingStatus.INITIAL,
     };
   });

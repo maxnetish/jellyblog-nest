@@ -1,14 +1,40 @@
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input, OnDestroy } from '@angular/core';
-import { FileMetadataItem, FilestoreListItemStore } from './list-item-store.service';
+import {
+  Component,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  OnDestroy,
+  inject,
+  input,
+} from '@angular/core';
+import { FilestoreListItemStore } from './list-item-store.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FileInfo } from '../store/file-info';
 import { FilestorelistFacade } from '../store/filestore-list.facade';
 import { take } from 'rxjs/operators';
 import { v4 } from 'uuid';
-import { IFormBuilder, IFormGroup } from '@rxweb/types';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
-import { AppValidators } from '@jellyblog-nest/utils/front';
+import {
+  AppendResponseContentDispositionPipe,
+  AppValidators,
+  CollapseTitleComponent,
+  HumanFileSizePipe,
+  NativeDatePipe,
+  S3FileUrlPipe, ValidationMessageComponent,
+} from '@jellyblog-nest/utils/front';
+import { LetDirective, PushPipe } from '@ngrx/component';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  heroArrowTopRightOnSquare,
+  heroCheck,
+  heroClipboard,
+  heroCloudArrowDown,
+  heroGlobeAlt,
+  heroXMark,
+} from '@ng-icons/heroicons/outline';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { NgOptimizedImage } from '@angular/common';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 class RenameFormModel {
   @IsNotEmpty()
@@ -32,46 +58,63 @@ function replaceOnlyLastKeySegment(inputKey: string, replace: string): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     FilestoreListItemStore,
+    provideIcons({
+      heroXMark,
+      heroClipboard,
+      heroGlobeAlt,
+      heroCheck,
+      heroCloudArrowDown,
+      heroArrowTopRightOnSquare,
+    }),
+  ],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    PushPipe,
+    CollapseTitleComponent,
+    HumanFileSizePipe,
+    NativeDatePipe,
+    S3FileUrlPipe,
+    AppendResponseContentDispositionPipe,
+    LetDirective,
+    NgIconComponent,
+    ValidationMessageComponent,
+    NgbCollapse,
+    NgOptimizedImage,
   ],
 })
 export class ListItemComponent implements OnDestroy {
 
-  private unsubscribe$ = new Subject();
-  private formBuilder: IFormBuilder;
+  protected readonly store = inject(FilestoreListItemStore);
+  protected readonly listFacade = inject(FilestorelistFacade);
 
-  renameForm: IFormGroup<RenameFormModel>;
+  private unsubscribe$ = new Subject();
+
+  protected renameForm = new FormGroup(
+    {
+      key: new FormControl(''),
+    },
+    {
+      validators: [
+        AppValidators.classValidatorToSyncValidator(RenameFormModel),
+      ],
+    },
+  );
 
   /**
    * https://github.com/microsoft/TypeScript/issues/44632
    * So use
    * "target": "es2020"
    */
-  dateOptions: Intl.DateTimeFormatOptions = {
+  protected readonly dateOptions: Intl.DateTimeFormatOptions = {
     dateStyle: 'short',
     timeStyle: 'short',
   };
 
-  @Input() set fileInfo(val: FileInfo) {
-    this.store.setFileInfo(val);
-  }
+  readonly fileInfo = input<FileInfo>();
 
-  constructor(
-    public readonly store: FilestoreListItemStore,
-    public readonly listFacade: FilestorelistFacade,
-    fb: UntypedFormBuilder,
-  ) {
-    this.formBuilder = fb;
-
-    this.renameForm = this.formBuilder.group<RenameFormModel>(
-      {
-        key: [''],
-      },
-      {
-        validators: [
-          AppValidators.classValidatorToSyncValidator(RenameFormModel),
-        ],
-      },
-    );
+  constructor() {
+    this.store.setFileInfo(toObservable(this.fileInfo));
 
     this.store.fileKey$.pipe(
       takeUntil(this.unsubscribe$),
@@ -87,17 +130,13 @@ export class ListItemComponent implements OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  trackMetadata(ind: number, value: FileMetadataItem) {
-    return value.name;
-  }
-
-  renameKeyInsertOriginalName() {
+  protected renameKeyInsertOriginalName() {
     this.store.detailsMetadata$.pipe(
       take(1),
     ).subscribe((meta) => {
       const originalNameMetadataItem = meta.find(m => m.name === 'originalname');
       if (originalNameMetadataItem) {
-        const currentKey = this.renameForm.value ? this.renameForm.value.key : '';
+        const currentKey = this.renameForm.value?.key || '';
         this.renameForm.patchValue({
           key: replaceOnlyLastKeySegment(currentKey, originalNameMetadataItem.value),
         });
@@ -105,20 +144,23 @@ export class ListItemComponent implements OnDestroy {
     });
   }
 
-  renameKeyInsertNewUid() {
-    const currentKey = this.renameForm.value ? this.renameForm.value.key : '';
+  protected renameKeyInsertNewUid() {
+    const currentKey = this.renameForm.value?.key || '';
     this.renameForm.patchValue({
       key: replaceOnlyLastKeySegment(currentKey, v4()),
     });
   }
 
 
-  submitRenameKey(shortFileInfo: FileInfo, renameForm: IFormGroup<RenameFormModel>) {
+  protected submitRenameKey(shortFileInfo?: FileInfo, renameForm?: ListItemComponent['renameForm']) {
+    if (!(shortFileInfo && renameForm)) {
+      return;
+    }
     if (!renameForm.valid) {
       renameForm.markAllAsTouched();
       return;
     }
-    const { value } = renameForm;
+    const {value} = renameForm;
     if (value && value.key) {
       this.listFacade.handleRenameObject(shortFileInfo.Key || '', value.key);
     }
