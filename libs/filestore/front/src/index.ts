@@ -1,1 +1,1 @@
-export * from './lib/front.module';
+export * from './lib/filestore-front.routes';

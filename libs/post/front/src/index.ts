@@ -1,1 +1,1 @@
-export * from './lib/post-front.module';
+export * from './lib/post-front.routes';

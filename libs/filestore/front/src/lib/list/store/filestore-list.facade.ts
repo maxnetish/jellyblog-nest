@@ -14,9 +14,7 @@ export interface FolderInfo {
   prefix: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FilestorelistFacade {
 
   constructor(

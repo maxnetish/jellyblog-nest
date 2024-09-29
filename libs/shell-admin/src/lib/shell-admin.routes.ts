@@ -4,7 +4,7 @@ import { UserRole } from '@jellyblog-nest/utils/common';
 import { InsufficientRightsComponent } from './insufficient-rights/insufficient-rights.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginPageComponent } from './login-page/login-page.component';
-import { SettingsFrontModule } from '@jellyblog-nest/settings/front';
+import { SettingsRoutes } from '@jellyblog-nest/settings/front';
 
 export const shellAdminRoutes: AppRoute[] = [
   {
@@ -17,7 +17,7 @@ export const shellAdminRoutes: AppRoute[] = [
     loadChildren: async () => {
       try {
         const m = await import('@jellyblog-nest/users/front');
-        return m.UsersFrontModule;
+        return m.UserRoutes;
       } catch (e) {
         console.error(e);
         throw e;
@@ -33,7 +33,7 @@ export const shellAdminRoutes: AppRoute[] = [
     loadChildren: async () => {
       try {
         const m = await import('@jellyblog-nest/post/front');
-        return m.PostFrontModule;
+        return m.PostRoutes;
       } catch (e) {
         console.error(e);
         throw e;
@@ -46,7 +46,7 @@ export const shellAdminRoutes: AppRoute[] = [
   },
   {
     path: 'settings',
-    loadChildren: () => SettingsFrontModule,
+    loadChildren: () => SettingsRoutes,
     canActivate: [AuthGuardNg],
     data: {
       role: UserRole.ADMIN,
@@ -63,7 +63,7 @@ export const shellAdminRoutes: AppRoute[] = [
     loadChildren: async () => {
       try {
         const m = await import('@jellyblog-nest/filestore/front');
-        return m.FilestoreFrontModule;
+        return m.FilestoreRoutes;
       } catch (e) {
         console.error(e);
         throw e;

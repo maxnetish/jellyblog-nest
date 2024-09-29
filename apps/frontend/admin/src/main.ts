@@ -1,13 +1,55 @@
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { provideStore } from '@ngrx/store';
+import { NoPreloading, provideRouter, withInMemoryScrolling, withPreloading } from '@angular/router';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideEffects } from '@ngrx/effects';
+import { shellAdminRoutes, ToastReducer } from '@jellyblog-nest/shell-admin';
+import { AuthEffects, AuthReducer } from '@jellyblog-nest/auth/front';
+import { SettingsEffects, SettingsReducer } from '@jellyblog-nest/settings/front';
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideStore(
+      {
+        [ToastReducer.globalToastFeatureKey]: ToastReducer.reducer,
+        [AuthReducer.AUTH_FEATURE_KEY]: AuthReducer.reducer,
+        [SettingsReducer.settingsFeatureKey]: SettingsReducer.reducer,
+      },
+      {
+        runtimeChecks: {
+          strictActionImmutability: true,
+          strictStateImmutability: true,
+          strictActionTypeUniqueness: true,
+          strictStateSerializability: true,
+          strictActionWithinNgZone: true,
+        },
+      }),
+    provideEffects([
+      AuthEffects,
+      SettingsEffects,
+    ]),
+    provideRouter(
+      shellAdminRoutes,
+      withPreloading(NoPreloading),
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled',
+        anchorScrolling: 'enabled',
+      }),
+    ),
+    provideHttpClient(
+      withFetch(),
+    ),
+  ],
+}).then(() => {
+  if (!environment.production) {
+    console.log('Application started');
+  }
+})
+  .catch((err) => console.error('Cannot bootstrap application: ', err));
