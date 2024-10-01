@@ -39,17 +39,20 @@
   </div>
 
   <ng-container *ngrxLet="storeFacade.uploaderCollapsed$ as uploaderCollapsed">
-    <div class="col-12 col-xxl-6 col-md-8 mb-4 shadow p-1 rounded">
-      <app-utils-collapse-title
-        [collapsed]="uploaderCollapsed"
-        (toggle)="storeFacade.toggleUploaderCollapsed()"
-      >
-        Upload files
-      </app-utils-collapse-title>
-
-      <div [ngbCollapse]="uploaderCollapsed">
-        <div class="p-2">
-          <mg-filestore-upload-form></mg-filestore-upload-form>
+    <div class="col-12 col-xxl-6 col-md-8 mb-4">
+      <div class="card text-bg-light mb-3">
+        <div class="card-header">
+          <app-utils-collapse-title
+            [collapsed]="uploaderCollapsed"
+            (toggle)="storeFacade.toggleUploaderCollapsed()"
+          >
+            Загрузить файлы
+          </app-utils-collapse-title>
+        </div>
+        <div [ngbCollapse]="uploaderCollapsed">
+          <div class="card-body">
+            <mg-filestore-upload-form></mg-filestore-upload-form>
+          </div>
         </div>
       </div>
     </div>
