@@ -1,0 +1,22 @@
+@if (post(); as postUnwrapped) {
+  <div class="card h-100">
+    <div class="card-header">
+      <div class="d-flex justify-content-between">
+        <time class="small fw-semibold" [attr.datetime]="postUnwrapped.createdAt">
+          {{postUnwrapped.createdAt | nativeDate : {dateStyle: 'medium', timeStyle: 'short'} }}
+        </time>
+        <span class="badge rounded-pill {{postStatusMap[postUnwrapped.status].badgeClass}}">
+          {{ postStatusMap[postUnwrapped.status].label }}
+        </span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h6 class="card-title">
+        {{postUnwrapped.title}}
+      </h6>
+    </div>
+    <div class="card-footer">
+      {{postUnwrapped.author}}
+    </div>
+  </div>
+}

@@ -7,7 +7,7 @@ import { Page } from './page';
 import { BaseEntityId } from './base-entity-id';
 import { SettingName } from './setting-name';
 import { SortOption } from './sort-option';
-import { PostStatus } from './post-status';
+import { PostStatus, postStatusMap } from './post-status';
 import { PostPermission } from './post-permission';
 import { PostContentType } from './post-content-type';
 
@@ -24,4 +24,5 @@ export {
   PostStatus,
   PostPermission,
   PostContentType,
+  postStatusMap,
 };

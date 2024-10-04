@@ -2,6 +2,13 @@
   <h1>Публикации</h1>
 
 
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xxl-3 g-2 g-md-3 g-xxl-4">
+    @for (postItem of facade.posts$ | async; track postItem.uuid) {
+      <div class="col">
+        <app-post-mini-card [post]="postItem"></app-post-mini-card>
+      </div>
+    }
+  </div>
 
   {{facade.posts$ | async | json}}
 </div>
