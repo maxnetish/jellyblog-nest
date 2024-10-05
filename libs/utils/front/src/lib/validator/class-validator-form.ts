@@ -19,6 +19,9 @@ function validationConstraintsToValidationErrors(constraints: ValidationError['c
   return null;
 }
 
+/**
+ * @deprecated Use ClassValidatorFormGroup instead
+ */
 export function classValidatorToSyncValidator<T extends Record<string, any>>(
   classType: ClassConstructor<T>,
   validatorOptions?: ValidatorOptions,

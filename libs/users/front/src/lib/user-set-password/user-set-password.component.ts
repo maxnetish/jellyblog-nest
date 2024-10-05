@@ -7,9 +7,8 @@ import {
   inject,
 } from '@angular/core';
 import { SetPasswordDto } from '@jellyblog-nest/auth/model';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
-  AppValidators,
   GlobalActions,
   GlobalToastSeverity,
   ModalContentComponent,
@@ -20,16 +19,16 @@ import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AsyncPipe } from '@angular/common';
+import { ClassValidatorFormControl, ClassValidatorFormGroup } from 'ngx-reactive-form-class-validator';
 
 function createForm() {
-  return new FormGroup({
-    userId: new FormControl<string | null>(null),
-    newPassword: new FormControl<string | null>(null),
-  }, {
-    validators: [
-      AppValidators.classValidatorToSyncValidator(SetPasswordDto),
-    ],
-  });
+  return new ClassValidatorFormGroup(
+    SetPasswordDto,
+    {
+      userId: new ClassValidatorFormControl<string | null>(null),
+      newPassword: new ClassValidatorFormControl<string | null>(null),
+    },
+  );
 }
 
 @Component({

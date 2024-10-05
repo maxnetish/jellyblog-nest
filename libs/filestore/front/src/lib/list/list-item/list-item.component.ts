@@ -12,11 +12,10 @@ import { FileInfo } from '../store/file-info';
 import { FilestorelistFacade } from '../store/filestore-list.facade';
 import { take } from 'rxjs/operators';
 import { v4 } from 'uuid';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 import {
   AppendResponseContentDispositionPipe,
-  AppValidators,
   CollapseTitleComponent,
   HumanFileSizePipe,
   NativeDatePipe,
@@ -35,6 +34,7 @@ import {
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { NgOptimizedImage } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { ClassValidatorFormControl, ClassValidatorFormGroup } from 'ngx-reactive-form-class-validator';
 
 class RenameFormModel {
   @IsNotEmpty()
@@ -91,14 +91,10 @@ export class ListItemComponent implements OnDestroy {
 
   private unsubscribe$ = new Subject();
 
-  protected renameForm = new FormGroup(
+  protected renameForm = new ClassValidatorFormGroup(
+    RenameFormModel,
     {
-      key: new FormControl(''),
-    },
-    {
-      validators: [
-        AppValidators.classValidatorToSyncValidator(RenameFormModel),
-      ],
+      key: new ClassValidatorFormControl(''),
     },
   );
 

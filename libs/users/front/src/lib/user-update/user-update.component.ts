@@ -11,9 +11,8 @@ import { firstValueFrom } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
-  AppValidators,
   GlobalActions,
   GlobalToastSeverity,
   ModalContentComponent,
@@ -21,16 +20,16 @@ import {
 } from '@jellyblog-nest/utils/front';
 import { UpdateUserDto, UserInfoDto } from '@jellyblog-nest/auth/model';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { ClassValidatorFormControl, ClassValidatorFormGroup } from 'ngx-reactive-form-class-validator';
 
 function createForm() {
-  return new FormGroup({
-    uuid: new FormControl<string | null>(null),
-    role: new FormControl<UserRole>(UserRole.READER),
-  },  {
-    validators: [
-      AppValidators.classValidatorToSyncValidator(UpdateUserDto),
-    ],
-  });
+  return new ClassValidatorFormGroup(
+    UpdateUserDto,
+    {
+      uuid: new ClassValidatorFormControl<string | null>(null),
+      role: new ClassValidatorFormControl<UserRole>(UserRole.READER),
+    },
+  );
 }
 
 @Component({
@@ -51,7 +50,7 @@ export class UserUpdateComponent {
 
   protected readonly form = createForm();
 
-  protected readonly availableRoles: {code: UserRole}[] = [
+  protected readonly availableRoles: { code: UserRole }[] = [
     {
       code: UserRole.ADMIN,
     },
@@ -101,7 +100,7 @@ export class UserUpdateComponent {
       this.form.markAllAsTouched();
       return false;
     }
-    const { value } = this.form;
+    const {value} = this.form;
     if (!value) {
       return false;
     }

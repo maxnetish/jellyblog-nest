@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { UserRole } from '@jellyblog-nest/utils/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { firstValueFrom } from 'rxjs';
 import { Store } from '@ngrx/store';
 import {
-  AppValidators,
   GlobalActions,
   GlobalToastSeverity,
   ModalContentComponent,
@@ -14,17 +13,17 @@ import {
 } from '@jellyblog-nest/utils/front';
 import { CreateUserDto } from '@jellyblog-nest/auth/model';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { ClassValidatorFormControl, ClassValidatorFormGroup } from 'ngx-reactive-form-class-validator';
 
 function createForm() {
-  return new FormGroup({
-    username: new FormControl<string | null>(null),
-    role: new FormControl<UserRole>(UserRole.READER),
-    password: new FormControl<string | null>(null),
-  }, {
-    validators: [
-      AppValidators.classValidatorToSyncValidator(CreateUserDto),
-    ],
-  });
+  return new ClassValidatorFormGroup(
+    CreateUserDto,
+    {
+      username: new ClassValidatorFormControl<string | null>(null),
+      role: new ClassValidatorFormControl<UserRole>(UserRole.READER),
+      password: new ClassValidatorFormControl<string | null>(null),
+    },
+  );
 }
 
 @Component({

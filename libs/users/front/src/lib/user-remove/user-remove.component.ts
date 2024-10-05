@@ -7,9 +7,8 @@ import {
   effect,
 } from '@angular/core';
 import { BaseEntityId } from '@jellyblog-nest/utils/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
-  AppValidators,
   GlobalActions,
   GlobalToastSeverity,
   ModalContentComponent,
@@ -19,15 +18,15 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
+import { ClassValidatorFormControl, ClassValidatorFormGroup } from 'ngx-reactive-form-class-validator';
 
 function createForm() {
-  return new FormGroup({
-    uuid: new FormControl<string | null>(null),
-  }, {
-    validators: [
-      AppValidators.classValidatorToSyncValidator(BaseEntityId),
-    ],
-  });
+  return new ClassValidatorFormGroup(
+    BaseEntityId,
+    {
+      uuid: new ClassValidatorFormControl<string | null>(null),
+    },
+  );
 }
 
 @Component({
@@ -38,9 +37,9 @@ function createForm() {
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    ReactiveFormsModule,
     ModalContentComponent,
     ValidationMessageComponent,
+    ReactiveFormsModule,
   ],
 })
 export class UserRemoveComponent {
