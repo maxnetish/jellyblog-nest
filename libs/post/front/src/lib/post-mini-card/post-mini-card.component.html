@@ -3,7 +3,7 @@
     <div class="card-header">
       <div class="d-flex justify-content-between">
         <time class="small fw-semibold" [attr.datetime]="postUnwrapped.createdAt">
-          {{postUnwrapped.createdAt | nativeDate : {dateStyle: 'medium', timeStyle: 'short'} }}
+          {{ postUnwrapped.createdAt | nativeDate : {dateStyle: 'medium', timeStyle: 'short'} }}
         </time>
         <span class="badge rounded-pill {{postStatusMap[postUnwrapped.status].badgeClass}}">
           {{ postStatusMap[postUnwrapped.status].label }}
@@ -12,11 +12,35 @@
     </div>
     <div class="card-body">
       <h6 class="card-title">
-        {{postUnwrapped.title}}
+        {{ postUnwrapped.title }}
       </h6>
+      <p class="card-text">
+        <span class="badge rounded-pill {{postPermissionMap[postUnwrapped.allowRead].badgeClass}}">
+          {{ postPermissionMap[postUnwrapped.allowRead].label }}
+        </span>
+      </p>
+      <p class="card-text">
+        <a href="#" class="card-link small">
+          <ng-icon name="heroPencil" size=""></ng-icon>
+          Изменить
+        </a>
+        <a href="#" class="card-link small">
+          <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
+          Посмотреть
+        </a>
+      </p>
     </div>
     <div class="card-footer">
-      {{postUnwrapped.author}}
+      <ul class="list-inline m-0">
+        @for (tagInfo of postUnwrapped.tags; track tagInfo.uuid) {
+          <li class="list-inline-item">
+            <span class="badge rounded-pill text-bg-primary">{{ tagInfo.content }}</span>
+          </li>
+        }
+      </ul>
+      <span class="small">
+        Автор: {{ postUnwrapped.author }}
+      </span>
     </div>
   </div>
 }
