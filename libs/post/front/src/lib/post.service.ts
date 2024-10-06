@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FindPostRequest, PostShortDto } from '@jellyblog-nest/post/model';
+import { FindPostRequest, PostDto, PostShortDto, PostUpdateRequest } from '@jellyblog-nest/post/model';
 import { Page } from '@jellyblog-nest/utils/common';
 import { sortableToQueryParam } from '@jellyblog-nest/utils/front';
 
@@ -15,7 +15,7 @@ export class PostService {
   ) {
   }
 
-  findPosts({request}: {
+  findPosts({ request }: {
     request: FindPostRequest,
   }) {
     return this.httpClient.get<Page<PostShortDto>>(
@@ -35,6 +35,28 @@ export class PostService {
           ...sortableToQueryParam<PostShortDto>(request),
         },
       },
-    )
+    );
+  }
+
+  create({ request }: { request: PostUpdateRequest }) {
+    return this.httpClient.post<PostDto>(
+      `${this.apiPath}`,
+      request,
+      {
+        observe: 'body',
+        responseType: 'json',
+      },
+    );
+  }
+
+  update({ uuid, request }: { uuid: string; request: PostUpdateRequest }) {
+    return this.httpClient.put<PostDto>(
+      `${this.apiPath}/${uuid}`,
+      request,
+      {
+        observe: 'body',
+        responseType: 'json',
+      },
+    );
   }
 }
