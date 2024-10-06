@@ -20,7 +20,7 @@
         </span>
       </p>
       <p class="card-text">
-        <a href="#" class="card-link small">
+        <a [routerLink]="['../edit', postUnwrapped.uuid]" class="card-link small">
           <ng-icon name="heroPencil" size=""></ng-icon>
           Изменить
         </a>

@@ -1,0 +1,89 @@
+<ng-container *ngrxLet="store.initialPost$ as initialPost">
+  <div class="container-xxl">
+    <h1>Публикация</h1>
+
+    <div class="mb-3">
+      <time class="small fw-semibold" [attr.datetime]="initialPost?.createdAt">
+        {{ initialPost?.createdAt | nativeDate : {dateStyle: 'medium', timeStyle: 'short'} }}
+      </time>
+      <span class="badge rounded-pill {{postStatusMap[initialPost.status].badgeClass}}">
+        {{ postStatusMap[initialPost.status].label }}
+      </span>
+    </div>
+
+    <ng-container [formGroup]="form">
+      <div class="d-flex flex-column gap-3">
+        <app-utils-form-item
+          controlLabel="Заголовок"
+          controlValidationName="title"
+          layout="vertical"
+        >
+          <input
+            formControlName="title"
+            type="text"
+            class="form-control"
+            placeholder="Заголовок"
+          />
+        </app-utils-form-item>
+        <div class="row">
+          <div class="col">
+            <app-utils-form-item
+              layout="vertical"
+              controlValidationName="allowRead"
+              controlLabel="Кому предназначено"
+            >
+              <ng-select
+                formControlName="allowRead"
+                [items]="permissionOptions"
+                bindLabel="label"
+                bindValue="code"
+                [clearable]="false"
+                [searchable]="false"
+              >
+                <ng-template ng-label-tmp let-item="item">
+                  <span class="badge rounded-pill {{item.badgeClass}}">
+                    {{ item.label }}
+                  </span>
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                  <div>
+                    <span class="badge rounded-pill {{item.badgeClass}}">
+                      {{ item.label }}
+                    </span>
+                  </div>
+                  <div class="small text-secondary">{{ item.description }}</div>
+                </ng-template>
+              </ng-select>
+            </app-utils-form-item>
+          </div>
+          <div class="col">
+            <app-utils-form-item
+              layout="vertical"
+              controlValidationName="contentType"
+              controlLabel="Тип содержимого"
+            >
+              <ng-select
+                formControlName="contentType"
+                [items]="contentTypeOptions"
+                bindLabel="label"
+                bindValue="code"
+                [clearable]="false"
+                [searchable]="false"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div>{{ item.label }}</div>
+                  <div class="small text-secondary">{{ item.description }}</div>
+                </ng-template>
+              </ng-select>
+            </app-utils-form-item>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    {{ store.initialPost$ | async | json }}
+
+  </div>
+</ng-container>
+
+<ng-template ></ng-template>

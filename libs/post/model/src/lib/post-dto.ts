@@ -7,7 +7,7 @@ export class PostDto {
   status!: PostStatus;
   allowRead!: PostPermission;
   @Type(() => Date)
-  pubDate!: Date;
+  pubDate?: Date | null;
   @Type(() => Date)
   createdAt!: Date;
   @Type(() => Date)

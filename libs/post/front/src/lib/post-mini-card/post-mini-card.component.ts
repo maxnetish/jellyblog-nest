@@ -5,6 +5,7 @@ import { postStatusMap } from '@jellyblog-nest/utils/common';
 import { postPermissionMap } from '../../../../../utils/common/src/lib/post-permission';
 import { NgIcon, NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroArrowTopRightOnSquare, heroPencil, heroPencilSquare } from '@ng-icons/heroicons/outline';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-post-mini-card',
@@ -13,6 +14,7 @@ import { heroArrowTopRightOnSquare, heroPencil, heroPencilSquare } from '@ng-ico
     NativeDatePipe,
     NgIcon,
     NgIconComponent,
+    RouterLink,
   ],
   providers: [
     provideIcons({

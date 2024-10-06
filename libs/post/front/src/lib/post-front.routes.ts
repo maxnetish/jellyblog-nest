@@ -4,6 +4,7 @@ import { provideState } from '@ngrx/store';
 import * as PostRegReducer from './reg/store/post-reg.reducer';
 import { provideEffects } from '@ngrx/effects';
 import { PostRegEffects } from './reg/store/post-reg.effects';
+import { PostEditComponent } from './post-edit/post-edit.component';
 
 export const PostRoutes: AppRoute[] = [
   {
@@ -23,5 +24,9 @@ export const PostRoutes: AppRoute[] = [
         PostRegEffects,
       ]),
     ],
+  },
+  {
+    path: 'edit/:id',
+    component: PostEditComponent,
   },
 ];
