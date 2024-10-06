@@ -9,6 +9,7 @@ import {
 import { BaseEntityId } from '@jellyblog-nest/utils/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
+  FormItemComponent,
   GlobalActions,
   GlobalToastSeverity,
   ModalContentComponent,
@@ -40,6 +41,7 @@ function createForm() {
     ModalContentComponent,
     ValidationMessageComponent,
     ReactiveFormsModule,
+    FormItemComponent,
   ],
 })
 export class UserRemoveComponent {

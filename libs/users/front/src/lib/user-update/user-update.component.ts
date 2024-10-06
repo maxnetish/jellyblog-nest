@@ -13,6 +13,7 @@ import { AuthService } from '@jellyblog-nest/auth/front';
 import { Store } from '@ngrx/store';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
+  FormItemComponent,
   GlobalActions,
   GlobalToastSeverity,
   ModalContentComponent,
@@ -44,6 +45,7 @@ function createForm() {
     ModalContentComponent,
     NgSelectComponent,
     ValidationMessageComponent,
+    FormItemComponent,
   ],
 })
 export class UserUpdateComponent {

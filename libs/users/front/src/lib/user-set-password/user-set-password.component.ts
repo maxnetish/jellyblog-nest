@@ -9,6 +9,7 @@ import {
 import { SetPasswordDto } from '@jellyblog-nest/auth/model';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
+  FormItemComponent,
   GlobalActions,
   GlobalToastSeverity,
   ModalContentComponent,
@@ -42,6 +43,7 @@ function createForm() {
     ModalContentComponent,
     AsyncPipe,
     ValidationMessageComponent,
+    FormItemComponent,
   ],
 })
 export class UserSetPasswordComponent {

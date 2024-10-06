@@ -3,21 +3,32 @@
     [activeModal]="modal"
     modalTitle="Изменить роль"
   >
-    <div class="mb-3">
-      <label class="form-label small text-secondary">Имя пользователя</label>
-      <div class="form-control-plaintext">{{userName()}}</div>
+
+    <div class="d-flex flex-column g-2">
+
+      <app-utils-form-item
+        layout="vertical"
+        controlLabel="Имя пользователя"
+      >
+        <div class="form-control-plaintext">{{ userName() }}</div>
+      </app-utils-form-item>
+
+      <app-utils-form-item
+        layout="vertical"
+        controlLabel="Его новая роль"
+        controlValidationName="role"
+      >
+        <ng-select
+          formControlName="role"
+          [items]="availableRoles"
+          bindLabel="code"
+          bindValue="code"
+          [clearable]="false"
+        ></ng-select>
+      </app-utils-form-item>
+
     </div>
-    <div class="mb-3">
-      <label class="form-label small text-secondary">Его новая роль</label>
-      <ng-select
-        formControlName="role"
-        [items]="availableRoles"
-        bindLabel="code"
-        bindValue="code"
-        [clearable]="false"
-      ></ng-select>
-      <app-utils-validation-message validationFormControlName="role"></app-utils-validation-message>
-    </div>
+
     <ng-container modalFooter>
       <div class="btn-group" role="group">
         <button (click)="modal.dismiss('cancel')" type="button" class="btn btn-secondary">Отмена</button>

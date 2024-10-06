@@ -3,11 +3,15 @@
     [activeModal]="modal"
     modalTitle="Удалить пользователя"
   >
-    <div class="mb-3">
-      <label class="form-label small text-secondary">Имя пользователя</label>
+
+    <app-utils-form-item
+      layout="vertical"
+      controlLabel="Имя пользователя"
+      controlValidationName="uuid"
+    >
       <div class="form-control-plaintext">{{ userName() }}</div>
-      <app-utils-validation-message validationFormControlName="uuid"></app-utils-validation-message>
-    </div>
+    </app-utils-form-item>
+
     <ng-container modalFooter="">
       <div class="btn-group" role="group">
         <button (click)="modal.dismiss('cancel')" type="button" class="btn btn-secondary">Отмена</button>
