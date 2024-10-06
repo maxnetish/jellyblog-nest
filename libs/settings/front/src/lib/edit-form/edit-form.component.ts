@@ -10,7 +10,7 @@ import {
 import { ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, filter, Subscription } from 'rxjs';
 import { SettingsFacade } from './../store/settings.facade';
-import { CollapseTitleComponent } from '@jellyblog-nest/utils/front';
+import { CollapseTitleComponent, FormItemComponent } from '@jellyblog-nest/utils/front';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { CheckFileStoreComponent } from './check-file-store/check-file-store.component';
 import { LetDirective } from '@ngrx/component';
@@ -29,6 +29,7 @@ import { applyDto, createForm } from './edit-form.form';
     CheckFileStoreComponent,
     ReactiveFormsModule,
     LetDirective,
+    FormItemComponent,
   ],
 })
 export class EditFormComponent {

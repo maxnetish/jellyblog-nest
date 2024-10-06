@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+
+.empty-hide {
+
+  &:empty {
+    display: none;
+  }
+}

@@ -11,7 +11,7 @@
           placeholder="Cherry"
         />
         <label class="text-secondary" for="username">Имя</label>
-        <app-utils-validation-message formControlName="username"></app-utils-validation-message>
+        <app-utils-validation-message validationFormControlName="username"></app-utils-validation-message>
       </div>
       <div class="form-floating mb-3">
         <input
@@ -23,7 +23,7 @@
           autocomplete="current-password"
         />
         <label class="text-secondary" for="password">Пароль</label>
-        <app-utils-validation-message formControlName="password"></app-utils-validation-message>
+        <app-utils-validation-message validationFormControlName="password"></app-utils-validation-message>
       </div>
       <div class="d-flex justify-content-end gap-2">
         @if (!disallowCancel()) {

@@ -21,12 +21,17 @@
 <div class="container-xxl">
 
   <form [formGroup]="form">
-    <ng-container formArrayName="settings">
+    <div class="d-flex flex-column gap-3">
+      <ng-container formArrayName="settings">
       @for (oneSettingControl of formSettingsArray.controls; track oneSettingControl.value.meta?.name; let ind = $index) {
-        <div
-          class="mb-3 form-floating"
+        <app-utils-form-item
           *ngrxLet="oneSettingControl.value.meta as oneSettingMeta"
           [formGroupName]="ind"
+          [controlDescription]="oneSettingMeta?.description"
+          [controlId]="oneSettingMeta?.name"
+          [controlLabel]="oneSettingMeta?.label"
+          controlValidationName="value"
+          layout="floating"
         >
           <input
             type="text"
@@ -35,18 +40,10 @@
             [id]="oneSettingMeta?.name"
             [placeholder]="oneSettingMeta?.name"
           />
-          <label
-            class="text-secondary"
-            [for]="oneSettingMeta?.name"
-          >
-            {{ oneSettingMeta?.label }}
-          </label>
-          <div class="small text-secondary lh-sm">
-            {{ oneSettingMeta?.description }}
-          </div>
-        </div>
+        </app-utils-form-item>
       }
     </ng-container>
+    </div>
   </form>
 
 </div>

@@ -1,0 +1,50 @@
+@switch (layout()) {
+  @case ('vertical') {
+    <div>
+      <label
+        class="form-label small text-secondary empty-hide"
+        [for]="controlId()"
+      >
+        <ng-container>{{ controlLabel() }}</ng-container>
+        <ng-container [ngTemplateOutlet]="projectionControlLabel"></ng-container>
+      </label>
+      <ng-container [ngTemplateOutlet]="projectionContent"></ng-container>
+      <ng-container [ngTemplateOutlet]="descriptionAndValidation"></ng-container>
+    </div>
+  }
+  @default {
+    <div class="form-floating">
+      <ng-container [ngTemplateOutlet]="projectionContent"></ng-container>
+      <label
+        class="text-secondary"
+        [for]="controlId()"
+      >
+        <ng-container>{{ controlLabel() }}</ng-container>
+        <ng-container [ngTemplateOutlet]="projectionControlLabel"></ng-container>
+      </label>
+      <ng-container [ngTemplateOutlet]="descriptionAndValidation"></ng-container>
+    </div>
+  }
+}
+
+<ng-template #projectionContent>
+  <ng-content></ng-content>
+</ng-template>
+
+<ng-template #projectionControlLabel>
+  <ng-content select="[controlLabel]"></ng-content>
+</ng-template>
+
+<ng-template #descriptionAndValidation>
+  @if (controlDescription()) {
+    <div class="small text-secondary lh-sm">
+      {{ controlDescription() }}
+    </div>
+  }
+  <ng-content select="[controlDescription]"></ng-content>
+  @if (controlValidationName()) {
+    <app-utils-validation-message
+      [validationFormControlName]="controlValidationName()!"
+    ></app-utils-validation-message>
+  }
+</ng-template>

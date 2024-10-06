@@ -1,9 +1,5 @@
 :host {
-  display: none;
-
-  &.ng-touched {
-    display: block;
-  }
+  display: block;
 }
 
 .validation-message {

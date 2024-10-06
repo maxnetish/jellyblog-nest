@@ -1,44 +1,61 @@
 <form [formGroup]="form" (ngSubmit)="submitForm()">
   <app-utils-modal-content [activeModal]="modal" modalTitle="Создать пользователя">
-    <div class="mb-3">
-      <label class="form-label small text-secondary" for="vvefvdfv">Имя нового пользователя</label>
-      <input
-        type="text"
-        formControlName="username"
-        id="vvefvdfv"
-        class="form-control"
-        autocomplete="off"
-      />
-      <app-utils-validation-message formControlName="username"></app-utils-validation-message>
+
+    <div class="d-flex flex-column gap-2">
+      <app-utils-form-item
+        layout="vertical"
+        controlValidationName="username"
+        controlId="vvefvdfv"
+        controlLabel="Имя нового пользователя"
+      >
+        <input
+          control
+          type="text"
+          formControlName="username"
+          id="vvefvdfv"
+          class="form-control"
+          autocomplete="off"
+        />
+      </app-utils-form-item>
+
+      <app-utils-form-item
+        layout="vertical"
+        controlValidationName="password"
+        controlId="cefrefhjgdf"
+        controlLabel="И его пароль"
+      >
+        <input
+          type="text"
+          formControlName="password"
+          id="cefrefhjgdf"
+          class="form-control"
+          autocomplete="new-password"
+        />
+      </app-utils-form-item>
+
+      <app-utils-form-item
+        layout="vertical"
+        controlValidationName="role"
+        controlId="role"
+        controlLabel="Его роль"
+      >
+        <ng-select
+          formControlName="role"
+          [items]="availableRoles"
+          bindLabel="code"
+          bindValue="code"
+          [clearable]="false"
+          id="role"
+        ></ng-select>
+      </app-utils-form-item>
     </div>
-    <div class="mb-3">
-      <label class="form-label small text-secondary" for="cefrefhjgdf">И его пароль</label>
-      <input
-        type="text"
-        formControlName="password"
-        id="cefrefhjgdf"
-        class="form-control"
-        autocomplete="new-password"
-      />
-      <app-utils-validation-message formControlName="password"></app-utils-validation-message>
-    </div>
-    <div class="mb-3">
-      <label class="form-label small text-secondary" for="role">Его роль</label>
-      <ng-select
-        formControlName="role"
-        [items]="availableRoles"
-        bindLabel="code"
-        bindValue="code"
-        [clearable]="false"
-        id="role"
-      ></ng-select>
-      <app-utils-validation-message formControlName="role"></app-utils-validation-message>
-    </div>
+
     <ng-container modalFooter>
       <div class="btn-group" role="group">
         <button (click)="modal.dismiss('cancel')" type="button" class="btn btn-secondary">Отмена</button>
         <button type="submit" class="btn btn-primary" [disabled]="loading()">OK</button>
       </div>
     </ng-container>
+
   </app-utils-modal-content>
 </form>

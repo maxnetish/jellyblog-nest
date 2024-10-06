@@ -6,8 +6,24 @@ import {
   Optional,
   OnDestroy, forwardRef,
 } from '@angular/core';
-import { BehaviorSubject, map, merge, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
-import { ControlValueAccessor, FormGroupDirective, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  BehaviorSubject,
+  filter,
+  map,
+  merge,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
+import {
+  ControlValueAccessor,
+  FormGroupDirective,
+  NG_VALUE_ACCESSOR,
+  StatusChangeEvent,
+  TouchedChangeEvent,
+} from '@angular/forms';
 import { validationMessageDict } from './validation-message-dict';
 import { PushPipe } from '@ngrx/component';
 
@@ -33,27 +49,34 @@ export class ValidationMessageComponent implements OnDestroy, ControlValueAccess
 
   validationMessages$: Observable<string[]>;
 
-  @Input() set formControlName(val: string | string[]) {
+  @Input() set validationFormControlName(val: string | string[] | undefined) {
     this.controlName$.next(val);
   }
 
-  private readonly controlName$ = new BehaviorSubject<string | string[] | null>(null);
+  private readonly controlName$ = new BehaviorSubject<string | string[] | null | undefined>(null);
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     @Optional() private formGroupDirective: FormGroupDirective,
   ) {
     this.validationMessages$ = this.controlName$.pipe(
-      takeUntil(this.unsubscribe$),
       switchMap((controlName) => {
         const targetControl = controlName
           && this.formGroupDirective
           && this.formGroupDirective.control.get(controlName);
         if (targetControl) {
+          // Будем обновлять сообщения
+          // в начале,
+          // и на событиях TouchedChangeEvent, StatusChangeEvent
           return merge(
             of(targetControl),
-            targetControl.statusChanges.pipe(
-              map(() => targetControl),
+            targetControl.events.pipe(
+              filter((ev) => {
+                return ev instanceof TouchedChangeEvent || ev instanceof StatusChangeEvent;
+              }),
+              map(() => {
+                return targetControl;
+              }),
             ),
           );
         } else {
@@ -61,7 +84,8 @@ export class ValidationMessageComponent implements OnDestroy, ControlValueAccess
         }
       }),
       map((control) => {
-        if (control && control.errors && !control.disabled) {
+        // Показываем сообщения после touched, после первой потери фокуса
+        if (control && control.errors && !control.disabled && control.touched) {
           return [...Object.entries(control.errors).map(([key, value]) => {
             if(typeof value === 'string') {
               return value;
@@ -71,6 +95,7 @@ export class ValidationMessageComponent implements OnDestroy, ControlValueAccess
         }
         return [];
       }),
+      takeUntil(this.unsubscribe$),
     );
   }
 

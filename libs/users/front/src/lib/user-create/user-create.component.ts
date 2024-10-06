@@ -6,6 +6,7 @@ import { AuthService } from '@jellyblog-nest/auth/front';
 import { firstValueFrom } from 'rxjs';
 import { Store } from '@ngrx/store';
 import {
+  FormItemComponent,
   GlobalActions,
   GlobalToastSeverity,
   ModalContentComponent,
@@ -38,6 +39,7 @@ function createForm() {
     ModalContentComponent,
     ValidationMessageComponent,
     NgSelectComponent,
+    FormItemComponent,
   ],
 })
 export class UserCreateComponent {
