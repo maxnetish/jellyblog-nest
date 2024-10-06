@@ -7,6 +7,7 @@ import { Page, PostPermission, PostStatus } from '@jellyblog-nest/utils/common';
 import { UserInfoDto } from '@jellyblog-nest/auth/model';
 import { createOrUpdatePost } from './service/create-or-update';
 import { findPrivate } from './service/find';
+import { canViewPost } from './service/post-permission';
 
 @Injectable()
 export class PostService {
@@ -45,39 +46,13 @@ export class PostService {
 
     // detect post permissions for current user
     // TODO move to special method
-    let permit = false;
-    // by post status
-    switch (postEntity.status) {
-      case PostStatus.DRAFT: {
-        // only author can see draft
-        permit = user && postEntity.author === user.username;
-        break;
-      }
-      case PostStatus.PUB: {
-        switch (postEntity.allowRead) {
-          case PostPermission.FOR_ALL: {
-            permit = true;
-            break;
-          }
-          case PostPermission.FOR_REGISTERED: {
-            permit = !!user;
-            break;
-          }
-          case PostPermission.FOR_ME: {
-            permit = user && postEntity.author === user.username;
-            break;
-          }
-        }
-        break;
-      }
-    }
+    const permit = canViewPost({postEntity, user});
 
     if(!permit) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
 
     return postEntity;
-
   }
 
   async createOrUpdatePost({request, user, uuid}: { request: PostUpdateRequest, user: UserInfoDto, uuid?: string }) {

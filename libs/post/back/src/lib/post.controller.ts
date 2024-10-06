@@ -158,4 +158,18 @@ export class PostController {
     });
   }
 
+  @Get(':uuid')
+  @ApiResponse({
+    type: PostDto,
+  })
+  async get(
+    @Param('uuid', ParseUUIDPipe) uuid: string,
+    @Req() req: Request,
+  ) {
+    return this.postService.getPostById({
+      uuid,
+      user: req.user as UserInfoDto,
+    });
+  }
+
 }

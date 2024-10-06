@@ -15,7 +15,7 @@ export class PostService {
   ) {
   }
 
-  findPosts({ request }: {
+  findPosts({request}: {
     request: FindPostRequest,
   }) {
     return this.httpClient.get<Page<PostShortDto>>(
@@ -38,7 +38,7 @@ export class PostService {
     );
   }
 
-  create({ request }: { request: PostUpdateRequest }) {
+  create({request}: { request: PostUpdateRequest }) {
     return this.httpClient.post<PostDto>(
       `${this.apiPath}`,
       request,
@@ -49,10 +49,20 @@ export class PostService {
     );
   }
 
-  update({ uuid, request }: { uuid: string; request: PostUpdateRequest }) {
+  update({uuid, request}: { uuid: string; request: PostUpdateRequest }) {
     return this.httpClient.put<PostDto>(
       `${this.apiPath}/${uuid}`,
       request,
+      {
+        observe: 'body',
+        responseType: 'json',
+      },
+    );
+  }
+
+  get({uuid}: { uuid: string }) {
+    return this.httpClient.get<PostDto>(
+      `${this.apiPath}/${uuid}`,
       {
         observe: 'body',
         responseType: 'json',
