@@ -51,7 +51,7 @@
                       {{ item.label }}
                     </span>
                   </div>
-                  <div class="small text-secondary">{{ item.description }}</div>
+                  <div class="small text-secondary text-wrap">{{ item.description }}</div>
                 </ng-template>
               </ng-select>
             </app-utils-form-item>
@@ -72,12 +72,49 @@
               >
                 <ng-template ng-option-tmp let-item="item">
                   <div>{{ item.label }}</div>
-                  <div class="small text-secondary">{{ item.description }}</div>
+                  <div class="small text-secondary text-wrap">{{ item.description }}</div>
                 </ng-template>
               </ng-select>
             </app-utils-form-item>
           </div>
         </div>
+        <app-utils-form-item
+          controlLabel="Аннотация"
+          controlValidationName="brief"
+          layout="vertical"
+        >
+          <textarea
+            formControlName="brief"
+            class="form-control"
+          ></textarea>
+        </app-utils-form-item>
+        <app-utils-form-item
+          controlLabel="Текст публикации"
+          controlValidationName="content"
+          layout="vertical"
+        >
+          <textarea
+            formControlName="content"
+            class="form-control"
+          ></textarea>
+        </app-utils-form-item>
+        <app-utils-form-item
+          controlLabel="Теги"
+          controlValidationName="tags"
+          layout="vertical"
+        >
+          <ng-select
+            formControlName="tags"
+            bindLabel="content"
+            [multiple]="true"
+            [trackByFn]="trackTagOptions"
+            [hideSelected]="true"
+            [compareWith]="compareTagOptions"
+            [items]="store.tags$ | async"
+            [loading]="store.tagsLoading$ | async"
+            [typeahead]="tagsSearchInput$"
+          ></ng-select>
+        </app-utils-form-item>
       </div>
     </ng-container>
 

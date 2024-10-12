@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, Subject, takeUntil } from 'rxjs';
+import { debounceTime, map, Subject, takeUntil } from 'rxjs';
 import { PostEditStore } from './post-edit.store';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { applyDtoToForm, createForm } from './post-edit.form';
@@ -14,7 +14,13 @@ import {
 import { FormItemComponent, NativeDatePipe } from '@jellyblog-nest/utils/front';
 import { LetDirective } from '@ngrx/component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
+import {
+  NgItemLabelDirective,
+  NgLabelTemplateDirective, NgMultiLabelTemplateDirective,
+  NgOptionTemplateDirective,
+  NgSelectComponent, NgSelectModule,
+} from '@ng-select/ng-select';
+import { TagDto } from '@jellyblog-nest/post/model';
 
 
 @Component({
@@ -30,6 +36,7 @@ import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent 
     NgSelectComponent,
     NgOptionTemplateDirective,
     NgLabelTemplateDirective,
+    NgItemLabelDirective,
   ],
   providers: [
     PostEditStore,
@@ -61,6 +68,8 @@ export class PostEditComponent implements OnDestroy {
     };
   });
 
+  protected readonly tagsSearchInput$ = new Subject<string>();
+
   constructor() {
     this.store.loadPost(
       this.route.paramMap.pipe(
@@ -73,7 +82,13 @@ export class PostEditComponent implements OnDestroy {
       takeUntil(this.unsubscribe$),
     ).subscribe((initialPost) => {
       applyDtoToForm(this.form, initialPost);
-    })
+    });
+
+    this.store.loadTagsPage(
+      this.tagsSearchInput$.pipe(
+        debounceTime(1000),
+      ),
+    );
   }
 
   ngOnDestroy(): void {
@@ -82,4 +97,12 @@ export class PostEditComponent implements OnDestroy {
   }
 
   protected readonly postStatusMap = postStatusMap;
+
+  protected compareTagOptions(a: TagDto, b: TagDto) {
+    return a.uuid === b.uuid;
+  }
+
+  protected trackTagOptions(item: TagDto) {
+    return item.uuid;
+  }
 }
