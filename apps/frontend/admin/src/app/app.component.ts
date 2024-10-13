@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { LayoutComponent } from '@jellyblog-nest/shell-admin';
 
 @Component({
@@ -8,6 +8,8 @@ import { LayoutComponent } from '@jellyblog-nest/shell-admin';
   imports: [
     LayoutComponent,
   ],
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: ['./app.global-styles.scss'],
 })
 export class AppComponent {
   title = 'frontend-admin';

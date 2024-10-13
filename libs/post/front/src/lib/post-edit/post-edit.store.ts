@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
 import { PostDto, TagDto } from '@jellyblog-nest/post/model';
 import { LoadingStatus, PostContentType, PostPermission, PostStatus, SortOrder } from '@jellyblog-nest/utils/common';
-import { catchError, filter, map, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, lastValueFrom, map, Observable, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { PostService } from '../post.service';
 import { TagService } from '../tag.service';
 
@@ -12,6 +12,8 @@ export interface PostEditState {
   tags: TagDto[];
   tagsLoadingStatus: LoadingStatus;
   tagsPage: number;
+  tagsSearchTerm: string | null;
+  tagsHasMore: boolean;
 }
 
 const initialState: PostEditState = {
@@ -35,6 +37,8 @@ const initialState: PostEditState = {
   tags: [],
   tagsLoadingStatus: LoadingStatus.INITIAL,
   tagsPage: 1,
+  tagsSearchTerm: null,
+  tagsHasMore: false,
 };
 
 @Injectable()
@@ -58,7 +62,8 @@ export class PostEditStore extends ComponentStore<PostEditState> {
     map((status) => status === LoadingStatus.LOADING),
   );
   readonly tagsPage$ = this.select(state => state.tagsPage);
-
+  readonly tagsSearchTerm$ = this.select(state => state.tagsSearchTerm);
+  readonly tagsHasMore$ = this.select(state => state.tagsHasMore);
 
   readonly loadPost = this.effect((id$: Observable<string | null>) => {
     return id$.pipe(
@@ -92,17 +97,18 @@ export class PostEditStore extends ComponentStore<PostEditState> {
     );
   })
 
-  readonly loadTagsPage = this.effect((tagContent$: Observable<string | null>) => {
-    return tagContent$.pipe(
-      tap(() => {
+  readonly loadTagsPage = this.effect((searchTerm$: Observable<string | null>) => {
+    return searchTerm$.pipe(
+      tap((searchTerm) => {
         this.patchState({
           tagsLoadingStatus: LoadingStatus.LOADING,
+          tagsSearchTerm: searchTerm || null,
         });
       }),
-      switchMap((tagContent) => {
+      switchMap((searchTerm) => {
         return this.tagService.findTags({
           request: {
-            content: tagContent || undefined,
+            content: searchTerm || undefined,
             page: 1,
             size: this.tagsPageSize,
             order: this.tagsSortOrder,
@@ -114,7 +120,8 @@ export class PostEditStore extends ComponentStore<PostEditState> {
           tags: [...response.list],
           tagsLoadingStatus: LoadingStatus.SUCCESS,
           tagsPage: response.page,
-        })
+          tagsHasMore: response.total > response.page * response.size,
+        });
       }),
       catchError((error, caught) => {
         console.error('Loading tags failed: ', error);
@@ -125,4 +132,76 @@ export class PostEditStore extends ComponentStore<PostEditState> {
       }),
     )
   })
+
+  readonly loadTagsNextPage = this.effect((void$: Observable<void>) => {
+    return void$.pipe(
+      withLatestFrom(
+        this.tagsLoadingStatus$,
+        this.tagsHasMore$,
+        this.tagsSearchTerm$,
+        this.tagsPage$,
+      ),
+      filter(([, tagsLoadingStatus]) => tagsLoadingStatus !== LoadingStatus.LOADING),
+      filter(([, , tagsHasMore]) => tagsHasMore),
+      tap(() => {
+        this.patchState({
+          tagsLoadingStatus: LoadingStatus.LOADING,
+        });
+      }),
+      switchMap(([, , ,searchTerm, tagsPage]) => {
+        return this.tagService.findTags({
+          request: {
+            content: searchTerm || undefined,
+            page: tagsPage + 1,
+            size: this.tagsPageSize,
+            order: this.tagsSortOrder,
+          },
+        });
+      }),
+      tap((response) => {
+        this.patchState((state) => {
+          return {
+            tags: [
+              ...state.tags,
+              ...response.list,
+            ],
+            tagsLoadingStatus: LoadingStatus.SUCCESS,
+            tagsPage: response.page,
+            tagsHasMore: response.total > response.page * response.size,
+          };
+        });
+      }),
+      catchError((error, caught) => {
+        console.error('Loading tags failed: ', error);
+        this.patchState({
+          tagsLoadingStatus: LoadingStatus.FAILED,
+        });
+        return caught;
+      }),
+    );
+  })
+
+  async addNewTag(term: string) {
+    this.patchState({
+      tagsLoadingStatus: LoadingStatus.LOADING,
+    });
+    try {
+      const addedTag = await lastValueFrom(this.tagService.createTag({
+        request: {
+          content: term,
+        },
+      }));
+      this.patchState({
+        tagsLoadingStatus: LoadingStatus.SUCCESS,
+      });
+      return addedTag;
+    }
+    catch (error) {
+      this.patchState({
+        tagsLoadingStatus: LoadingStatus.FAILED,
+      });
+      console.warn('add tag failed: ', error);
+      throw error;
+    }
+  }
 }

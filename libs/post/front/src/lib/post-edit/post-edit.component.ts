@@ -18,9 +18,10 @@ import {
   NgItemLabelDirective,
   NgLabelTemplateDirective, NgMultiLabelTemplateDirective,
   NgOptionTemplateDirective,
-  NgSelectComponent, NgSelectModule,
+  NgSelectComponent, NgSelectModule, NgTagTemplateDirective,
 } from '@ng-select/ng-select';
 import { TagDto } from '@jellyblog-nest/post/model';
+import { AddTagFn } from '@ng-select/ng-select/lib/ng-select.component';
 
 
 @Component({
@@ -37,6 +38,7 @@ import { TagDto } from '@jellyblog-nest/post/model';
     NgOptionTemplateDirective,
     NgLabelTemplateDirective,
     NgItemLabelDirective,
+    NgTagTemplateDirective,
   ],
   providers: [
     PostEditStore,
@@ -104,5 +106,13 @@ export class PostEditComponent implements OnDestroy {
 
   protected trackTagOptions(item: TagDto) {
     return item.uuid;
+  }
+
+  protected readonly addNewTag: AddTagFn = (term) => {
+    return this.store.addNewTag(term);
+  }
+
+  tagsScrollToEnd() {
+    this.store.loadTagsNextPage();
   }
 }

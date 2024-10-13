@@ -99,7 +99,7 @@
           ></textarea>
         </app-utils-form-item>
         <app-utils-form-item
-          controlLabel="Теги"
+          controlLabel="Метки"
           controlValidationName="tags"
           layout="vertical"
         >
@@ -113,7 +113,11 @@
             [items]="store.tags$ | async"
             [loading]="store.tagsLoading$ | async"
             [typeahead]="tagsSearchInput$"
-          ></ng-select>
+            [addTag]="addNewTag"
+            (scrollToEnd)="tagsScrollToEnd()"
+          >
+            <ng-template ng-tag-tmp let-search="searchTerm"> <b>Добавить новую метку</b>: {{ search }} </ng-template>
+          </ng-select>
         </app-utils-form-item>
       </div>
     </ng-container>

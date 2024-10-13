@@ -1,0 +1,73 @@
+// import bootstrap variables, mixins, functions
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+// bootstrap overrides
+ul.pagination {
+  margin-bottom: 0;
+}
+
+.dropdown-toggle::after, .dropup .dropdown-toggle::after {
+  content: none;
+}
+
+.table {
+  th, td {
+    vertical-align: baseline;
+  }
+}
+
+
+// ng icon overrides
+button > ng-icon {
+  position: relative;
+  top: 1px;
+}
+
+// overrides for invalid controls
+.form-control {
+
+  &.ng-invalid.ng-touched {
+    border-color: var(--bs-danger);
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+  }
+
+}
+
+// ng-select overrides
+.ng-select {
+
+  &.ng-select-focused:not(.ng-select-opened) {
+    > .ng-select-container {
+      border-color: tint-color($component-active-bg, 50%);
+      box-shadow: $input-focus-box-shadow;
+    }
+  }
+
+  &.ng-select-opened {
+    > .ng-select-container {
+      border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-border-color);
+    }
+  }
+
+  .ng-select-container {
+    border: var(--bs-border-width) solid var(--bs-border-color);
+
+    @include transition($input-transition);
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+}
+
+.ng-dropdown-panel {
+  border: var(--bs-border-width) solid var(--bs-border-color);;
+}
