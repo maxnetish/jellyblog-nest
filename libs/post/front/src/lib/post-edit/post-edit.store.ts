@@ -5,6 +5,8 @@ import { LoadingStatus, PostContentType, PostPermission, PostStatus, SortOrder }
 import { catchError, filter, lastValueFrom, map, Observable, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { PostService } from '../post.service';
 import { TagService } from '../tag.service';
+import { Store } from '@ngrx/store';
+import { GlobalToastSeverity, GlobalActions } from '@jellyblog-nest/utils/front';
 
 export interface PostEditState {
   initialPost: PostDto;
@@ -43,6 +45,7 @@ const initialState: PostEditState = {
 
 @Injectable()
 export class PostEditStore extends ComponentStore<PostEditState> {
+  private readonly globalStore = inject(Store);
   private readonly postService = inject(PostService);
   private readonly tagService = inject(TagService);
   private readonly tagsPageSize = 10;
@@ -97,6 +100,10 @@ export class PostEditStore extends ComponentStore<PostEditState> {
         this.patchState({
           loadingStatus: LoadingStatus.FAILED,
         });
+        this.globalStore.dispatch(GlobalActions.addGlobalToast({
+          text: `Loading post failed`,
+          severity: GlobalToastSeverity.ERROR,
+        }));
         return caught;
       }),
     );
@@ -212,12 +219,20 @@ export class PostEditStore extends ComponentStore<PostEditState> {
           loadingStatus: LoadingStatus.SUCCESS,
           initialPost: {...response},
         });
+        this.globalStore.dispatch(GlobalActions.addGlobalToast({
+          text: `Post #${response.uuid} successfully submitted`,
+          severity: GlobalToastSeverity.SUCCESS,
+        }));
       }),
       catchError((error, caught) => {
-        console.error('Submit post failed: ', error);
+        console.error('Submit failed: ', error);
         this.patchState({
           loadingStatus: LoadingStatus.FAILED,
         });
+        this.globalStore.dispatch(GlobalActions.addGlobalToast({
+          text: `Submit failed`,
+          severity: GlobalToastSeverity.ERROR,
+        }));
         return caught;
       }),
     );
@@ -236,6 +251,10 @@ export class PostEditStore extends ComponentStore<PostEditState> {
       this.patchState({
         tagsLoadingStatus: LoadingStatus.SUCCESS,
       });
+      this.globalStore.dispatch(GlobalActions.addGlobalToast({
+        text: `Tag #${addedTag.uuid} created`,
+        severity: GlobalToastSeverity.SUCCESS,
+      }));
       return addedTag;
     }
     catch (error) {
@@ -243,6 +262,10 @@ export class PostEditStore extends ComponentStore<PostEditState> {
         tagsLoadingStatus: LoadingStatus.FAILED,
       });
       console.warn('add tag failed: ', error);
+      this.globalStore.dispatch(GlobalActions.addGlobalToast({
+        text: `Create tag failed`,
+        severity: GlobalToastSeverity.ERROR,
+      }));
       throw error;
     }
   }
