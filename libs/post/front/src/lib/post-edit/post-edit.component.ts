@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { debounceTime, map, Subject, takeUntil } from 'rxjs';
+import { debounceTime, map, Subject, take, takeUntil, withLatestFrom } from 'rxjs';
 import { PostEditStore } from './post-edit.store';
-import { AsyncPipe, JsonPipe } from '@angular/common';
-import { applyDtoToForm, createForm } from './post-edit.form';
+import { AsyncPipe, JsonPipe, NgTemplateOutlet } from '@angular/common';
+import { applyDtoToForm, createForm, formToDto } from './post-edit.form';
 import {
   PostContentType,
   PostPermission,
@@ -12,7 +12,7 @@ import {
   postContentTypeMap,
 } from '@jellyblog-nest/utils/common';
 import { FormItemComponent, NativeDatePipe } from '@jellyblog-nest/utils/front';
-import { LetDirective } from '@ngrx/component';
+import { LetDirective, PushPipe } from '@ngrx/component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   NgItemLabelDirective,
@@ -22,6 +22,8 @@ import {
 } from '@ng-select/ng-select';
 import { TagDto } from '@jellyblog-nest/post/model';
 import { AddTagFn } from '@ng-select/ng-select/lib/ng-select.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
 
 
 @Component({
@@ -39,9 +41,15 @@ import { AddTagFn } from '@ng-select/ng-select/lib/ng-select.component';
     NgLabelTemplateDirective,
     NgItemLabelDirective,
     NgTagTemplateDirective,
+    NgIcon,
+    PushPipe,
+    NgTemplateOutlet,
   ],
   providers: [
     PostEditStore,
+    provideIcons({
+      heroCloudArrowUp,
+    }),
   ],
   templateUrl: './post-edit.component.html',
   styleUrl: './post-edit.component.scss',
@@ -112,7 +120,20 @@ export class PostEditComponent implements OnDestroy {
     return this.store.addNewTag(term);
   }
 
-  tagsScrollToEnd() {
+  protected tagsScrollToEnd() {
     this.store.loadTagsNextPage();
+  }
+
+  protected saveButtonClick() {
+    if (!this.form.valid) {
+      return;
+    }
+
+    this.store.initialPost$.pipe(
+      take(1),
+    ).subscribe((initialPost) => {
+      const updateDto = formToDto(this.form, initialPost);
+      this.store.submitPost(updateDto);
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
-import { PostDto, TagDto } from '@jellyblog-nest/post/model';
+import { PostDto, PostUpdateRequest, TagDto } from '@jellyblog-nest/post/model';
 import { LoadingStatus, PostContentType, PostPermission, PostStatus, SortOrder } from '@jellyblog-nest/utils/common';
 import { catchError, filter, lastValueFrom, map, Observable, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { PostService } from '../post.service';
@@ -56,6 +56,11 @@ export class PostEditStore extends ComponentStore<PostEditState> {
 
   readonly initialPost$ = this.select(state => state.initialPost);
   readonly loadingStatus$ = this.select(state => state.loadingStatus);
+  readonly loading$ = this.loadingStatus$.pipe(
+    map((loadingStatus) => {
+      return loadingStatus === LoadingStatus.LOADING;
+    }),
+  );
   readonly tags$ = this.select(state => state.tags);
   readonly tagsLoadingStatus$ = this.select(state => state.tagsLoadingStatus);
   readonly tagsLoading$ = this.tagsLoadingStatus$.pipe(
@@ -175,6 +180,43 @@ export class PostEditStore extends ComponentStore<PostEditState> {
         console.error('Loading tags failed: ', error);
         this.patchState({
           tagsLoadingStatus: LoadingStatus.FAILED,
+        });
+        return caught;
+      }),
+    );
+  })
+
+  readonly submitPost = this.effect((post$: Observable<PostUpdateRequest>) => {
+    return post$.pipe(
+      tap(() => {
+        this.patchState({
+          loadingStatus: LoadingStatus.LOADING,
+        });
+      }),
+      withLatestFrom(
+        this.initialPost$,
+      ),
+      switchMap(([updatedPost, initialPost]) => {
+        if(initialPost.uuid) {
+          return this.postService.update({
+            uuid: initialPost.uuid,
+            request: updatedPost,
+          });
+        }
+        return this.postService.create({
+          request: updatedPost,
+        });
+      }),
+      tap((response) => {
+        this.patchState({
+          loadingStatus: LoadingStatus.SUCCESS,
+          initialPost: {...response},
+        });
+      }),
+      catchError((error, caught) => {
+        console.error('Submit post failed: ', error);
+        this.patchState({
+          loadingStatus: LoadingStatus.FAILED,
         });
         return caught;
       }),

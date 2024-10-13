@@ -38,7 +38,7 @@ export function applyDtoToForm(form: PostEditForm, dto: PostDto | null) {
   return form;
 }
 
-export function formToDto(form: PostEditForm, initialDto: PostUpdateRequest): PostUpdateRequest {
+export function formToDto(form: PostEditForm, initialDto: PostDto): PostUpdateRequest {
   const formValue = form.value;
   return {
     ...initialDto,

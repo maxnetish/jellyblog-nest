@@ -12,7 +12,8 @@
     </div>
 
     <ng-container [formGroup]="form">
-      <div class="d-flex flex-column gap-3">
+      <ng-container [ngTemplateOutlet]="buttonsTemplate"></ng-container>
+      <div class="d-flex flex-column gap-3 mb-4">
         <app-utils-form-item
           controlLabel="Заголовок"
           controlValidationName="title"
@@ -120,11 +121,26 @@
           </ng-select>
         </app-utils-form-item>
       </div>
+      <ng-container [ngTemplateOutlet]="buttonsTemplate"></ng-container>
     </ng-container>
 
-    {{ store.initialPost$ | async | json }}
+    {{ form.value | json }}
 
   </div>
 </ng-container>
 
-<ng-template ></ng-template>
+<ng-template #buttonsTemplate>
+  <div class="d-flex justify-content-end">
+    <div class="btn-group" role="group">
+      <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        [disabled]="store.loading$ | async"
+        (click)="saveButtonClick()"
+      >
+        <ng-icon name="heroCloudArrowUp"></ng-icon>
+        Сохранить
+      </button>
+    </div>
+  </div>
+</ng-template>

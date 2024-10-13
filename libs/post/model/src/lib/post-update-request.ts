@@ -45,7 +45,7 @@ export class PostUpdateRequest {
   @IsString()
   @IsOptional()
   @MaxLength(256)
-  titleImg?: string;
+  titleImg?: string | null;
 
   @IsOptional()
   @IsArray()
@@ -60,5 +60,5 @@ export class PostUpdateRequest {
   @IsString()
   @IsOptional()
   @MaxLength(256)
-  hru?: string;
+  hru?: string | null;
 }
