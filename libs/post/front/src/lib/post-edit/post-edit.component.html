@@ -4,9 +4,16 @@
 
     <div class="mb-3">
       <time class="small fw-semibold" [attr.datetime]="initialPost?.createdAt">
-        {{ initialPost?.createdAt | nativeDate : {dateStyle: 'medium', timeStyle: 'short'} }}
+        {{
+          initialPost?.createdAt
+            | nativeDate : { dateStyle: 'medium', timeStyle: 'short' }
+        }}
       </time>
-      <span class="badge rounded-pill {{postStatusMap[initialPost.status].badgeClass}}">
+      <span
+        class="badge rounded-pill {{
+          postStatusMap[initialPost.status].badgeClass
+        }}"
+      >
         {{ postStatusMap[initialPost.status].label }}
       </span>
     </div>
@@ -42,17 +49,19 @@
                 [searchable]="false"
               >
                 <ng-template ng-label-tmp let-item="item">
-                  <span class="badge rounded-pill {{item.badgeClass}}">
+                  <span class="badge rounded-pill {{ item.badgeClass }}">
                     {{ item.label }}
                   </span>
                 </ng-template>
                 <ng-template ng-option-tmp let-item="item">
                   <div>
-                    <span class="badge rounded-pill {{item.badgeClass}}">
+                    <span class="badge rounded-pill {{ item.badgeClass }}">
                       {{ item.label }}
                     </span>
                   </div>
-                  <div class="small text-secondary text-wrap">{{ item.description }}</div>
+                  <div class="small text-secondary text-wrap">
+                    {{ item.description }}
+                  </div>
                 </ng-template>
               </ng-select>
             </app-utils-form-item>
@@ -73,7 +82,9 @@
               >
                 <ng-template ng-option-tmp let-item="item">
                   <div>{{ item.label }}</div>
-                  <div class="small text-secondary text-wrap">{{ item.description }}</div>
+                  <div class="small text-secondary text-wrap">
+                    {{ item.description }}
+                  </div>
                 </ng-template>
               </ng-select>
             </app-utils-form-item>
@@ -84,20 +95,21 @@
           controlValidationName="brief"
           layout="vertical"
         >
-          <textarea
+          <div
+            class="ace-control form-control"
+            appUtilsAceEditorControl
             formControlName="brief"
-            class="form-control"
-          ></textarea>
+            appUtilsAceEditorTheme="ace/theme/github"
+            [appUtilsAceEditorMode]="aceEditorMode$ | async"
+          ></div>
+          <textarea formControlName="brief" class="form-control"></textarea>
         </app-utils-form-item>
         <app-utils-form-item
           controlLabel="Текст публикации"
           controlValidationName="content"
           layout="vertical"
         >
-          <textarea
-            formControlName="content"
-            class="form-control"
-          ></textarea>
+          <textarea formControlName="content" class="form-control"></textarea>
         </app-utils-form-item>
         <app-utils-form-item
           controlLabel="Метки"
@@ -117,7 +129,9 @@
             [addTag]="addNewTag"
             (scrollToEnd)="tagsScrollToEnd()"
           >
-            <ng-template ng-tag-tmp let-search="searchTerm"> <b>Добавить новую метку</b>: {{ search }} </ng-template>
+            <ng-template ng-tag-tmp let-search="searchTerm">
+              <b>Добавить новую метку</b>: {{ search }}
+            </ng-template>
           </ng-select>
         </app-utils-form-item>
       </div>
@@ -125,7 +139,6 @@
     </ng-container>
 
     {{ form.value | json }}
-
   </div>
 </ng-container>
 

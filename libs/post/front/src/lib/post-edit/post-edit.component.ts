@@ -1,24 +1,25 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { debounceTime, map, Subject, take, takeUntil, withLatestFrom } from 'rxjs';
+import { debounceTime, defer, map, merge, Observable, Subject, take, takeUntil } from 'rxjs';
 import { PostEditStore } from './post-edit.store';
 import { AsyncPipe, JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { applyDtoToForm, createForm, formToDto } from './post-edit.form';
 import {
   PostContentType,
-  PostPermission,
-  postStatusMap,
-  postPermissionMap,
   postContentTypeMap,
+  PostPermission,
+  postPermissionMap,
+  postStatusMap,
 } from '@jellyblog-nest/utils/common';
-import { FormItemComponent, NativeDatePipe } from '@jellyblog-nest/utils/front';
+import { AceEditorControlDirective, FormItemComponent, NativeDatePipe } from '@jellyblog-nest/utils/front';
 import { LetDirective, PushPipe } from '@ngrx/component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   NgItemLabelDirective,
-  NgLabelTemplateDirective, NgMultiLabelTemplateDirective,
+  NgLabelTemplateDirective,
   NgOptionTemplateDirective,
-  NgSelectComponent, NgSelectModule, NgTagTemplateDirective,
+  NgSelectComponent,
+  NgTagTemplateDirective,
 } from '@ng-select/ng-select';
 import { TagDto } from '@jellyblog-nest/post/model';
 import { AddTagFn } from '@ng-select/ng-select/lib/ng-select.component';
@@ -44,6 +45,7 @@ import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
     NgIcon,
     PushPipe,
     NgTemplateOutlet,
+    AceEditorControlDirective,
   ],
   providers: [
     PostEditStore,
@@ -80,6 +82,8 @@ export class PostEditComponent implements OnDestroy {
 
   protected readonly tagsSearchInput$ = new Subject<string>();
 
+  protected readonly aceEditorMode$: Observable<string>;
+
   constructor() {
     this.store.loadPost(
       this.route.paramMap.pipe(
@@ -99,6 +103,31 @@ export class PostEditComponent implements OnDestroy {
         debounceTime(1000),
       ),
     );
+
+    this.aceEditorMode$ = merge(
+      defer(() => this.form.controls.contentType.value),
+      this.form.controls.contentType.valueChanges,
+    ).pipe(
+      takeUntil(this.unsubscribe$),
+      map((contentTypeValue: PostContentType) => {
+        switch (contentTypeValue) {
+          case PostContentType.MD: {
+            return 'ace/mode/markdown';
+          }
+          case PostContentType.HTML: {
+            return 'ace/mode/html';
+          }
+          default: {
+            return 'ace/mode/text';
+          }
+        }
+      }),
+    );
+
+    this.form.events.subscribe((e) => {
+      // DEBUG
+      console.log('form event: ', e);
+    });
   }
 
   ngOnDestroy(): void {
