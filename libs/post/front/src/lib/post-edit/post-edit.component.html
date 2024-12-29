@@ -102,7 +102,7 @@
             appUtilsAceEditorTheme="ace/theme/github"
             [appUtilsAceEditorMode]="aceEditorMode$ | async"
           ></div>
-          <textarea formControlName="brief" class="form-control"></textarea>
+          <div>{{ form.value.brief }}</div>
         </app-utils-form-item>
         <app-utils-form-item
           controlLabel="Текст публикации"

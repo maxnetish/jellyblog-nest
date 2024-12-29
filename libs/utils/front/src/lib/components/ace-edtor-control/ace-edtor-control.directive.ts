@@ -9,7 +9,7 @@ import {
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 import { edit as aceEdit } from 'ace-builds';
-import { skip, Subject, takeUntil } from 'rxjs';
+import { debounceTime, map, Subject, takeUntil } from 'rxjs';
 // load resolver of acer plugins: themes, modes
 // builder pull all plugins in app dist directory
 // next, esm loads plugins on demand
@@ -28,10 +28,20 @@ import 'ace-builds/esm-resolver';
 })
 export class AceEditorControlDirective implements ControlValueAccessor, OnDestroy {
   private readonly elementRef = inject(ElementRef);
-  private aceEditor = aceEdit(this.elementRef.nativeElement);
+  private readonly aceEditor = aceEdit(this.elementRef.nativeElement, {
+    useWorker: false,
+  });
 
-  private unsubsribe$ = new Subject<void>();
-  private changeSubject = new Subject<void>();
+  private readonly unsubsribe$ = new Subject<void>();
+  private readonly changeSubject = new Subject<void>();
+
+  private readonly handleAceChange = () => {
+    this.changeSubject.next();
+  }
+
+  private readonly handleAceBlur = () => {
+    this.onTouched();
+  }
 
   /**
    * Тема для ace editor
@@ -47,16 +57,42 @@ export class AceEditorControlDirective implements ControlValueAccessor, OnDestro
    *
    * @default ace/mode/markdown
    *
-   * @see node_modules/ace-builds/webpack-resolver.js
+   * @see node_modules/ace-builds/esm-resolver.js
    */
   appUtilsAceEditorMode = input<string | null>('ace/mode/markdown');
 
   constructor() {
-    this.bindControlValueAccessor();
+
+    this.loadAcePlugins().catch((err) => {
+      console.warn('Cannot load ace editor plugins. ', err);
+    })
+
     this.bindInputSignals();
+
+    this.aceEditor.session.on('change', this.handleAceChange);
+    this.aceEditor.on('blur', this.handleAceBlur);
+
+    this.changeSubject.pipe(
+      debounceTime(1000),
+      map(() => {
+        return this.aceEditor.session.getValue();
+      }),
+      takeUntil(this.unsubsribe$),
+    ).subscribe((editorValue) => {
+      this.onChange(editorValue);
+    });
+  }
+
+  private async loadAcePlugins() {
+    await import('ace-builds/src-noconflict/ext-language_tools');
+    this.aceEditor.setOption('enableBasicAutocompletion', true);
+    this.aceEditor.setOption('enableLiveAutocompletion', true);
   }
 
   writeValue(obj: any): void {
+    // temporaly switch off change hook to prevent emitting
+    // of change when value set progrmmatically with writeValue
+    this.aceEditor.session.off('change', this.handleAceChange);
     if (obj == null) {
       this.aceEditor.session.setValue('');
     } else if (typeof obj === 'string') {
@@ -64,6 +100,7 @@ export class AceEditorControlDirective implements ControlValueAccessor, OnDestro
     } else {
       this.aceEditor.session.setValue(String(obj));
     }
+    this.aceEditor.session.on('change', this.handleAceChange);
   }
 
   registerOnChange(fn: any): void {
@@ -76,34 +113,6 @@ export class AceEditorControlDirective implements ControlValueAccessor, OnDestro
 
   setDisabledState(isDisabled: boolean): void {
     this.aceEditor.setReadOnly(isDisabled);
-  }
-
-  private handleAceSessionChange = () => {
-    this.changeSubject.next();
-  }
-
-  private handleAceBlur = (e: Event) => {
-    this.onTouched();
-  }
-
-  private bindControlValueAccessor() {
-    this.aceEditor.session.on('change', () => {
-      this.changeSubject.next();
-    });
-
-    this.aceEditor.on('blur', () => {
-      this.onTouched();
-    });
-
-    this.changeSubject.pipe(
-      skip(1),
-      takeUntil(this.unsubsribe$),
-    ).subscribe(() => {
-      this.onChange(
-        this.aceEditor.session.getValue(),
-      );
-    });
-
   }
 
   private bindInputSignals() {
@@ -126,5 +135,8 @@ export class AceEditorControlDirective implements ControlValueAccessor, OnDestro
   ngOnDestroy(): void {
     this.unsubsribe$.next();
     this.unsubsribe$.complete();
+    this.aceEditor.session.off('change', this.handleAceChange);
+    this.aceEditor.off('blur', this.handleAceBlur);
+    this.aceEditor.destroy();
   }
 }
