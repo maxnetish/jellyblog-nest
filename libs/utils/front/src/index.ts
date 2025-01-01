@@ -15,3 +15,4 @@ export * from './lib/components/modal-content/modal-content.component';
 export * from './lib/components/collapse-title/collapse-title.component';
 export * from './lib/components/form-item/form-item.component';
 export * from './lib/components/ace-edtor-control/ace-edtor-control.directive';
+export * from './lib/preview.pipe';

@@ -12,10 +12,9 @@ import {
   postStatusMap,
 } from '@jellyblog-nest/utils/common';
 import { AceEditorControlDirective, FormItemComponent, NativeDatePipe } from '@jellyblog-nest/utils/front';
-import { LetDirective, PushPipe } from '@ngrx/component';
+import { LetDirective } from '@ngrx/component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
-  NgItemLabelDirective,
   NgLabelTemplateDirective,
   NgOptionTemplateDirective,
   NgSelectComponent,
@@ -25,6 +24,7 @@ import { TagDto } from '@jellyblog-nest/post/model';
 import { AddTagFn } from '@ng-select/ng-select/lib/ng-select.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
+import { PreviewPipe } from "@jellyblog-nest/utils/front";
 
 
 @Component({
@@ -40,13 +40,12 @@ import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
     NgSelectComponent,
     NgOptionTemplateDirective,
     NgLabelTemplateDirective,
-    NgItemLabelDirective,
     NgTagTemplateDirective,
     NgIcon,
-    PushPipe,
     NgTemplateOutlet,
     AceEditorControlDirective,
-  ],
+    PreviewPipe,
+],
   providers: [
     PostEditStore,
     provideIcons({
@@ -62,6 +61,7 @@ export class PostEditComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   protected readonly store = inject(PostEditStore);
   protected readonly form = createForm();
+  protected readonly PostContentType = PostContentType;
 
   protected readonly permissionOptions = Object.values(PostPermission).map((permissionCode) => {
     return {
