@@ -1,0 +1,18 @@
+import { Injectable } from '@angular/core';
+import Showdown from 'showdown';
+import { ShowdownOptions } from 'showdown';
+
+@Injectable({
+    providedIn: 'root',
+})
+export class ShowdownConfig implements ShowdownOptions {
+  backslashEscapesHTMLTags = true;
+  completeHTMLDocument = false;
+  customizedHeaderId = true;
+  disableForced4SpacesIndentedSublists = false;
+  emoji = true;
+  ellipsis = true;
+  encodeEmails = true;
+  
+
+}

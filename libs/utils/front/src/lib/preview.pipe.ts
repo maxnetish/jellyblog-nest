@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import * as Showdown from 'showdown';
+import Showdown from 'showdown';
+import ShowdownConverter = Showdown.Converter;
 
-export function previewMarkdown(val: string, converter: Showdown.Converter) {
+export function previewMarkdown(val: string, converter: ShowdownConverter) {
   return converter.makeHtml(val);
 }
 
