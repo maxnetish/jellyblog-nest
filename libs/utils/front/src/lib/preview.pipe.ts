@@ -21,6 +21,9 @@ export class PreviewPipe implements PipeTransform {
    * @returns 
    */
   transform(value: string | null | undefined, format: 'none' | 'markdown' = 'none') {
+    
+    // TODO DomSanitizer strips out some attributes (ex. "id")
+    //  apply https://www.npmjs.com/package/@taiga-ui/dompurify or bypass DomSanitizer?
     if (value && format === 'markdown') {
       return previewMarkdown(value, this.converter);
     }
