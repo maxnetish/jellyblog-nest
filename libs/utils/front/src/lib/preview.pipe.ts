@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import Showdown from 'showdown';
 import ShowdownConverter = Showdown.Converter;
+import { showdownConfig } from '@jellyblog-nest/utils/common';
 
 export function previewMarkdown(val: string, converter: ShowdownConverter) {
   return converter.makeHtml(val);
@@ -11,7 +12,7 @@ export function previewMarkdown(val: string, converter: ShowdownConverter) {
   standalone: true,
 })
 export class PreviewPipe implements PipeTransform {
-  private converter = new Showdown.Converter();
+  private readonly converter = new Showdown.Converter(showdownConfig);
 
   /**
    * Make html preview from markdown string 

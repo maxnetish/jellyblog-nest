@@ -1,4 +1,4 @@
-import { SortOrder } from '@jellyblog-nest/utils/common';
+import { SortOrder } from './sort-order';
 
 export interface SortOption<Entity> {
   label: string,
