@@ -96,8 +96,8 @@
           layout="vertical"
         >
           <div>
-            @if (form.value.contentType === PostContentType.MD) {
-              <div class="mb-1 d-flex gap-4">
+            <div class="mb-1 d-flex gap-4">
+              @if (form.value.contentType === PostContentType.MD) {
                 <a
                   href="https://showdownjs.com/docs/markdown-syntax/"
                   target="_blank"
@@ -106,12 +106,12 @@
                     <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
                     Синтаксис markdown
                 </a>
-                <div class="form-check form-check-inline">
-                  <input [formControl]="togglePreviewBrief" class="form-check-input" id="togglePreviewBrief" type="checkbox" />
-                  <label class="form-check-label" for="togglePreviewBrief">Показать предпросмотр</label>
-                </div>
+              }
+              <div class="form-check form-check-inline">
+                <input [formControl]="togglePreviewBrief" class="form-check-input" id="togglePreviewBrief" type="checkbox" />
+                <label class="form-check-label" for="togglePreviewBrief">Показать предпросмотр</label>
               </div>
-            }
+            </div>
             <div class="row row__brief">
               <div class="col h-100">
                 <div
