@@ -13,7 +13,7 @@ import {
 } from '@jellyblog-nest/utils/common';
 import { AceEditorControlDirective, FormItemComponent, NativeDatePipe } from '@jellyblog-nest/utils/front';
 import { LetDirective } from '@ngrx/component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   NgLabelTemplateDirective,
   NgOptionTemplateDirective,
@@ -23,9 +23,8 @@ import {
 import { TagDto } from '@jellyblog-nest/post/model';
 import { AddTagFn } from '@ng-select/ng-select/lib/ng-select.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
-import { PreviewPipe } from "@jellyblog-nest/utils/front";
-
+import { heroArrowTopRightOnSquare, heroCloudArrowUp } from '@ng-icons/heroicons/outline';
+import { PreviewPipe } from '@jellyblog-nest/utils/front';
 
 @Component({
   selector: 'app-post-edit',
@@ -50,6 +49,7 @@ import { PreviewPipe } from "@jellyblog-nest/utils/front";
     PostEditStore,
     provideIcons({
       heroCloudArrowUp,
+      heroArrowTopRightOnSquare,
     }),
   ],
   templateUrl: './post-edit.component.html',
@@ -62,6 +62,7 @@ export class PostEditComponent implements OnDestroy {
   protected readonly store = inject(PostEditStore);
   protected readonly form = createForm();
   protected readonly PostContentType = PostContentType;
+  protected readonly togglePreviewBrief = new FormControl(false);
 
   protected readonly permissionOptions = Object.values(PostPermission).map((permissionCode) => {
     return {

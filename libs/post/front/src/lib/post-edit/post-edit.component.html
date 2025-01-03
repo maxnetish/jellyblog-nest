@@ -96,6 +96,22 @@
           layout="vertical"
         >
           <div>
+            @if (form.value.contentType === PostContentType.MD) {
+              <div class="mb-1 d-flex gap-4">
+                <a
+                  href="https://showdownjs.com/docs/markdown-syntax/"
+                  target="_blank"
+                  rel="nofollow noopener"
+                >
+                    <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
+                    Синтаксис markdown
+                </a>
+                <div class="form-check form-check-inline">
+                  <input [formControl]="togglePreviewBrief" class="form-check-input" id="togglePreviewBrief" type="checkbox" />
+                  <label class="form-check-label" for="togglePreviewBrief">Показать предпросмотр</label>
+                </div>
+              </div>
+            }
             <div class="row row__brief">
               <div class="col h-100">
                 <div
@@ -106,7 +122,8 @@
                   [appUtilsAceEditorMode]="aceEditorMode$ | async"
                 ></div>
               </div>
-              <div class="col h-100">
+              @if (togglePreviewBrief.value) {
+                <div class="col h-100">
                 <div
                   class="preview form-control overflow-y-auto h-100"
                   [innerHTML]="
@@ -117,7 +134,8 @@
                             : 'none')      
                   "
                 ></div>
-              </div>
+                </div>
+              }
             </div>
           </div>
         </app-utils-form-item>
