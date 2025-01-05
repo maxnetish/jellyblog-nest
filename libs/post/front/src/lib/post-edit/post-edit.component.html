@@ -144,7 +144,49 @@
           controlValidationName="content"
           layout="vertical"
         >
-          <textarea formControlName="content" class="form-control"></textarea>
+          <div>
+            <div class="mb-1 d-flex gap-4">
+              @if (form.value.contentType === PostContentType.MD) {
+                <a
+                  href="https://showdownjs.com/docs/markdown-syntax/"
+                  target="_blank"
+                  rel="nofollow noopener"
+                >
+                    <ng-icon name="heroArrowTopRightOnSquare"></ng-icon>
+                    Синтаксис markdown
+                </a>
+              }
+              <div class="form-check form-check-inline">
+                <input [formControl]="togglePreviewContent" class="form-check-input" id="togglePreviewContent" type="checkbox" />
+                <label class="form-check-label" for="togglePreviewContent">Показать предпросмотр</label>
+              </div>
+            </div>
+            <div class="row row__content">
+              <div class="col h-100">
+                <div
+                  class="ace-control form-control h-100"
+                  appUtilsAceEditorControl
+                  formControlName="content"
+                  appUtilsAceEditorTheme="ace/theme/github"
+                  [appUtilsAceEditorMode]="aceEditorMode$ | async"
+                ></div>
+              </div>
+              @if (togglePreviewContent.value) {
+                <div class="col h-100">
+                <div
+                  class="preview form-control overflow-y-auto h-100"
+                  [innerHTML]="
+                    form.value.content
+                      | preview
+                        : (form.value.contentType === PostContentType.MD
+                            ? 'markdown'
+                            : 'none')      
+                  "
+                ></div>
+                </div>
+              }
+            </div>
+          </div>
         </app-utils-form-item>
         <app-utils-form-item
           controlLabel="Метки"

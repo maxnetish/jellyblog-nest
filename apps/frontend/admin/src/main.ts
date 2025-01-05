@@ -17,7 +17,7 @@ import {
   SettingsEffects,
   SettingsReducer,
 } from '@jellyblog-nest/settings/front';
-import { NgDompurifySanitizer } from '@taiga-ui/dompurify';
+import { DOMPURIFY_CONFIG, NgDompurifySanitizer } from '@taiga-ui/dompurify';
 
 if (environment.production) {
   enableProdMode();
@@ -55,6 +55,10 @@ bootstrapApplication(AppComponent, {
       // We use dompurify sanitizer instead of angular sanitizer
       provide: Sanitizer,
       useClass: NgDompurifySanitizer,
+    },
+    {
+      provide: DOMPURIFY_CONFIG,
+      useValue: {ADD_ATTR: ['target']},
     },
   ],
 })

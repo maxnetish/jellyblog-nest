@@ -63,6 +63,7 @@ export class PostEditComponent implements OnDestroy {
   protected readonly form = createForm();
   protected readonly PostContentType = PostContentType;
   protected readonly togglePreviewBrief = new FormControl(false);
+  protected readonly togglePreviewContent = new FormControl(false);
 
   protected readonly permissionOptions = Object.values(PostPermission).map((permissionCode) => {
     return {
