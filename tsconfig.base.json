@@ -34,7 +34,8 @@
       "@jellyblog-nest/utils/front": ["libs/utils/front/src/index.ts"],
       "@jellyblog-nest/utils/front-file-uploader": [
         "libs/utils/front-file-uploader/src/index.ts"
-      ]
+      ],
+      "@jellyblog-nest/utils/ui-image-editor": ["libs/utils/ui-image-editor/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

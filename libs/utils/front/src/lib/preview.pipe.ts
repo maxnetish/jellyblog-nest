@@ -3,6 +3,8 @@ import Showdown from 'showdown';
 import ShowdownConverter = Showdown.Converter;
 import { showdownConfig } from '@jellyblog-nest/utils/common';
 
+// TODO Move to common lib ?
+//  May be switch to marked or micromark ?
 export function previewMarkdown(val: string, converter: ShowdownConverter) {
   return converter.makeHtml(val);
 }

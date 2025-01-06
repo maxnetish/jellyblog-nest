@@ -14,6 +14,7 @@ export function createForm() {
       brief: new ClassValidatorFormControl<string>(null),
       content: new ClassValidatorFormControl<string>(null),
       tags: new ClassValidatorFormControl<TagDto[]>([]),
+      titleImg: new ClassValidatorFormControl<string>(null),
     },
   );
 }
@@ -31,6 +32,7 @@ export function applyDtoToForm(form: PostEditForm, dto: PostDto | null) {
     brief: dto.brief,
     content: dto.content,
     tags: dto.tags || [],
+    titleImg: dto.titleImg,
   });
 
   form.markAsPristine();
@@ -48,5 +50,6 @@ export function formToDto(form: PostEditForm, initialDto: PostDto): PostUpdateRe
     brief: formValue.brief,
     content: formValue.content,
     tags: formValue.tags || [],
+    titleImg: formValue.titleImg,
   };
 }
