@@ -4,17 +4,22 @@ import {
   computed,
   effect,
   ElementRef,
+  inject,
   input,
+  OnDestroy,
+  OnInit,
   output,
   signal,
   ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { isFileAPISupported } from './utils/is-file-api-supported';
 import { loadImageFile } from './utils/load-image-file';
 import { loadImageURL } from './utils/load-image-url';
 import { drawRoundedRect } from './utils/draw-rounded-rect';
 import { drawGrid } from './utils/draw-grid';
+import { isPassiveSupported } from './utils/is-passive-supported';
+import { isTouchDevice } from './utils/is-touch-device';
 
 export type BorderType = [number, number] | number;
 
@@ -39,14 +44,24 @@ export interface Position {
   styleUrl: './ui-image-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UiImageEditorComponent {
+export class UiImageEditorComponent implements OnInit, OnDestroy {
   private readonly defaultEmptyImage: ImageState = {
     x: 0.5,
     y: 0.5,
   };
 
   @ViewChild('canvasRef', { static: true })
-  private readonly canvasRef: ElementRef<HTMLCanvasElement>;
+  private canvasRef: ElementRef<HTMLCanvasElement> | null = null;
+
+  /**
+   * OnInit done, viewchild must be ready
+   */
+  private componentInitDone = signal(false);
+
+  private readonly documentRef = inject(DOCUMENT);
+  private get windowRef() {
+    return this.documentRef?.defaultView;
+  }
 
   // input and output "props" with defaults
   readonly width = input<number>(200);
@@ -65,8 +80,8 @@ export class UiImageEditorComponent {
   readonly onImageReady = output<void>();
   readonly onImageChange = output<void>();
   readonly onMouseUp = output<void>();
-  readonly onMouseMove = output<{ e: TouchEvent | MouseEvent }>();
-  readonly onPositionChange = output<{ position: Position }>();
+  readonly onMouseMove = output<TouchEvent | MouseEvent>();
+  readonly onPositionChange = output<Position>();
   readonly color = input<[number, number, number, number?]>([0, 0, 0, 0.5]);
   readonly backgroundColor = input<string>();
   readonly disableBoundaryChecks = input<boolean>(false);
@@ -83,11 +98,15 @@ export class UiImageEditorComponent {
   private readonly stateImage = signal(this.defaultEmptyImage);
 
   constructor() {
-    const loadImageEffectRef = effect((cleanUp) => {
+    // load image
+    effect(() => {
+      // after OnInit
+      // to use viewchildren
+      if (!this.componentInitDone()) {
+        return;
+      }
+
       const image = this.image();
-      const width = this.width();
-      const height = this.height();
-      const backgroundColor = this.backgroundColor();
 
       if (image) {
         this.loadImage(image);
@@ -95,13 +114,114 @@ export class UiImageEditorComponent {
         this.clearImage();
       }
     });
+
+    // repaint canvas
+    effect(() => {
+      // after OnInit
+      // to use viewchildren
+      if (!this.componentInitDone()) {
+        return;
+      }
+
+      const context = this.getContext();
+      context.clearRect(0, 0, this.getCanvas().width, this.getCanvas().height);
+      this.paint(context);
+      this.paintImage(context, this.stateImage());
+    });
+
+    effect(() => {
+      // after OnInit
+      // to use viewchildren
+      if (!this.componentInitDone()) {
+        return;
+      }
+
+      // from react-avatar-editor
+      // когда дергать onImageChange - наверно не надо или как то по другому придумать
+      // if (
+      //   prevProps.image !== this.props.image ||
+      //   prevProps.width !== this.props.width ||
+      //   prevProps.height !== this.props.height ||
+      //   prevProps.position !== this.props.position ||
+      //   prevProps.scale !== this.props.scale ||
+      //   prevProps.rotate !== this.props.rotate ||
+      //   prevState.my !== this.state.my ||
+      //   prevState.mx !== this.state.mx ||
+      //   prevState.image.x !== this.state.image.x ||
+      //   prevState.image.y !== this.state.image.y
+      // ) {
+      //   this.props.onImageChange?.()
+      // }
+    });
+
+    const optionsHandlerPassive = isPassiveSupported(this.windowRef)
+      ? { passive: false }
+      : false;
+
+    if (this.documentRef) {
+      this.documentRef.addEventListener(
+        'mousemove',
+        this.handleMouseMove,
+        optionsHandlerPassive
+      );
+      this.documentRef.addEventListener(
+        'mouseup',
+        this.handleMouseUp,
+        optionsHandlerPassive
+      );
+
+      if (isTouchDevice(this.windowRef)) {
+        this.documentRef.addEventListener(
+          'touchmove',
+          this.handleMouseMove,
+          optionsHandlerPassive
+        );
+        this.documentRef.addEventListener(
+          'touchend',
+          this.handleMouseUp,
+          optionsHandlerPassive
+        );
+      }
+    }
+  }
+
+  ngOnInit(): void {
+    this.componentInitDone.set(true);
+  }
+
+  ngOnDestroy(): void {
+    if (this.documentRef) {
+      this.documentRef.removeEventListener(
+        'mousemove',
+        this.handleMouseMove,
+        false
+      );
+      this.documentRef.removeEventListener(
+        'mouseup',
+        this.handleMouseUp,
+        false
+      );
+
+      if (isTouchDevice(this.windowRef)) {
+        this.documentRef.removeEventListener(
+          'touchmove',
+          this.handleMouseMove,
+          false
+        );
+        this.documentRef.removeEventListener(
+          'touchend',
+          this.handleMouseUp,
+          false
+        );
+      }
+    }
   }
 
   protected readonly pixelRatio = computed(() => {
     if (this.disableHiDPIScaling()) {
       return 1;
     }
-    return window?.devicePixelRatio || 1;
+    return this.windowRef?.devicePixelRatio || 1;
   });
 
   private readonly isVertical = computed(() => {
@@ -443,5 +563,73 @@ export class UiImageEditorComponent {
     const imageAspect = stateImage.height / stateImage.width;
 
     return Math.min(1, canvasAspect / imageAspect);
+  }
+
+  private handleMouseMove(e: MouseEvent | TouchEvent) {
+    if (!this.stateDrag()) {
+      return;
+    }
+
+    e.preventDefault(); // stop scrolling on iOS Safari
+
+    const mousePositionX =
+      'targetTouches' in e ? e.targetTouches[0].pageX : e.clientX;
+    const mousePositionY =
+      'targetTouches' in e ? e.targetTouches[0].pageY : e.clientY;
+
+    this.stateMx.set(mousePositionX);
+    this.stateMy.set(mousePositionY);
+
+    let rotate = this.rotate();
+    rotate %= 360;
+    rotate = rotate < 0 ? rotate + 360 : rotate;
+
+    const stateMx = this.stateMx();
+    const stateMy = this.stateMy();
+    const stateImage = this.stateImage();
+    if (stateMx && stateMy && stateImage?.width && stateImage?.height) {
+      const mx = stateMx - mousePositionX;
+      const my = stateMy - mousePositionY;
+
+      const width = stateImage.width * this.scale();
+      const height = stateImage.height * this.scale();
+
+      let { x: lastX, y: lastY } = this.getCroppingRect();
+
+      lastX *= width;
+      lastY *= height;
+
+      // helpers to calculate vectors
+      const toRadians = (degree: number) => degree * (Math.PI / 180);
+      const cos = Math.cos(toRadians(rotate));
+      const sin = Math.sin(toRadians(rotate));
+
+      const x = lastX + mx * cos + my * sin;
+      const y = lastY + -mx * sin + my * cos;
+
+      const relativeWidth = (1 / this.scale()) * this.getXScale();
+      const relativeHeight = (1 / this.scale()) * this.getYScale();
+
+      const position = {
+        x: x / width + relativeWidth / 2,
+        y: y / height + relativeHeight / 2,
+      };
+
+      this.onPositionChange.emit(position);
+
+      this.stateImage.set({
+        ...this.stateImage(),
+        ...position,
+      });
+    }
+
+    this.onMouseMove.emit(e);
+  }
+
+  private handleMouseUp() {
+    if (this.stateDrag()) {
+      this.stateDrag.set(false);
+      this.onMouseUp.emit();
+    }
   }
 }
