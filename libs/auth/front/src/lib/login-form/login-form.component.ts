@@ -23,7 +23,6 @@ type LoginFormGroup = FormGroup<{
   styleUrls: ['./login-form.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     ValidationMessageComponent,
@@ -46,7 +45,7 @@ export class LoginFormComponent {
   }
 
   protected async submitForm() {
-    if(this.form.invalid) {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }

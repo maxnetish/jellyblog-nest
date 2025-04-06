@@ -9,26 +9,25 @@ import { UserWidgetComponent } from '../user-widget/user-widget.component';
 import { GlobalToastComponent } from '../global-toast/global-toast.component';
 
 @Component({
-  selector: 'adm-layout',
-  templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NgIconComponent,
-    NgbCollapse,
-    RouterLink,
-    RouterLinkActive,
-    UserWidgetComponent,
-    RouterOutlet,
-    GlobalToastComponent,
-  ],
-  providers: [
-    provideIcons({
-      heroBars3,
-    }),
-  ],
+    selector: 'adm-layout',
+    templateUrl: './layout.component.html',
+    styleUrls: ['./layout.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        NgIconComponent,
+        NgbCollapse,
+        RouterLink,
+        RouterLinkActive,
+        UserWidgetComponent,
+        RouterOutlet,
+        GlobalToastComponent,
+    ],
+    providers: [
+        provideIcons({
+            heroBars3,
+        }),
+    ]
 })
 export class LayoutComponent implements OnInit {
   private readonly store = inject(Store);

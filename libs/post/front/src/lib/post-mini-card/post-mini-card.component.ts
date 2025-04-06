@@ -8,23 +8,22 @@ import { heroArrowTopRightOnSquare, heroPencil, heroPencilSquare } from '@ng-ico
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-post-mini-card',
-  standalone: true,
-  imports: [
-    NativeDatePipe,
-    NgIcon,
-    NgIconComponent,
-    RouterLink,
-  ],
-  providers: [
-    provideIcons({
-      heroPencil,
-      heroArrowTopRightOnSquare,
-    }),
-  ],
-  templateUrl: './post-mini-card.component.html',
-  styleUrl: './post-mini-card.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-post-mini-card',
+    imports: [
+        NativeDatePipe,
+        NgIcon,
+        NgIconComponent,
+        RouterLink,
+    ],
+    providers: [
+        provideIcons({
+            heroPencil,
+            heroArrowTopRightOnSquare,
+        }),
+    ],
+    templateUrl: './post-mini-card.component.html',
+    styleUrl: './post-mini-card.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PostMiniCardComponent {
   readonly post = input<PostShortDto>();

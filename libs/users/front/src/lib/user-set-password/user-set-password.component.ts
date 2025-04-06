@@ -33,18 +33,17 @@ function createForm() {
 }
 
 @Component({
-  templateUrl: './user-set-password.component.html',
-  styleUrls: ['./user-set-password.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    ModalContentComponent,
-    AsyncPipe,
-    ValidationMessageComponent,
-    FormItemComponent,
-  ],
+    templateUrl: './user-set-password.component.html',
+    styleUrls: ['./user-set-password.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        ReactiveFormsModule,
+        ModalContentComponent,
+        AsyncPipe,
+        ValidationMessageComponent,
+        FormItemComponent,
+    ]
 })
 export class UserSetPasswordComponent {
 

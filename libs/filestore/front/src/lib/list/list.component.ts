@@ -17,34 +17,33 @@ import { UploadFormComponent } from './upload-form/upload-form.component';
 import { ListItemComponent } from './list-item/list-item.component';
 
 @Component({
-  selector: 'mg-filestore-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    NgbDropdown,
-    NgIconComponent,
-    PushPipe,
-    NgbDropdownMenu,
-    NgbDropdownItem,
-    CollapseTitleComponent,
-    NgbCollapse,
-    UploadFormComponent,
-    LetDirective,
-    ListItemComponent,
-    NgbDropdownToggle,
-  ],
-  providers: [
-    provideIcons({
-      heroBarsArrowDown,
-      heroBarsArrowUp,
-      heroArrowSmallUp,
-      heroFolder,
-    }),
-  ],
+    selector: 'mg-filestore-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        AsyncPipe,
+        NgbDropdown,
+        NgIconComponent,
+        PushPipe,
+        NgbDropdownMenu,
+        NgbDropdownItem,
+        CollapseTitleComponent,
+        NgbCollapse,
+        UploadFormComponent,
+        LetDirective,
+        ListItemComponent,
+        NgbDropdownToggle,
+    ],
+    providers: [
+        provideIcons({
+            heroBarsArrowDown,
+            heroBarsArrowUp,
+            heroArrowSmallUp,
+            heroFolder,
+        }),
+    ]
 })
 export class FilestoreListComponent implements OnInit {
 

@@ -34,19 +34,18 @@ function createForm() {
 }
 
 @Component({
-  selector: 'app-users-user-update',
-  templateUrl: './user-update.component.html',
-  styleUrls: ['./user-update.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    ModalContentComponent,
-    NgSelectComponent,
-    ValidationMessageComponent,
-    FormItemComponent,
-  ],
+    selector: 'app-users-user-update',
+    templateUrl: './user-update.component.html',
+    styleUrls: ['./user-update.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        ReactiveFormsModule,
+        ModalContentComponent,
+        NgSelectComponent,
+        ValidationMessageComponent,
+        FormItemComponent,
+    ]
 })
 export class UserUpdateComponent {
 

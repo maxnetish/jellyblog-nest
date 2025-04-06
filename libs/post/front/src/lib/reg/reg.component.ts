@@ -5,7 +5,6 @@ import { PostMiniCardComponent } from '../post-mini-card/post-mini-card.componen
 
 @Component({
   selector: 'app-reg',
-  standalone: true,
   imports: [CommonModule, PostMiniCardComponent],
   templateUrl: './reg.component.html',
   styleUrl: './reg.component.scss',

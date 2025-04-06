@@ -7,19 +7,18 @@ import { AsyncPipe } from '@angular/common';
 import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'adm-user-widget',
-  templateUrl: './user-widget.component.html',
-  styleUrls: ['./user-widget.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    NgbDropdown,
-    NgbDropdownToggle,
-    NgbDropdownMenu,
-    NgbDropdownItem,
-  ],
+    selector: 'adm-user-widget',
+    templateUrl: './user-widget.component.html',
+    styleUrls: ['./user-widget.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        AsyncPipe,
+        NgbDropdown,
+        NgbDropdownToggle,
+        NgbDropdownMenu,
+        NgbDropdownItem,
+    ]
 })
 export class UserWidgetComponent {
 

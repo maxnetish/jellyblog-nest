@@ -27,34 +27,33 @@ import { heroArrowTopRightOnSquare, heroCloudArrowUp } from '@ng-icons/heroicons
 import { PreviewPipe } from '@jellyblog-nest/utils/front';
 
 @Component({
-  selector: 'app-post-edit',
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    JsonPipe,
-    NativeDatePipe,
-    LetDirective,
-    ReactiveFormsModule,
-    FormItemComponent,
-    NgSelectComponent,
-    NgOptionTemplateDirective,
-    NgLabelTemplateDirective,
-    NgTagTemplateDirective,
-    NgIcon,
-    NgTemplateOutlet,
-    AceEditorControlDirective,
-    PreviewPipe,
-],
-  providers: [
-    PostEditStore,
-    provideIcons({
-      heroCloudArrowUp,
-      heroArrowTopRightOnSquare,
-    }),
-  ],
-  templateUrl: './post-edit.component.html',
-  styleUrl: './post-edit.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-post-edit',
+    imports: [
+        AsyncPipe,
+        JsonPipe,
+        NativeDatePipe,
+        LetDirective,
+        ReactiveFormsModule,
+        FormItemComponent,
+        NgSelectComponent,
+        NgOptionTemplateDirective,
+        NgLabelTemplateDirective,
+        NgTagTemplateDirective,
+        NgIcon,
+        NgTemplateOutlet,
+        AceEditorControlDirective,
+        PreviewPipe,
+    ],
+    providers: [
+        PostEditStore,
+        provideIcons({
+            heroCloudArrowUp,
+            heroArrowTopRightOnSquare,
+        }),
+    ],
+    templateUrl: './post-edit.component.html',
+    styleUrl: './post-edit.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PostEditComponent implements OnDestroy {
   private readonly unsubscribe$ = new Subject();

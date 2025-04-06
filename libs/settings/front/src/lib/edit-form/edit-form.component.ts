@@ -17,20 +17,19 @@ import { LetDirective } from '@ngrx/component';
 import { applyDto, createForm } from './edit-form.form';
 
 @Component({
-  selector: 'app-settings-edit-form',
-  templateUrl: './edit-form.component.html',
-  styleUrls: ['./edit-form.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CollapseTitleComponent,
-    NgbCollapse,
-    CheckFileStoreComponent,
-    ReactiveFormsModule,
-    LetDirective,
-    FormItemComponent,
-  ],
+    selector: 'app-settings-edit-form',
+    templateUrl: './edit-form.component.html',
+    styleUrls: ['./edit-form.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CollapseTitleComponent,
+        NgbCollapse,
+        CheckFileStoreComponent,
+        ReactiveFormsModule,
+        LetDirective,
+        FormItemComponent,
+    ]
 })
 export class EditFormComponent {
 

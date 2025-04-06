@@ -4,15 +4,14 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-utils-form-item',
-  standalone: true,
-  imports: [
-    ValidationMessageComponent,
-    NgTemplateOutlet,
-  ],
-  templateUrl: './form-item.component.html',
-  styleUrl: './form-item.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-utils-form-item',
+    imports: [
+        ValidationMessageComponent,
+        NgTemplateOutlet,
+    ],
+    templateUrl: './form-item.component.html',
+    styleUrl: './form-item.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormItemComponent {
 

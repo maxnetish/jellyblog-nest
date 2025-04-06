@@ -20,24 +20,23 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
 
 @Component({
-  selector: 'app-settings-check-file-store',
-  templateUrl: './check-file-store.component.html',
-  styleUrls: ['./check-file-store.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    FileUploaderComponent,
-    S3FileUrlPipe,
-    AppendResponseContentDispositionPipe,
-    NgIconComponent,
-    HumanFileSizePipe,
-  ],
-  providers: [
-    provideIcons({
-      heroCloudArrowUp,
-    }),
-  ],
+    selector: 'app-settings-check-file-store',
+    templateUrl: './check-file-store.component.html',
+    styleUrls: ['./check-file-store.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        FileUploaderComponent,
+        S3FileUrlPipe,
+        AppendResponseContentDispositionPipe,
+        NgIconComponent,
+        HumanFileSizePipe,
+    ],
+    providers: [
+        provideIcons({
+            heroCloudArrowUp,
+        }),
+    ]
 })
 export class CheckFileStoreComponent {
 

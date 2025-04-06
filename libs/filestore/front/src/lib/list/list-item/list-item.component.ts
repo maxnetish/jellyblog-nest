@@ -51,38 +51,37 @@ function replaceOnlyLastKeySegment(inputKey: string, replace: string): string {
 }
 
 @Component({
-  selector: 'mg-filestore-list-item',
-  templateUrl: './list-item.component.html',
-  styleUrls: ['./list-item.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    FilestoreListItemStore,
-    provideIcons({
-      heroXMark,
-      heroClipboard,
-      heroGlobeAlt,
-      heroCheck,
-      heroCloudArrowDown,
-      heroArrowTopRightOnSquare,
-      heroPencil,
-    }),
-  ],
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    PushPipe,
-    CollapseTitleComponent,
-    HumanFileSizePipe,
-    NativeDatePipe,
-    S3FileUrlPipe,
-    AppendResponseContentDispositionPipe,
-    LetDirective,
-    NgIconComponent,
-    ValidationMessageComponent,
-    NgbCollapse,
-    NgOptimizedImage,
-  ],
+    selector: 'mg-filestore-list-item',
+    templateUrl: './list-item.component.html',
+    styleUrls: ['./list-item.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        FilestoreListItemStore,
+        provideIcons({
+            heroXMark,
+            heroClipboard,
+            heroGlobeAlt,
+            heroCheck,
+            heroCloudArrowDown,
+            heroArrowTopRightOnSquare,
+            heroPencil,
+        }),
+    ],
+    imports: [
+        ReactiveFormsModule,
+        PushPipe,
+        CollapseTitleComponent,
+        HumanFileSizePipe,
+        NativeDatePipe,
+        S3FileUrlPipe,
+        AppendResponseContentDispositionPipe,
+        LetDirective,
+        NgIconComponent,
+        ValidationMessageComponent,
+        NgbCollapse,
+        NgOptimizedImage,
+    ]
 })
 export class ListItemComponent implements OnDestroy {
 

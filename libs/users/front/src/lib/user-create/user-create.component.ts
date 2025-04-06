@@ -28,19 +28,18 @@ function createForm() {
 }
 
 @Component({
-  selector: 'app-users-user-edit',
-  templateUrl: './user-create.component.html',
-  styleUrls: ['./user-create.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    ModalContentComponent,
-    ValidationMessageComponent,
-    NgSelectComponent,
-    FormItemComponent,
-  ],
+    selector: 'app-users-user-edit',
+    templateUrl: './user-create.component.html',
+    styleUrls: ['./user-create.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        ReactiveFormsModule,
+        ModalContentComponent,
+        ValidationMessageComponent,
+        NgSelectComponent,
+        FormItemComponent,
+    ]
 })
 export class UserCreateComponent {
 

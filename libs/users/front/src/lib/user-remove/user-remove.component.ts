@@ -31,18 +31,17 @@ function createForm() {
 }
 
 @Component({
-  selector: 'app-users-user-remove',
-  templateUrl: './user-remove.component.html',
-  styleUrls: ['./user-remove.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    ModalContentComponent,
-    ValidationMessageComponent,
-    ReactiveFormsModule,
-    FormItemComponent,
-  ],
+    selector: 'app-users-user-remove',
+    templateUrl: './user-remove.component.html',
+    styleUrls: ['./user-remove.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        ModalContentComponent,
+        ValidationMessageComponent,
+        ReactiveFormsModule,
+        FormItemComponent,
+    ]
 })
 export class UserRemoveComponent {
 

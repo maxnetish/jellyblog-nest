@@ -28,22 +28,21 @@ import { validationMessageDict } from './validation-message-dict';
 import { PushPipe } from '@ngrx/component';
 
 @Component({
-  selector: 'app-utils-validation-message',
-  templateUrl: './validation-message.component.html',
-  styleUrls: ['./validation-message.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      multi: true,
-      useExisting: forwardRef(() => ValidationMessageComponent),
-      provide: NG_VALUE_ACCESSOR,
-    },
-  ],
-  standalone: true,
-  imports: [
-    PushPipe,
-  ],
+    selector: 'app-utils-validation-message',
+    templateUrl: './validation-message.component.html',
+    styleUrls: ['./validation-message.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            multi: true,
+            useExisting: forwardRef(() => ValidationMessageComponent),
+            provide: NG_VALUE_ACCESSOR,
+        },
+    ],
+    imports: [
+        PushPipe,
+    ]
 })
 export class ValidationMessageComponent implements OnDestroy, ControlValueAccessor {
 

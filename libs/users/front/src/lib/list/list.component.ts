@@ -15,29 +15,28 @@ import { heroBars3, heroLockClosed, heroUserMinus, heroUsers } from '@ng-icons/h
 import { heroUserPlusSolid } from '@ng-icons/heroicons/solid';
 
 @Component({
-  selector: 'app-users-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    NgIconComponent,
-    NgbPagination,
-    NgbDropdown,
-    NgbDropdownToggle,
-    NgbDropdownMenu,
-    NgbDropdownItem,
-  ],
-  providers: [
-    provideIcons({
-      heroBars3,
-      heroUsers,
-      heroLockClosed,
-      heroUserMinus,
-      heroUserPlusSolid,
-    }),
-  ],
+    selector: 'app-users-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        NgIconComponent,
+        NgbPagination,
+        NgbDropdown,
+        NgbDropdownToggle,
+        NgbDropdownMenu,
+        NgbDropdownItem,
+    ],
+    providers: [
+        provideIcons({
+            heroBars3,
+            heroUsers,
+            heroLockClosed,
+            heroUserMinus,
+            heroUserPlusSolid,
+        }),
+    ]
 })
 export class UserListComponent {
 

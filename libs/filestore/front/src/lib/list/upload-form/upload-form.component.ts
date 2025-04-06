@@ -9,24 +9,23 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
 
 @Component({
-  selector: 'mg-filestore-upload-form',
-  templateUrl: './upload-form.component.html',
-  styleUrls: ['./upload-form.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  providers: [
-    UploadFormStore,
-    provideIcons({
-      heroCloudArrowUp,
-    }),
-  ],
-  imports: [
-    FileUploaderComponent,
-    PushPipe,
-    NgIconComponent,
-    ReactiveFormsModule,
-  ],
+    selector: 'mg-filestore-upload-form',
+    templateUrl: './upload-form.component.html',
+    styleUrls: ['./upload-form.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        UploadFormStore,
+        provideIcons({
+            heroCloudArrowUp,
+        }),
+    ],
+    imports: [
+        FileUploaderComponent,
+        PushPipe,
+        NgIconComponent,
+        ReactiveFormsModule,
+    ]
 })
 export class UploadFormComponent implements OnInit, OnDestroy {
 
