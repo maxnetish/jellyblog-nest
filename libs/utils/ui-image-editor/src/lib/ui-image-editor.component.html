@@ -1,9 +1,9 @@
-<p>ui-image-editor works!</p>
 <canvas
   [width]="dimensionCanvasWidth() * pixelRatio()"
   [height]="dimensionCanvasHeight() * pixelRatio()"
-  (mousedown)="handleMouseDown($event)"
-  (touchstart)="handleTouchStart()"
   [ngStyle]="computedStyle()"
   #canvasRef
 ></canvas>
+
+<!--(mousedown)="handleMouseDown($event)"-->
+<!--(touchstart)="handleTouchStart()"-->

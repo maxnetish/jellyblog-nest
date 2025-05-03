@@ -7,7 +7,7 @@ export function drawGrid (
   y: number,
   width: number,
   height: number,
-  gridColor: string,
+  gridColor: CanvasFillStrokeStyles['fillStyle'],
 ) {
   context.fillStyle = gridColor
   const thirdsX = width / 3

@@ -9,6 +9,7 @@
     "test": "nx test",
     "start:back": "nx run backend:serve",
     "start:admin": "nx run frontend-admin:serve",
+    "start:playground": "nx run playground:serve",
     "start-all": "nx run-many --target=serve --all",
     "build-all": "nx run-many --target=build --all",
     "build-all:prod": "nx run-many --target=build --configuration=production --projects=frontend-admin,backend"
@@ -36,6 +37,7 @@
     "@nx/js": "20.7.1",
     "@nx/nest": "20.7.1",
     "@nx/node": "20.7.1",
+    "@nx/web": "20.7.1",
     "@nx/workspace": "20.7.1",
     "@schematics/angular": "19.2.6",
     "@swc-node/register": "~1.9.1",
