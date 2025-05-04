@@ -80,31 +80,45 @@
   </div>
 </div>
 
-<div class="image-editor-box">
-  <mg-ui-image-editor
-    [image]="chosenImageFile()"
-    (imageChange)="editorEventHandle($event, 'imageChange')"
-    (imageReady)="editorEventHandle($event, 'imageReady')"
-    (loadFailure)="editorEventHandle($event, 'loadFailure')"
-    (loadSuccess)="editorEventHandle($event, 'loadSuccess')"
-    (mouseMove)="editorEventHandle($event, 'mouseMove')"
-    (mouseUp)="editorEventHandle($event, 'mouseUp')"
-    (positionChange)="editorEventHandle($event, 'positionChange')"
+<div class="images-row">
+  <div class="image-box">
+    <mg-ui-image-editor
+      [image]="chosenImageFile()"
+      (imageReady)="editorEventHandle($event, 'imageReady')"
+      (loadFailure)="editorEventHandle($event, 'loadFailure')"
+      (loadSuccess)="editorEventHandle($event, 'loadSuccess')"
 
-    [imageFillStyle]="imageFillStyle()"
-    [backgroundTransparency]="backgroundTransparency()"
-    [borderSize]="borderSize()"
-    [borderStrokeStyle]="borderStrokeStyle()"
-    [disableBoundaryChecks]="disableBoundaryChecks()"
-    [disableCanvasRotation]="disableCanvasRotation()"
-    [disableHiDPIScaling]="disableHiDPIScaling()"
-    [gridFillStyle]="gridFillStyle()"
-    [showGrid]="showGrid()"
-    [width]="width()"
-    [height]="height()"
-    [rotate]="rotate()"
-    [scale]="scale()"
-    [borderRadius]="borderRadius()"
+      [imageFillStyle]="imageFillStyle()"
+      [backgroundTransparency]="backgroundTransparency()"
+      [borderSize]="borderSize()"
+      [borderStrokeStyle]="borderStrokeStyle()"
+      [disableBoundaryChecks]="disableBoundaryChecks()"
+      [disableCanvasRotation]="disableCanvasRotation()"
+      [disableHiDPIScaling]="disableHiDPIScaling()"
+      [gridFillStyle]="gridFillStyle()"
+      [showGrid]="showGrid()"
+      [width]="width()"
+      [height]="height()"
+      [rotate]="rotate()"
+      [scale]="scale()"
+      [borderRadius]="borderRadius()"
 
-  ></mg-ui-image-editor>
+      [(position)]="position"
+
+      #editorComponentRef
+    ></mg-ui-image-editor>
+  </div>
+  <div class="result-buttons">
+    <button type="button" (click)="fetchResultButtonClick()">Result&nbsp;&#10142;</button>
+    <button type="button" (click)="fetchResultScaledButtonClick()">Result scaled&nbsp;&#10142;</button>
+  </div>
+  @if (resultImageUrl()) {
+    <div class="image-box">
+      <img [ngSrc]="resultImageUrl()"/>
+    </div>
+  }
+</div>
+
+<div>
+  <span>Position: {{ position() | json }}</span>
 </div>

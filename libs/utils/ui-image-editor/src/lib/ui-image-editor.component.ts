@@ -15,34 +15,16 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { isFileAPISupported } from './utils/is-file-api-supported';
 import { loadImageFile } from './utils/load-image-file';
 import { loadImageURL } from './utils/load-image-url';
-import { drawRoundedRect } from './utils/draw-rounded-rect';
-import { drawGrid } from './utils/draw-grid';
-import { isTouchDevice } from './utils/is-touch-device';
 import {
-  defer, filter,
-  fromEvent,
-  map,
-  merge,
-  pairwise,
-  race,
   Subject,
-  switchMap,
-  take,
   takeUntil,
-  tap,
-  throttleTime,
 } from 'rxjs';
 import { paintBackground } from './utils/paint-background';
 import { ImageState } from './utils/image-state';
 import { paintImage } from './utils/paint-image';
-import { observeDragPosition } from './utils/observe-drag-poistion';
-
-export type BorderSize = [number, number] | number;
-
-export interface Position {
-  x: number;
-  y: number;
-}
+import { observeDrag } from './utils/observe-drag';
+import { BorderSize } from './utils/border-size';
+import { Position } from './utils/position';
 
 @Component({
   selector: 'mg-ui-image-editor',
@@ -68,18 +50,31 @@ export class UiImageEditorComponent implements OnDestroy {
     return this.documentRef?.defaultView;
   }
 
-  // input and output "props" with defaults
-  readonly width = input<number>(200);
-  readonly height = input<number>(200);
   /**
-   * Custom styles for canvas element.
+   * Width of cropping area in editor
+   */
+  readonly width = input<number>(200);
+
+  /**
+   * Height of cropping area in editor
+   */
+  readonly height = input<number>(200);
+
+  /**
+   * Custom styles for internal canvas element.
    * @see {@link ngStyle}
    */
   readonly canvasStyle = input<Record<string, any>>();
+
+  /**
+   * Input image to edit as URL or File
+   */
   readonly image = input<string | File>();
 
   /**
-   * Size of borders.
+   * Size of cropping borders. Image will be visible through the border, but cut
+   * off in the resulting image. Treated as horizontal and vertical borders when
+   * passed an array.
    *
    * @example
    * // hor border: 10, vert border 20
@@ -90,21 +85,59 @@ export class UiImageEditorComponent implements OnDestroy {
    * @default 25
    */
   readonly borderSize = input<BorderSize>(25);
+
+  /**
+   * The x and y co-ordinates (in the range 0 to 1) of the center
+   * of the cropping area of the image. Also, you can use two-way binding to
+   * reflect manipulation in component.
+   */
   readonly position = input<Position>();
+
+  /**
+   * The scale of the image. You can use this to add your own resizing slider.
+   */
   readonly scale = input<number>(1);
 
   /**
    * Degrees clockwise
    */
   readonly rotate = input<number>(0);
+
+  /**
+   * The cropping area border radius.
+   */
   readonly borderRadius = input<number>(0);
+
+  /**
+   * The value to use for the crossOrigin property of the image,
+   * if loaded from a non-data URL. Valid values are `"anonymous"`
+   * and `"use-credentials"`. See
+   * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_settings_attributes this page}
+   * for more information.
+   */
   readonly crossOrigin = input<'' | 'anonymous' | 'use-credentials'>();
+
+  /**
+   * Invoked when an image load fails.
+   */
   readonly loadFailure = output<unknown>();
+
+  /**
+   * Invoked when an image (whether passed by props or dropped) load succeeds.
+   */
   readonly loadSuccess = output<ImageState>();
+
+  /**
+   * Invoked when the image is painted on the canvas.
+   */
   readonly imageReady = output<void>();
-  readonly imageChange = output<void>();
-  readonly mouseUp = output<void>();
-  readonly mouseMove = output<TouchEvent | MouseEvent>();
+
+  /**
+   * Invoked when the user pans the editor to change the selected
+   * area of the image. Passed a position object in the form
+   * `{ x: 0.5, y: 0.5 }` where x and y are the relative `x` and `y`
+   * coordinates of the center of the selected area.
+   */
   readonly positionChange = output<Position>();
 
   /**
@@ -120,22 +153,48 @@ export class UiImageEditorComponent implements OnDestroy {
    */
   readonly imageFillStyle = input<CanvasFillStrokeStyles['fillStyle']>();
 
+  /**
+   * Set to true to allow the image to be moved outside the cropping boundary.
+   */
   readonly disableBoundaryChecks = input<boolean>(false);
+
+  /**
+   * Set to true to disable devicePixelRatio based canvas scaling. Can
+   * improve performance of very large canvases on mobile devices.
+   */
   readonly disableHiDPIScaling = input<boolean>(false);
+
+  /**
+   * Switch off auto orientation of canvas (?)
+   */
   readonly disableCanvasRotation = input<boolean>(true);
 
   /**
-   * Border around.
-   * @default null
+   * The style of the 1px border around the mask.
+   * If not provided, no border will be drawn.
    * @see {@link CanvasRenderingContext2D.strokeStyle}
    */
   readonly borderStrokeStyle = input<CanvasFillStrokeStyles['strokeStyle']>();
+
+  /**
+   * Whether draws a "Rule of Three" grid on the canvas.
+   */
   readonly showGrid = input<boolean>(false);
+
+  /**
+   * Style of "Rule of Three" grid
+   */
   readonly gridFillStyle = input<CanvasFillStrokeStyles['fillStyle']>('#666');
 
-  // internal "state"
-  // TODO можно выпилить по идее
-  private readonly stateDrag = signal(false);
+  /**
+   * true while dragging
+   */
+  private readonly dragState = signal(false);
+
+  /**
+   * Current state of image.
+   * Relative position of center, width, height and image source as image element.
+   */
   private readonly stateImage = signal(this.defaultEmptyImage);
 
   constructor() {
@@ -166,7 +225,7 @@ export class UiImageEditorComponent implements OnDestroy {
         const borderRadius = this.borderRadius();
         const image = this.stateImage();
         const isVertical = this.isVertical();
-        const calculatedPosition = this.calculatedPosition();
+        const calculatedPosition = this.calculatedPositionWithBorders();
         const scaleFactor = this.pixelRatio();
         const rotate = this.rotate();
         const imageFillStyle = this.imageFillStyle();
@@ -219,20 +278,41 @@ export class UiImageEditorComponent implements OnDestroy {
       // }
     });
 
+    // track dragging
     effect(() => {
       const canvasElement = this.canvasElement();
 
       if (canvasElement && this.documentRef) {
-        observeDragPosition({
+        const {dragState$, movement$} = observeDrag({
           dragSourceElement: canvasElement,
           documentRef: this.documentRef,
           throttleTimeDuration: 100,
-        }).pipe(
+        });
+
+        // separately track position changes when dragging
+        movement$.pipe(
+            takeUntil(this.unsubscribe$),
+          ).subscribe((movement) => {
+            this.handleDragMove(movement);
+          });
+
+        // and start/stop of dragging
+        dragState$.pipe(
           takeUntil(this.unsubscribe$),
-        ).subscribe((movement) => {
-          this.handleDragMove(movement);
+        ).subscribe((state) => {
+          // We can make this.dragState observale
+          this.dragState.set(state);
         });
       }
+    });
+
+    // emit position change event
+    effect(() => {
+      const stateImage = this.stateImage();
+      this.positionChange.emit({
+        x: stateImage.x,
+        y: stateImage.y,
+      });
     });
   }
 
@@ -241,6 +321,9 @@ export class UiImageEditorComponent implements OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  /**
+   * Device pixel ratio
+   */
   protected readonly pixelRatio = computed(() => {
     if (this.disableHiDPIScaling()) {
       return 1;
@@ -248,6 +331,9 @@ export class UiImageEditorComponent implements OnDestroy {
     return this.windowRef?.devicePixelRatio || 1;
   });
 
+  /**
+   * Vertical orientation of canvas
+   */
   private readonly isVertical = computed(() => {
     return !this.disableCanvasRotation() && this.rotate() % 180 !== 0;
   });
@@ -281,7 +367,7 @@ export class UiImageEditorComponent implements OnDestroy {
     return {
       ['width.px']: this.dimensionCanvasWidth(),
       ['height.px']: this.dimensionCanvasHeight(),
-      cursor: this.stateDrag() ? 'grabbing' : 'grab',
+      cursor: this.dragState() ? 'grabbing' : 'grab',
       touchAction: 'none',
     };
   });
@@ -303,29 +389,28 @@ export class UiImageEditorComponent implements OnDestroy {
     return canvasElement?.getContext('2d');
   });
 
-  private readonly calculatedPosition = computed(() => {
-    const image = this.stateImage();
+  private readonly calculatedPositionWithBorders = computed(() => {
+    const calculatedPositionWithoutBorders = this.calculatedPositionWithoutBorders();
     const [borderX, borderY] = this.borderSizeNormalized();
+    const isVertical = this.isVertical();
 
-    // if (!image?.width || !image?.height) {
-    //   throw new Error('Image dimension is unknown.');
-    // }
+    return {
+      ...calculatedPositionWithoutBorders,
+      x: calculatedPositionWithoutBorders.x + (isVertical ? borderY : borderX),
+      y: calculatedPositionWithoutBorders.y + (isVertical ? borderX : borderY),
+    };
+  });
+
+  private readonly calculatedPositionWithoutBorders = computed(() => {
+    const image = this.stateImage();
 
     const croppingRect = this.croppingRect();
 
     const width = (image?.width || 0) * this.scale();
     const height = (image?.height || 0) * this.scale();
 
-    let x = -croppingRect.x * width;
-    let y = -croppingRect.y * height;
-
-    if (this.isVertical()) {
-      x += borderY;
-      y += borderX;
-    } else {
-      x += borderX;
-      y += borderY;
-    }
+    const x = -croppingRect.x * width;
+    const y = -croppingRect.y * height;
 
     return {x, y, height, width};
   });
@@ -398,7 +483,7 @@ export class UiImageEditorComponent implements OnDestroy {
       y: 0.5,
     };
 
-    this.stateDrag.set(false);
+    this.dragState.set(false);
     this.stateImage.set(imageState);
 
     this.imageReady.emit();
@@ -490,8 +575,6 @@ export class UiImageEditorComponent implements OnDestroy {
         y: y / height + relativeHeight / 2,
       };
 
-      this.positionChange.emit(position);
-
       this.stateImage.update((currentValue) => {
         return {
           ...currentValue,
@@ -499,6 +582,99 @@ export class UiImageEditorComponent implements OnDestroy {
         };
       });
     }
+  }
+
+  fetchResult() {
+    // get relative coordinates (0 to 1)
+    const cropRect = {
+      ...this.croppingRect(),
+    };
+    const image = this.stateImage();
+
+    if (!image.resource) {
+      throw new Error('Missing image resource.')
+    }
+
+    // transform ratios to actual pixel coordinates
+    cropRect.x *= image.resource.width;
+    cropRect.y *= image.resource.height;
+    cropRect.width *= image.resource.width;
+    cropRect.height *= image.resource.height;
+
+    // create a canvas with the correct dimensions
+    const canvas = this.documentRef.createElement('canvas');
+
+    if (this.isVertical()) {
+      canvas.width = cropRect.height;
+      canvas.height = cropRect.width;
+    } else {
+      canvas.width = cropRect.width;
+      canvas.height = cropRect.height;
+    }
+
+    // draw the full-size image at the correct position,
+    // the image gets truncated to the size of the canvas.
+    const context = canvas.getContext('2d');
+
+    if (!context) {
+      throw new Error('Missing 2d context.');
+    }
+
+    context.translate(canvas.width / 2, canvas.height / 2);
+    context.rotate((this.rotate() * Math.PI) / 180);
+    context.translate(-(canvas.width / 2), -(canvas.height / 2));
+
+    if (this.isVertical()) {
+      context.translate(
+        (canvas.width - canvas.height) / 2,
+        (canvas.height - canvas.width) / 2,
+      )
+    }
+
+    const imageFillStyle = this.imageFillStyle();
+    if (imageFillStyle) {
+      context.fillStyle = imageFillStyle;
+      context.fillRect(0, 0, canvas.width, canvas.height)
+    }
+
+    context.drawImage(image.resource, -cropRect.x, -cropRect.y);
+
+    return canvas;
+  }
+
+  fetchResultScaled() {
+    const width = this.width();
+    const height = this.height();
+    // const { width, height } = this.getDimensions()
+
+    const canvas = this.documentRef.createElement('canvas');
+
+    if (this.isVertical()) {
+      canvas.width = height;
+      canvas.height = width;
+    } else {
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    const context = canvas.getContext('2d');
+
+    if(!context) {
+      throw new Error('missing 2d context');
+    }
+
+    // don't paint a border here, as it is the resulting image
+    paintImage({
+      context,
+      image: this.stateImage(),
+      imageFillStyle: this.imageFillStyle(),
+      rotate: this.rotate(),
+      scaleFactor: 1,
+      calculatedPosition: this.calculatedPositionWithoutBorders(),
+      isVertical: this.isVertical(),
+    });
+
+    return canvas;
   }
 
 }

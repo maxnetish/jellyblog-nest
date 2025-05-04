@@ -21,11 +21,22 @@
   }
 }
 
-.image-editor-box {
-  display: inline-block;
+.images-row {
+  display: flex;
+  gap: 1rem;
   margin: 1rem 0;
+}
+
+.image-box {
+  display: inline-block;
   padding: 1rem;
   border-style: dashed;
   border-width: thin;
   border-color: ButtonBorder;
+}
+
+.result-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }

@@ -8,13 +8,16 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { BorderSize, UiImageEditorComponent } from '@jellyblog-nest/utils/ui-image-editor';
+import { BorderSize, Position, UiImageEditorComponent } from '@jellyblog-nest/utils/ui-image-editor';
 import { FormsModule } from '@angular/forms';
+import { JsonPipe, NgOptimizedImage } from '@angular/common';
 
 @Component({
   imports: [
     UiImageEditorComponent,
     FormsModule,
+    NgOptimizedImage,
+    JsonPipe,
   ],
   templateUrl: './image-editor-demo.component.html',
   styleUrl: './image-editor-demo.component.scss',
@@ -24,6 +27,7 @@ export class ImageEditorDemoComponent {
 
   protected readonly chosenImageFile = signal<File>(null);
   private readonly inputFileRef = viewChild<ElementRef<HTMLInputElement>>('inputFileRef');
+  private readonly editorComponentRef = viewChild<UiImageEditorComponent>('editorComponentRef');
 
   protected imageFillStyle = model<string>();
   protected backgroundTransparency = model<number>(0.5);
@@ -40,6 +44,10 @@ export class ImageEditorDemoComponent {
   protected rotate = model(0);
   protected scale = model(1);
   protected borderRadius = model(0);
+
+  protected position = model<Position>();
+
+  protected resultImageUrl = signal<string>(null);
 
   protected borderSize = computed(() => {
     return [this.borderX(), this.borderY()] as BorderSize;
@@ -58,6 +66,18 @@ export class ImageEditorDemoComponent {
         });
       }
     });
+  }
+
+  fetchResultButtonClick() {
+    const editorComponentRef = this.editorComponentRef();
+    const dataUrl = editorComponentRef.fetchResult().toDataURL();
+    this.resultImageUrl.set(dataUrl);
+  }
+
+  fetchResultScaledButtonClick() {
+    const editorComponentRef = this.editorComponentRef();
+    const dataUrl = editorComponentRef.fetchResultScaled().toDataURL();
+    this.resultImageUrl.set(dataUrl);
   }
 
   editorEventHandle(e, type = 'UNKNOWN EVENT') {

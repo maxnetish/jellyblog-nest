@@ -1,18 +1,36 @@
-import { filter, fromEvent, map, merge, pairwise, pipe, switchMap, takeUntil, tap, throttleTime } from 'rxjs';
+import {
+  BehaviorSubject, EMPTY,
+  filter, finalize,
+  fromEvent,
+  map,
+  merge, Observable,
+  pairwise,
+  pipe,
+  switchMap,
+  takeUntil,
+  tap,
+  throttleTime,
+} from 'rxjs';
 
 /**
- * Returns observable that will emit changes (deltas) of position while drag mouse or move touch,
+ * Returns observable:
+ *
+ * **movement$**: will emit changes (deltas) of position while drag mouse or move touch,
  * started in `dragSourceElement`. Emitting starts after {@link mousedown} or {@link touchstart} event
  * in `dragSourceElement` and continues until `documentRef` receive {@link mouseup} or {@link touchend} event.
  *
  * Each emit is `{mx: number; my: number}` where `mx, my` is delta of position by X and Y respectively.
+ *
+ * **dragState$**: will emit `true` when drag starts, `false` when drag ends
  */
-export function observeDragPosition({documentRef, dragSourceElement, throttleTimeDuration = 100}: {
+export function observeDrag({documentRef, dragSourceElement, throttleTimeDuration = 100}: {
   documentRef: Document,
   dragSourceElement: HTMLElement,
   throttleTimeDuration?: number,
 }) {
-  return merge(
+  const dragState$ = new BehaviorSubject(false);
+
+  const movement$ = merge(
     // Wait for mousedown or touchstart...
     fromEvent<MouseEvent>(dragSourceElement, 'mousedown').pipe(
       tap((evt) => {
@@ -21,18 +39,39 @@ export function observeDragPosition({documentRef, dragSourceElement, throttleTim
     ),
     fromEvent<TouchEvent>(dragSourceElement, 'touchstart'),
   ).pipe(
+    tap(() => {
+      // Notify that drag starts
+      dragState$.next(true);
+    }),
     switchMap((evt) => {
-      // And after that begin catch move events in document.
+      let observeMoveEvents$: Observable<MouseEvent | TouchEvent>;
+
+      // Begin catch move events from mouse or touch according initial event.
       // Until mouseup | touchend. That is end of drag.
-      if (evt instanceof TouchEvent) {
-        return fromEvent<TouchEvent>(documentRef, 'touchmove').pipe(
-          takeUntil(fromEvent(documentRef, 'touchend', {once: true})),
-          mapAndPairsOperator(throttleTimeDuration),
-        );
+      switch (true) {
+        case (evt instanceof TouchEvent): {
+          observeMoveEvents$ = fromEvent<TouchEvent>(documentRef, 'touchmove').pipe(
+            takeUntil(fromEvent(documentRef, 'touchend', {once: true})),
+          );
+          break;
+        }
+        case (evt instanceof MouseEvent): {
+          observeMoveEvents$ = fromEvent<MouseEvent>(documentRef, 'mousemove').pipe(
+            takeUntil(fromEvent(documentRef, 'mouseup', {once: true})),
+          );
+          break;
+        }
+        default: {
+          observeMoveEvents$ = EMPTY;
+        }
       }
-      return fromEvent<MouseEvent>(documentRef, 'mousemove').pipe(
-        takeUntil(fromEvent(documentRef, 'mouseup', {once: true})),
-        mapAndPairsOperator(throttleTimeDuration),
+
+      return observeMoveEvents$.pipe(
+        mapAndPairsOperator({throttleTimeDuration}),
+        finalize(() => {
+          // notify that drag ends
+          dragState$.next(false);
+        }),
       );
     }),
     // Emit only no-zero deltas
@@ -40,9 +79,14 @@ export function observeDragPosition({documentRef, dragSourceElement, throttleTim
       return movePosition.mx !== 0 || movePosition.my !== 0;
     }),
   );
+
+  return {
+    dragState$,
+    movement$,
+  };
 }
 
-function mapAndPairsOperator(throttleTimeDuration: number) {
+function mapAndPairsOperator({throttleTimeDuration}: {throttleTimeDuration: number}) {
   return pipe(
     tap((evt: MouseEvent | TouchEvent) => {
       // I don't know why prevent default, but
