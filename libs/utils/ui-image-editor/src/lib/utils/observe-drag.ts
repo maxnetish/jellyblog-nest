@@ -48,14 +48,14 @@ export function observeDrag({documentRef, dragSourceElement, throttleTimeDuratio
 
       // Begin catch move events from mouse or touch according initial event.
       // Until mouseup | touchend. That is end of drag.
-      switch (true) {
-        case (evt instanceof TouchEvent): {
+      switch (evt.type) {
+        case 'touchstart': {
           observeMoveEvents$ = fromEvent<TouchEvent>(documentRef, 'touchmove').pipe(
             takeUntil(fromEvent(documentRef, 'touchend', {once: true})),
           );
           break;
         }
-        case (evt instanceof MouseEvent): {
+        case 'mousedown': {
           observeMoveEvents$ = fromEvent<MouseEvent>(documentRef, 'mousemove').pipe(
             takeUntil(fromEvent(documentRef, 'mouseup', {once: true})),
           );
@@ -97,7 +97,7 @@ function mapAndPairsOperator({throttleTimeDuration}: {throttleTimeDuration: numb
     throttleTime(throttleTimeDuration, undefined, {leading: false, trailing: true}),
     // Normalize emits. We need only coordintates
     map((evt) => {
-      if (evt instanceof TouchEvent) {
+      if ('targetTouches' in evt) {
         return {
           x: evt.targetTouches[0]?.pageX || 0,
           y: evt.targetTouches[0]?.pageX || 0,

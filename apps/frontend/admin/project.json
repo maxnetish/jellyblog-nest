@@ -4,6 +4,7 @@
   "projectType": "application",
   "sourceRoot": "apps/frontend/admin/src",
   "prefix": "admin-app",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser-esbuild",
@@ -77,7 +78,8 @@
           "buildTarget": "frontend-admin:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "development",
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -95,6 +97,5 @@
         "jestConfig": "apps/frontend/admin/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }

@@ -4,6 +4,13 @@
     <input type="File" id="inputFileId" #inputFileRef/>
   </div>
   <div>
+    <label>Image url:&nbsp;</label>
+    <input type="url" [(ngModel)]="imageUrl" list="defaultURLs"/>
+    <datalist id="defaultURLs">
+      <option value="https://upload.wikimedia.org/wikipedia/commons/a/ac/Image_Icon.png" label="Image from wikimedia"></option>
+    </datalist>
+  </div>
+  <div>
     <label>imageFillStyle&nbsp;</label>
     <input type="color" [(ngModel)]="imageFillStyle"/>
     {{ imageFillStyle() }}
@@ -83,7 +90,7 @@
 <div class="images-row">
   <div class="image-box">
     <mg-ui-image-editor
-      [image]="chosenImageFile()"
+      [image]="chosenImageFileOrUrl()"
       (imageReady)="editorEventHandle($event, 'imageReady')"
       (loadFailure)="editorEventHandle($event, 'loadFailure')"
       (loadSuccess)="editorEventHandle($event, 'loadSuccess')"
@@ -102,6 +109,7 @@
       [rotate]="rotate()"
       [scale]="scale()"
       [borderRadius]="borderRadius()"
+      crossOrigin="anonymous"
 
       [(position)]="position"
 
@@ -114,7 +122,8 @@
   </div>
   @if (resultImageUrl()) {
     <div class="image-box">
-      <img [ngSrc]="resultImageUrl()"/>
+      <img #resultImageRef [src]="resultImageUrl()"/>
+      <div>W&times;H: {{resultImageDim()?.width}} &times; {{resultImageDim()?.height}}</div>
     </div>
   }
 </div>

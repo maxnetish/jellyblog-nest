@@ -259,25 +259,6 @@ export class UiImageEditorComponent implements OnDestroy {
       }
     });
 
-    effect(() => {
-      // from react-avatar-editor
-      // когда дергать onImageChange - наверно не надо или как то по другому придумать
-      // if (
-      //   prevProps.image !== this.props.image ||
-      //   prevProps.width !== this.props.width ||
-      //   prevProps.height !== this.props.height ||
-      //   prevProps.position !== this.props.position ||
-      //   prevProps.scale !== this.props.scale ||
-      //   prevProps.rotate !== this.props.rotate ||
-      //   prevState.my !== this.state.my ||
-      //   prevState.mx !== this.state.mx ||
-      //   prevState.image.x !== this.state.image.x ||
-      //   prevState.image.y !== this.state.image.y
-      // ) {
-      //   this.props.onImageChange?.()
-      // }
-    });
-
     // track dragging
     effect(() => {
       const canvasElement = this.canvasElement();
