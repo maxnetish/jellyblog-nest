@@ -11,7 +11,12 @@ import {
   postPermissionMap,
   postStatusMap,
 } from '@jellyblog-nest/utils/common';
-import { AceEditorControlDirective, FormItemComponent, NativeDatePipe } from '@jellyblog-nest/utils/front';
+import {
+  AceEditorControlDirective,
+  DatetimeViewComponent,
+  FormItemComponent,
+  NativeDatePipe,
+} from '@jellyblog-nest/utils/front';
 import { LetDirective } from '@ngrx/component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -28,22 +33,23 @@ import { PreviewPipe } from '@jellyblog-nest/utils/front';
 
 @Component({
     selector: 'app-post-edit',
-    imports: [
-        AsyncPipe,
-        JsonPipe,
-        NativeDatePipe,
-        LetDirective,
-        ReactiveFormsModule,
-        FormItemComponent,
-        NgSelectComponent,
-        NgOptionTemplateDirective,
-        NgLabelTemplateDirective,
-        NgTagTemplateDirective,
-        NgIcon,
-        NgTemplateOutlet,
-        AceEditorControlDirective,
-        PreviewPipe,
-    ],
+  imports: [
+    AsyncPipe,
+    JsonPipe,
+    NativeDatePipe,
+    LetDirective,
+    ReactiveFormsModule,
+    FormItemComponent,
+    NgSelectComponent,
+    NgOptionTemplateDirective,
+    NgLabelTemplateDirective,
+    NgTagTemplateDirective,
+    NgIcon,
+    NgTemplateOutlet,
+    AceEditorControlDirective,
+    PreviewPipe,
+    DatetimeViewComponent,
+  ],
     providers: [
         PostEditStore,
         provideIcons({

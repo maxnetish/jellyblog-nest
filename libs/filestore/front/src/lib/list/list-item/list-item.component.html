@@ -70,9 +70,9 @@
       <div class="details-header_size">
         {{ shortFileInfo.Size | fileSizeForHuman }}
       </div>
-      <time class="details-header_time">
-        {{ shortFileInfo.LastModified | nativeDate : dateOptions }}
-      </time>
+      <app-utils-datetime-view
+        [datetime]="shortFileInfo.LastModified"
+      ></app-utils-datetime-view>
     </div>
 
     <div class="details-body" [ngbCollapse]="!vm.expanded">

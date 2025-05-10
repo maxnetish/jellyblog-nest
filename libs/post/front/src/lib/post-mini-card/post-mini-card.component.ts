@@ -1,20 +1,19 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { PostShortDto } from '@jellyblog-nest/post/model';
-import { NativeDatePipe } from '@jellyblog-nest/utils/front';
-import { postStatusMap } from '@jellyblog-nest/utils/common';
-import { postPermissionMap } from '../../../../../utils/common/src/lib/post-permission';
+import { DatetimeViewComponent } from '@jellyblog-nest/utils/front';
+import { postStatusMap, postPermissionMap } from '@jellyblog-nest/utils/common';
 import { NgIcon, NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroArrowTopRightOnSquare, heroPencil, heroPencilSquare } from '@ng-icons/heroicons/outline';
+import { heroArrowTopRightOnSquare, heroPencil } from '@ng-icons/heroicons/outline';
 import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-post-mini-card',
-    imports: [
-        NativeDatePipe,
-        NgIcon,
-        NgIconComponent,
-        RouterLink,
-    ],
+  imports: [
+    NgIcon,
+    NgIconComponent,
+    RouterLink,
+    DatetimeViewComponent,
+  ],
     providers: [
         provideIcons({
             heroPencil,

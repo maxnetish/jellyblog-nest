@@ -16,9 +16,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 import {
   AppendResponseContentDispositionPipe,
-  CollapseTitleComponent,
+  CollapseTitleComponent, DatetimeViewComponent,
   HumanFileSizePipe,
-  NativeDatePipe,
   S3FileUrlPipe, ValidationMessageComponent,
 } from '@jellyblog-nest/utils/front';
 import { LetDirective, PushPipe } from '@ngrx/component';
@@ -68,20 +67,20 @@ function replaceOnlyLastKeySegment(inputKey: string, replace: string): string {
             heroPencil,
         }),
     ],
-    imports: [
-        ReactiveFormsModule,
-        PushPipe,
-        CollapseTitleComponent,
-        HumanFileSizePipe,
-        NativeDatePipe,
-        S3FileUrlPipe,
-        AppendResponseContentDispositionPipe,
-        LetDirective,
-        NgIconComponent,
-        ValidationMessageComponent,
-        NgbCollapse,
-        NgOptimizedImage,
-    ]
+  imports: [
+    ReactiveFormsModule,
+    PushPipe,
+    CollapseTitleComponent,
+    HumanFileSizePipe,
+    S3FileUrlPipe,
+    AppendResponseContentDispositionPipe,
+    LetDirective,
+    NgIconComponent,
+    ValidationMessageComponent,
+    NgbCollapse,
+    NgOptimizedImage,
+    DatetimeViewComponent,
+  ],
 })
 export class ListItemComponent implements OnDestroy {
 
@@ -96,16 +95,6 @@ export class ListItemComponent implements OnDestroy {
       key: new ClassValidatorFormControl(''),
     },
   );
-
-  /**
-   * https://github.com/microsoft/TypeScript/issues/44632
-   * So use
-   * "target": "es2020"
-   */
-  protected readonly dateOptions: Intl.DateTimeFormatOptions = {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  };
 
   readonly fileInfo = input<FileInfo>();
 

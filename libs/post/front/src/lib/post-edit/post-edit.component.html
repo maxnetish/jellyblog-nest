@@ -3,12 +3,10 @@
     <h1>Публикация</h1>
 
     <div class="mb-3">
-      <time class="small fw-semibold" [attr.datetime]="initialPost?.createdAt">
-        {{
-          initialPost?.createdAt
-            | nativeDate : { dateStyle: 'medium', timeStyle: 'short' }
-        }}
-      </time>
+      <app-utils-datetime-view
+        [datetime]="initialPost?.createdAt"
+        class="small fw-semibold"
+      ></app-utils-datetime-view>
       <span
         class="badge rounded-pill {{
           postStatusMap[initialPost.status].badgeClass
@@ -131,7 +129,7 @@
                       | preview
                         : (form.value.contentType === PostContentType.MD
                             ? 'markdown'
-                            : 'none')      
+                            : 'none')
                   "
                 ></div>
                 </div>
@@ -180,7 +178,7 @@
                       | preview
                         : (form.value.contentType === PostContentType.MD
                             ? 'markdown'
-                            : 'none')      
+                            : 'none')
                   "
                 ></div>
                 </div>

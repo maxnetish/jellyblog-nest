@@ -2,9 +2,10 @@
   <div class="card h-100">
     <div class="card-header">
       <div class="d-flex justify-content-between">
-        <time class="small fw-semibold" [attr.datetime]="postUnwrapped.createdAt">
-          {{ postUnwrapped.createdAt | nativeDate : {dateStyle: 'medium', timeStyle: 'short'} }}
-        </time>
+        <app-utils-datetime-view
+          class="small fw-semibold"
+          [datetime]="postUnwrapped.createdAt"
+        ></app-utils-datetime-view>
         <span class="badge rounded-pill {{postStatusMap[postUnwrapped.status].badgeClass}}">
           {{ postStatusMap[postUnwrapped.status].label }}
         </span>
