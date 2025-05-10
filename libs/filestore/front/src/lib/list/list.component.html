@@ -2,7 +2,7 @@
 
   <h1>Файлы в хранилище</h1>
 
-  <div class="mb-4 d-flex">
+  <div class="mb-4 d-flex gap-2">
     <div class="browse-path flex-grow-1 d-flex gap-1 align-items-baseline">
       @for (folderInfo of storeFacade.parentFoldersHierarchy$ | async; track folderInfo.prefix; let isLast = $last) {
         <button
@@ -15,6 +15,16 @@
         </button>
         <span class="mr-2">/</span>
       }
+    </div>
+    <div class="flex-shrink-0">
+      <a
+        class="btn btn-outline-primary btn-sm"
+        [routerLink]="['..', 'image-upload']"
+        [queryParams]="{prefix: storeFacade.prefix$ | async}"
+      >
+        <ng-icon name="heroPhoto"></ng-icon>
+        Загрузить картинку
+      </a>
     </div>
     <div class="browse-sort flex-shrink-0" ngbDropdown>
       <button

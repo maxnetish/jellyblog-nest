@@ -17,3 +17,4 @@ export * from './lib/components/form-item/form-item.component';
 export * from './lib/components/ace-edtor-control/ace-edtor-control.directive';
 export * from './lib/preview.pipe';
 export * from './lib/components/datetime-view/datetime-view.component';
+export * from './lib/components/file-dropper/file-dropper.directive';

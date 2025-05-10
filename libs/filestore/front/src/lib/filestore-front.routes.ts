@@ -5,6 +5,7 @@ import * as fromFilestoreListReducer from './list/store/filestore-list.reducer';
 import { provideEffects } from '@ngrx/effects';
 import { FilestoreListEffects } from './list/store/filestore-list.effects';
 import { FilestorelistFacade } from './list/store/filestore-list.facade';
+import { ImageUploadComponent } from './image-upload/image-upload.component';
 
 export const FilestoreRoutes: AppRoute[] = [
   {
@@ -26,4 +27,8 @@ export const FilestoreRoutes: AppRoute[] = [
       FilestorelistFacade,
     ],
   },
+  {
+    path: 'image-upload',
+    component: ImageUploadComponent,
+  }
 ];

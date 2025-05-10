@@ -1,0 +1,35 @@
+<div class="controls">
+  <div>
+    <label>accept&nbsp;</label>
+    <input type="text" [(ngModel)]="accept"/>
+  </div>
+  <div>
+    <label>
+      traverseDirectories&nbsp;
+      <input type="checkbox" [(ngModel)]="traverseDirectories"/>
+    </label>
+  </div>
+</div>
+
+<div class="filedrop" draggable="true">
+  I'm draggable. But not file.
+</div>
+
+<div
+  class="filedrop"
+  [class.file-over]="fileDropperState() === 'drag'"
+  appUtilsFileDrop
+  [fileDropAccept]="accept()"
+  [fileDropTraverseDirectories]="traverseDirectories()"
+  (fileDropStateChange)="fileDropperState.set($event)"
+  (fileDropDrop)="fileDropped.set($event)"
+>
+  drop something here
+</div>
+
+<div>state: {{ fileDropperState() }}</div>
+<div>
+  @for (file of fileDroppedAsArray(); track file.name) {
+    <div>{{ file.name }}</div>
+  }
+</div>

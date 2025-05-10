@@ -1,0 +1,32 @@
+:host {
+  display: block;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  > * {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    border-style: solid;
+    border-width: thin;
+    border-color: ButtonBorder;
+    padding: 0.25rem 1rem;
+    border-radius: 0.25rem;
+    background-color: Canvas;
+    color: CanvasText;
+  }
+}
+
+.filedrop {
+  border: dashed 1px green;
+  width: 300px;
+  height: 100px;
+}
+
+.file-over {
+  background-color: aquamarine;
+}

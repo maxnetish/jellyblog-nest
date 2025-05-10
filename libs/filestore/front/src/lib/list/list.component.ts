@@ -10,40 +10,49 @@ import {
   NgbDropdownToggle,
 } from '@ng-bootstrap/ng-bootstrap';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroArrowSmallUp, heroBarsArrowDown, heroBarsArrowUp, heroFolder } from '@ng-icons/heroicons/outline';
+import {
+  heroArrowSmallUp,
+  heroBarsArrowDown,
+  heroBarsArrowUp,
+  heroFolder,
+  heroPhoto,
+} from '@ng-icons/heroicons/outline';
 import { LetDirective, PushPipe } from '@ngrx/component';
 import { CollapseTitleComponent } from '@jellyblog-nest/utils/front';
 import { UploadFormComponent } from './upload-form/upload-form.component';
 import { ListItemComponent } from './list-item/list-item.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'mg-filestore-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss'],
-    encapsulation: ViewEncapsulation.Emulated,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        AsyncPipe,
-        NgbDropdown,
-        NgIconComponent,
-        PushPipe,
-        NgbDropdownMenu,
-        NgbDropdownItem,
-        CollapseTitleComponent,
-        NgbCollapse,
-        UploadFormComponent,
-        LetDirective,
-        ListItemComponent,
-        NgbDropdownToggle,
-    ],
-    providers: [
-        provideIcons({
-            heroBarsArrowDown,
-            heroBarsArrowUp,
-            heroArrowSmallUp,
-            heroFolder,
-        }),
-    ]
+  selector: 'mg-filestore-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    AsyncPipe,
+    NgbDropdown,
+    NgIconComponent,
+    PushPipe,
+    NgbDropdownMenu,
+    NgbDropdownItem,
+    CollapseTitleComponent,
+    NgbCollapse,
+    UploadFormComponent,
+    LetDirective,
+    ListItemComponent,
+    NgbDropdownToggle,
+    RouterLink,
+  ],
+  providers: [
+    provideIcons({
+      heroBarsArrowDown,
+      heroBarsArrowUp,
+      heroArrowSmallUp,
+      heroFolder,
+      heroPhoto,
+    }),
+  ],
 })
 export class FilestoreListComponent implements OnInit {
 
