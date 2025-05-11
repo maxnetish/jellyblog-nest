@@ -2,4 +2,36 @@
 
   <h1>Загрузить изображение в хранилище</h1>
 
+  <div
+    class="card filechooser"
+    appUtilsFileDropZone
+    fileDropAccept="image/*"
+    (filesDropped)="filesDropped($event)"
+  >
+    <div class="card-body">
+      <div class="d-flex align-items-center flex-column gap-4">
+        <button
+          class="btn btn-outline-primary btn-sm"
+          appUtilsFileChoose
+          fileChooseCapture="environment"
+          fileChooseAccept="image/*"
+          (fileChosen)="fileChosen($event)"
+        >
+          <ng-icon name="heroPhoto"></ng-icon>
+          Выбрать файл
+        </button>
+        <span class="text-sm">Или бросить сюда</span>
+      </div>
+    </div>
+  </div>
+
+  @if (previewImageSrc()) {
+    <div class="mt-2 mb-2">
+      W&times;H: {{ previewDimention()?.width }}&times;{{ previewDimention()?.height }}; {{ previewName() }}
+    </div>
+    <div class="border mb-2 mt-2 overflow-auto rounded-2">
+      <img class="initial-image" [src]="previewImageSrc()" #previewImageRef/>
+    </div>
+  }
+
 </div>
