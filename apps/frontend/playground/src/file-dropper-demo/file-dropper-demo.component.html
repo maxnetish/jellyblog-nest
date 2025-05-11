@@ -9,27 +9,48 @@
       <input type="checkbox" [(ngModel)]="traverseDirectories"/>
     </label>
   </div>
+  <div>
+    <label>
+      fileDropDisabled&nbsp;
+      <input type="checkbox" [(ngModel)]="fileDropDisabled"/>
+    </label>
+  </div>
 </div>
 
-<div class="filedrop" draggable="true">
-  I'm draggable. But not file.
+<div class="dropzone-controls">
+  <div class="filedrop" draggable="true" (dragstart)="dragstartInDraggable($event)">
+    I'm draggable. But not file.
+  </div>
+
+  <div
+    class="filedrop"
+    [class.file-over]="fileDropState() === 'drag'"
+    [class.file-collects]="fileDropState() === 'collect'"
+    appUtilsFileDropZone
+    [fileDropAccept]="accept()"
+    [fileDropTraverseDirectories]="traverseDirectories()"
+    [fileDropDisabled]="fileDropDisabled() || fileDropState() === 'collect'"
+    (fileDropStateChange)="fileDropState.set($event)"
+    (filesDropped)="filesDropped.set($event)"
+    (filesDropFailed)="fileDropFailed.set($event)"
+  >
+    @if (fileDropDisabled()) {
+      Try... But I'm disabled.
+    } @else if (fileDropState() === 'drag') {
+      And drop here!
+    } @else if (fileDropState() === 'collect') {
+      Collect entries in file system, wait...
+    } @else {
+      Drag something here...
+    }
+  </div>
 </div>
 
-<div
-  class="filedrop"
-  [class.file-over]="fileDropperState() === 'drag'"
-  appUtilsFileDrop
-  [fileDropAccept]="accept()"
-  [fileDropTraverseDirectories]="traverseDirectories()"
-  (fileDropStateChange)="fileDropperState.set($event)"
-  (fileDropDrop)="fileDropped.set($event)"
->
-  drop something here
-</div>
-
-<div>state: {{ fileDropperState() }}</div>
 <div>
-  @for (file of fileDroppedAsArray(); track file.name) {
-    <div>{{ file.name }}</div>
+  Choosed files:
+  @for (fileItem of filesDropped(); track $index) {
+    <div>{{ fileItem.filesystemEntry?.fullPath }} {{fileItem.file?.name}} {{ fileItem.file?.type }}</div>
   }
 </div>
+
+

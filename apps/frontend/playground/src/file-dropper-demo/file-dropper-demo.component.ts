@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, model, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FileDropperDirective, FileDropperDragState } from '@jellyblog-nest/utils/front';
+import { FileDropZoneDirective, FileDropState, FileDropItem } from '@jellyblog-nest/utils/front';
 
 @Component({
   imports: [
     ReactiveFormsModule,
     FormsModule,
-    FileDropperDirective,
+    FileDropZoneDirective,
   ],
   templateUrl: './file-dropper-demo.component.html',
   styleUrl: './file-dropper-demo.component.scss',
@@ -18,25 +18,24 @@ export class FileDropperDemoComponent {
 
   protected traverseDirectories = model(false);
 
-  protected fileDropperState = signal<FileDropperDragState>('none');
+  protected fileDropDisabled = model(false);
 
-  protected fileDropped = signal<File[]>(null);
+  protected fileDropState = signal<FileDropState>('none');
 
-  protected readonly fileDroppedAsArray = computed(() => {
-    const fileDropped = this.fileDropped();
+  protected filesDropped = signal<FileDropItem[]>(null);
 
-    if(fileDropped?.length) {
-      return Array.from(fileDropped);
-    }
-
-    return [];
-  });
+  protected fileDropFailed = signal<unknown>(null);
 
   constructor() {
     effect(() => {
-      const fileDroppedAsArray = this.fileDroppedAsArray();
-      console.log('file dropped: ', fileDroppedAsArray);
+      console.log('file dropped: ', this.filesDropped());
+    });
+    effect(() => {
+      console.log('failed: ', this.fileDropFailed());
     });
   }
 
+  dragstartInDraggable($event: DragEvent) {
+    $event.dataTransfer.setData('text/plain', 'drag something...');
+  }
 }

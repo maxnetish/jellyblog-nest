@@ -1,3 +1,5 @@
+import { FileDropItem } from './file-drop-item';
+
 interface AcceptPatterns {
   mime: RegExp[];
   ext: string[];
@@ -8,8 +10,9 @@ export async function extractFiles({list, traverseDirectories = false, accept = 
   traverseDirectories?: boolean;
   accept?: string;
 }) {
-  const result: File[] = [];
+  const result: FileDropItem[] = [];
   const patterns = acceptRegex(accept);
+
   for (const item of Array.from(list)) {
     const files = await extractFilesFromDataTransferItem({item, traverseDirectories, patterns});
     Array.prototype.push.apply(result, files);
@@ -21,7 +24,7 @@ async function extractFilesFromDataTransferItem({item, traverseDirectories, patt
   item: DataTransferItem;
   traverseDirectories?: boolean;
   patterns: AcceptPatterns;
-}): Promise<File[]> {
+}): Promise<FileDropItem[]> {
   const fsEntry = extractFileSystemEntry(item);
 
   if (!fsEntry) {
@@ -31,7 +34,10 @@ async function extractFilesFromDataTransferItem({item, traverseDirectories, patt
   if (fsEntry.isFile) {
     const filePossibleNull = item.getAsFile();
     if (filePossibleNull && accept({file: filePossibleNull, patterns})) {
-      return [filePossibleNull];
+      return [{
+        file: filePossibleNull,
+        filesystemEntry: fsEntry,
+      }];
     }
     return [];
   }
@@ -50,25 +56,35 @@ async function extractFilesFromDataTransferItem({item, traverseDirectories, patt
 async function collectFilesFromDirectory({directory, patterns}: {
   directory: FileSystemDirectoryEntry;
   patterns: AcceptPatterns
-}): Promise<File[]> {
+}): Promise<FileDropItem[]> {
   const reader = directory.createReader();
-  const collectedFiles: File[] = [];
-  return new Promise<File[]>((resolve, reject) => {
+  const collectedFiles: FileDropItem[] = [];
+  return new Promise<FileDropItem[]>((resolve, reject) => {
     reader.readEntries(
       async (entries) => {
-        for (const entry of entries) {
-          if (entry.isFile) {
-            const file = await fileFromFileEntry({fileEntry: entry as FileSystemFileEntry});
-            if (accept({file, patterns})) {
-              collectedFiles.push(file);
+        try {
+          for (const entry of entries) {
+            if (entry.isFile) {
+              const file = await fileFromFileEntry({fileEntry: entry as FileSystemFileEntry});
+              if (accept({file, patterns})) {
+                collectedFiles.push({
+                  file: file,
+                  filesystemEntry: entry,
+                });
+              }
+            }
+            if (entry.isDirectory) {
+              const children = await collectFilesFromDirectory({
+                directory: entry as FileSystemDirectoryEntry,
+                patterns,
+              });
+              Array.prototype.push.apply(collectedFiles, children);
             }
           }
-          if (entry.isDirectory) {
-            const children = await collectFilesFromDirectory({directory: entry as FileSystemDirectoryEntry, patterns});
-            Array.prototype.push.apply(collectedFiles, children);
-          }
+          resolve(collectedFiles);
+        } catch (error) {
+          reject(error);
         }
-        resolve(collectedFiles);
       },
       (err) => {
         reject(err);
