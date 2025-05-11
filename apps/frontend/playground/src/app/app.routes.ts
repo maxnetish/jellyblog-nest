@@ -15,4 +15,11 @@ export const appRoutes: Route[] = [
       return lazy.FileDropperDemoComponent;
     },
   },
+  {
+    path: 'file-choose',
+    loadComponent: async () => {
+      const lazy = await import('./../file-choose-demo/file-choose-demo.component');
+      return lazy.FileChooseDemoComponent;
+    },
+  },
 ];

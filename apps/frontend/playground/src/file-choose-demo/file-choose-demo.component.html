@@ -1,0 +1,48 @@
+<div class="controls">
+  <div>
+    <label>accept&nbsp;</label>
+    <input type="text" [(ngModel)]="fileChooseAccept"/>
+  </div>
+  <div>
+    <label>
+      disabled&nbsp;
+      <input type="checkbox" [(ngModel)]="fileChooseDisabled"/>
+    </label>
+  </div>
+  <div>
+    <label>
+      capture&nbsp;
+    </label>
+    <input type="text" [(ngModel)]="fileChooseCapture" list="captureOptions"/>
+    <datalist id="captureOptions">
+      <option value="user" label="Use user-facing camera"></option>
+      <option value="environment" label="Use outward facing camera"></option>
+    </datalist>
+  </div>
+  <div>
+    <label>
+      multiple&nbsp;
+      <input type="checkbox" [(ngModel)]="fileChooseMultiple"/>
+    </label>
+  </div>
+</div>
+
+<div class="demo-box">
+  <button
+    appUtilsFileChoose
+    [fileChooseAccept]="fileChooseAccept()"
+    [fileChooseDisabled]="fileChooseDisabled()"
+    [fileChooseCapture]="fileChooseCapture()"
+    [fileChooseMultiple]="fileChooseMultiple()"
+    (fileChosen)="fileChosen.set($event)"
+  >
+    Choose file
+  </button>
+</div>
+
+<div class="demo-box">
+  Chosen files:
+  @for (file of fileChosenAsArray(); track $index) {
+    <div>{{ file.name }} {{ file.type }}</div>
+  }
+</div>

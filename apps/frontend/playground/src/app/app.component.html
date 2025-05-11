@@ -10,6 +10,9 @@
   <li class="menu-list-item link" routerLinkActive="active">
     <a [routerLink]="['file-dropper']" routerLinkActive="active">File dropper demo</a>
   </li>
+  <li class="menu-list-item link" routerLinkActive="active">
+    <a [routerLink]="['file-choose']" routerLinkActive="active">File choose demo</a>
+  </li>
   @for (entry of colorSchemeMap; track entry.code) {
     <li class="menu-list-item">
       <label> {{ entry.label }} <input type="radio" [(ngModel)]="appColorScheme" [value]="entry.code"/></label>

@@ -64,7 +64,9 @@ export class FileDropZoneDirective {
 
     // see https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/files
     // dataTransfer.files will be in drop event
-    if ($event.dataTransfer?.items?.length) {
+    // dataTransfer.items also will be in drop event
+    // (chrome sends dataTransfer.items in dragenter, dragover, but safari won't)
+    if ($event.dataTransfer) {
       $event.dataTransfer.dropEffect = 'copy';
       this.fileDropStateChange.emit('drag');
     }
@@ -75,7 +77,7 @@ export class FileDropZoneDirective {
       return true;
     }
 
-    if ($event.dataTransfer?.items?.length) {
+    if ($event.dataTransfer) {
       $event.dataTransfer.dropEffect = 'copy';
       // we should prevent default to catch drop
       // see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drop_event
